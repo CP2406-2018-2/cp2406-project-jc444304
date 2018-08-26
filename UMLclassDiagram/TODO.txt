@@ -1,2 +1,0 @@
-Add your UML class diagram here.
-Remove this file.
