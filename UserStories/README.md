@@ -14,7 +14,7 @@ NOTE: A ratio between real-time and simulation-time should be available.
 ```
 A user needs the entire household, including its appliances, to be configured into a formatted file.
 
-NOTE: JSON serialization is most convenient.
+NOTE: JSON serialization is most convenient for the user's sake due to JSON's popularity/robustness/simplicity.
 ```
 
 ```
