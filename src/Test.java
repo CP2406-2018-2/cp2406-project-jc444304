@@ -9,8 +9,11 @@ public class Test {
     public static void main(String[] args) {
 
         System.out.println("Attempting to start tests...");
-        
-        Test.doThread();
+
+        System.out.println("Doing the Thread test:");
+        if (!Test.doThread()) {
+            System.out.println("Error while doing the Thread test!");
+        }
     }
     
     /**
@@ -34,7 +37,7 @@ class TestThread extends Thread {
      * Specifies the number of seconds for each second of the thread.
      * For example, set to 60 so that 1 minute is accelerated to 1 second.
      */
-    protected double speed = 1.0;
+    protected double speed = 0.5;
 
     /**
      *
@@ -44,17 +47,17 @@ class TestThread extends Thread {
     /**
      *
      */
-    protected double macsPerSec = speedRatio * 1000;
+    protected double micsPerSec = this.speedRatio * 1000;
 
     /**
      *
      */
-    protected double nansPerSec = speedRatio * 1000000;
+    protected double nansPerSec = this.micsPerSec * 1000;
 
     /**
      *
      */
-    protected double nansDifference = nansPerSec % 1000;
+    protected double nansPerSecRemainder = this.nansPerSec % this.micsPerSec;
 
     /**
      *
@@ -62,8 +65,11 @@ class TestThread extends Thread {
     @Override
     public synchronized void start() {
 
-        System.out.println("Attempting to start thread:");
-        System.out.println(this.nansPerSec + " ... " + this.macsPerSec + " ... " + this.nansDifference);
+        System.out.println("Attempting to start thread with the following time attributes:");
+        System.out.println(" - Speed: " + this.speed);
+        System.out.println(" - Speed Ratio: " + this.speedRatio);
+        System.out.println(" - Microseconds or Nanoseconds per second: " + this.micsPerSec + ", " + this.nansPerSec);
+        System.out.println(" - Nanoseconds remainder from microseconds: " + this.nansPerSecRemainder);
 
         super.start();
     }
@@ -75,10 +81,10 @@ class TestThread extends Thread {
 
         for (; ; ) {
 
-            System.out.println(System.currentTimeMillis() + " ... " + System.nanoTime());
+            System.out.println("Current time in milliseconds and nanoseconds (respectively): " + System.currentTimeMillis() + ", " + System.nanoTime());
 
             try {
-                Thread.sleep((long) this.macsPerSec, (int) this.nansDifference);
+                Thread.sleep((long) this.micsPerSec, (int) this.nansPerSecRemainder);
             } catch (InterruptedException exception) {
                 return;
             }
