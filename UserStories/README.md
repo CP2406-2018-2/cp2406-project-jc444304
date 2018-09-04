@@ -8,15 +8,15 @@ A user requires a centralised automation system to control the appliances within
 ```
 A user needs to simulate the automation at various speeds to collect and analyse datasets.
 
-NOTE: A ratio between real-time and simulation-time should be available.
+NOTE: The simulation speed and duration should be optimizable.
 ```
 
 ```
-A user needs the entire household, including its appliances, to be configured into a formatted file.
+A user needs the entire household and its appliances to be configured by a loadable file.
 
-NOTE: JSON serialization is most convenient for the user's sake due to JSON's popularity/robustness/simplicity.
+NOTE: Preferrably use JSON serialization due to its popularity, robustness, and simplicity.
 ```
 
 ```
-A user needs to regulate electricity usage to maintain an energy effiecient household.
+A user needs to regulate electricity and water usage to maintain an energy efficient household.
 ```
