@@ -21,8 +21,23 @@ public class Test {
      */
     private static boolean doThread() {
 
-        TestThread thread = new TestThread();
+        TestThread thread;
+
+        /* run the thread for at normal speed for 5 seconds with 100 executions per second: */
+        thread = new TestThread(1, 5, 100);
         thread.start();
+        while (thread.isAlive()) continue;
+        System.out.println("Total thread loops attempted: " + thread.getThreadLoopsAttempted());
+        System.out.println("Total thread loops evaluated: " + thread.getThreadLoopsSucceeded());
+        System.out.println("Total thread time in seconds: " + ((System.nanoTime() - thread.getThreadFirstNanoTime()) / 1000000000));
+
+        /* run each minute as a second for 10 minutes with 1 execution per second: */
+        thread = new TestThread(60, 60 * 10, 1);
+        thread.start();
+        while (thread.isAlive()) continue;
+        System.out.println("Total thread loops attempted: " + thread.getThreadLoopsAttempted());
+        System.out.println("Total thread loops evaluated: " + thread.getThreadLoopsSucceeded());
+        System.out.println("Total thread time in seconds: " + ((System.nanoTime() - thread.getThreadFirstNanoTime()) / 1000000000));
 
         return true;
     }
@@ -34,20 +49,70 @@ public class Test {
 class TestThread extends Thread {
 
     /**
-     * Defines the number of nanoseconds in each second.
+     * Specifies the number of fake seconds per real second of the thread.
+     * For example, set to 60 so that 1 minute is accelerated to 1 second in real-time.
      */
-    final public static double NANOSECONDS_PER_SECOND = 1000000000;
+    protected long threadSpeed = 1;
+
+    public long getThreadSpeed() { return threadSpeed; }
+
+    public void setThreadSpeed(long speed) { this.threadSpeed = speed; }
 
     /**
-     * Specifies the number of seconds for each second of the thread.
-     * For example, set to 60 so that 1 minute is accelerated to 1 second.
+     * Specifies the expiration of the thread in number of fake seconds.
      */
-    protected double speed = 0.5;
+    protected long threadLimit = 1;
+
+    public long getThreadLimit() { return threadLimit; }
+
+    public void setThreadLimit(long limit) { this.threadLimit = limit; }
 
     /**
-     * Specifies the expiration of the thread limited in number of seconds.
+     * Specifies the number of loops executed per fake second.
      */
-    protected double limit = this.speed * 1;
+    protected long threadLoopsPerSecond = 1;
+
+    public long getThreadLoopsPerSecond() { return threadLoopsPerSecond; }
+
+    public void setThreadLoopsPerSecond(long loopsPerSecond) { this.threadLoopsPerSecond = loopsPerSecond; }
+
+    /**
+     * Specifies the nano-time when the automation begins running.
+     */
+    private long threadFirstNanoTime;
+
+    public long getThreadFirstNanoTime() { return threadFirstNanoTime; }
+
+    /**
+     * Specifies the next nano-time when the loop should reiterates.
+     */
+    private long threadNextNanoTime;
+
+    /**
+     * Specifies the total number of thread loops regardless if they were skipped.
+     */
+    private long threadLoopsAttempted;
+
+    public long getThreadLoopsAttempted() { return threadLoopsAttempted; }
+
+    /**
+     * Specifies the total number of thread loops that were used to execute code.
+     */
+    private long threadLoopsSucceeded;
+
+    public long getThreadLoopsSucceeded() { return threadLoopsSucceeded; }
+
+    /**
+     * Specifies the current thread loop waiting time in nano-seconds.
+     */
+    private long threadPauseNanoSeconds;
+
+    public TestThread(long speed, long limit, long loopsPerSecond) {
+
+        this.threadSpeed = speed;
+        this.threadLimit = limit;
+        this.threadLoopsPerSecond = loopsPerSecond;
+    }
 
     /**
      *
@@ -55,7 +120,9 @@ class TestThread extends Thread {
     @Override
     public synchronized void start() {
 
-        System.out.println("Attempting to start thread at speed: " + this.speed);
+        this.threadFirstNanoTime = System.nanoTime();
+
+        System.out.println("Attempting to start thread at speed: " + this.threadSpeed);
 
         super.start();
     }
@@ -65,31 +132,23 @@ class TestThread extends Thread {
      */
     public void run() {
 
-        long firstTime = System.nanoTime();
-        long startTime = firstTime;
+        this.threadNextNanoTime = this.threadFirstNanoTime;
+        this.threadLoopsAttempted = 0;
+        this.threadLoopsSucceeded = 0;
+        this.threadPauseNanoSeconds = (long) 1000000000 / this.threadSpeed / this.threadLoopsPerSecond;
 
-        long loopsAttempted = 0;
-        long loopsEvaluated = 0;
+        while (true) {
 
-        for (; ; ) {
+            this.threadLoopsAttempted++;
 
-            loopsAttempted++;
+            if (System.nanoTime() - this.threadNextNanoTime < this.threadPauseNanoSeconds) continue;
 
-            long pauseTime = System.nanoTime() - startTime;
+            /* Note that if something slows down the loop so much that it is well past this next expected time, it will eventually catch-up upon each thread loop. */
+            this.threadNextNanoTime += this.threadPauseNanoSeconds;
 
-            /* Note that at this point, we may wish to change the speed of the thread while running. */
+            /* Any code needed for threaded-execution should be placed here. */
 
-            if (pauseTime >= NANOSECONDS_PER_SECOND / this.speed) {
-                startTime += NANOSECONDS_PER_SECOND / this.speed;
-
-                /* Any code needed for threaded-execution should be placed here. */
-
-                if (++loopsEvaluated >= this.limit) break;
-            }
+            if (++this.threadLoopsSucceeded >= this.threadLimit * this.threadLoopsPerSecond) break;
         }
-
-        System.out.println("Total thread loops attempted: " + loopsAttempted);
-        System.out.println("Total thread loops evaluated: " + loopsEvaluated);
-        System.out.println("Total thread time in seconds: " + ((System.nanoTime() - firstTime) / NANOSECONDS_PER_SECOND));
     }
 }

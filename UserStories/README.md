@@ -3,12 +3,14 @@
 
 ```
 A user requires a centralised automation system to control the appliances within a household.
+
+Estimate: 4 days.
 ```
 
 ```
 A user needs to simulate the automation at various speeds to collect and analyse datasets.
 
-NOTE: The simulation speed and duration should be optimizable.
+NOTE: The simulation speed, rate, and duration, should be optimizable.
 ```
 
 ```
