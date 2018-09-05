@@ -3,7 +3,11 @@
 ```
 A user needs to monitor the electricity usage of their refrigerator.
 
+Estimate: 6 hours.
+
 NOTE: The specifications of the refrigerator will determine its electrical efficiency.
+
+DONE
 ```
 
 ```

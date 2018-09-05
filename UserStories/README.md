@@ -24,6 +24,10 @@ A user needs to regulate electricity and water usage to maintain an energy effic
 ```
 
 ```
+A user needs to set apparatuses within each venue of the household.
+```
+
+```
 A user needs the automation system to trigger events that force apparatuses to interact with each other.
 
 NOTE: Environmental conditions and household activities must be detected.
