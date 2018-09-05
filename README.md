@@ -1,4 +1,6 @@
-# Home Automation Simulator
+# Smart Home Automation Simulator (SHAS)
+A prototype for a centralized control over a domestic environment.
+![Smart Home Automation Simulator (SHAS)](res/Logo.png)
 
 ## Dependencies
  - [JSON Simple](https://code.google.com/archive/p/json-simple/):
