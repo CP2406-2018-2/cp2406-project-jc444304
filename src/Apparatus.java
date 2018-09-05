@@ -20,4 +20,52 @@ interface Apparatus {
     Status getStatus();
 }
 
-class Refrigerator implements Apparatus {}
+/**
+ * A device is any apparatus that is connected to the automation of the household.
+ */
+abstract class Device implements Apparatus, Synchronyzable, JsonDeserializable {
+
+    @Override
+    public Status getStatus() {
+        return null;
+    }
+
+    final public static String JsonMacro = "DEFAULT";
+
+    protected String name = "Un-named Device";
+
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
+
+    @Override
+    public void synchronize(long loopsPerSecond) {
+        return;
+    }
+
+    @Override
+    public JSONObject JsonSerialize() {
+
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("Name", this.name);
+
+        return jsonObject;
+    }
+
+    @Override
+    public void JsonDeserialize(JSONObject jsonObject) {
+
+        Object jsonObjectName = jsonObject.get("Name");
+        if (jsonObjectName instanceof String) {
+            this.name = (String)jsonObjectName;
+        }
+    }
+}
+
+/**
+ * 
+ */
+class Refrigerator extends Device {
+
+}
