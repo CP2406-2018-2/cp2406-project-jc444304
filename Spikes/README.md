@@ -17,3 +17,9 @@ Estimate: 3 days.
 
 NOTE: Need to decide upon which JSON format is best suited for a user.
 ```
+
+```
+A user needs generic categories that depict the behavior of each apparatus.
+
+Estimate: 6 hours.
+```
