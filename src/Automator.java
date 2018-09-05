@@ -4,6 +4,42 @@
 public class Automator extends Thread {
 
     /**
+     *
+     */
+    abstract class Venue {
+
+        protected String name = "Un-named Venue";
+
+        public String getName() { return this.name; }
+
+        public void setName(String name) { this.name = name; }
+    }
+
+    /**
+     *
+     */
+    class OutdoorVenue extends Venue {
+
+    }
+
+    /**
+     *
+     */
+    class IndoorVenue extends Venue {
+
+    }
+
+    /**
+     *
+     */
+    ArrayList<Venue> venues;
+
+    /**
+     *
+     */
+    ArrayList<Apparatus> apparatuses;
+
+    /**
      * Defines the number of nanoseconds in each second.
      */
     final public static double NANOSECONDS_PER_SECOND = 1000000000;
