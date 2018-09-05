@@ -21,23 +21,25 @@ public class Test {
      */
     private static boolean doThread() {
 
-        TestThread thread;
+        Automator automator = new Automator();
+
+        Synchronizer thread;
 
         /* run the thread for at normal speed for 5 seconds with 100 executions per second: */
-        thread = new TestThread(1, 5, 100);
+        thread = new Synchronizer(automator, 1, 5, 100);
         thread.start();
         while (thread.isAlive()) continue;
-        System.out.println("Total thread loops attempted: " + thread.getThreadLoopsAttempted());
-        System.out.println("Total thread loops evaluated: " + thread.getThreadLoopsSucceeded());
-        System.out.println("Total thread time in seconds: " + ((System.nanoTime() - thread.getThreadFirstNanoTime()) / 1000000000));
+        System.out.println("Total thread loops attempted: " + thread.getLoopsAttempted());
+        System.out.println("Total thread loops evaluated: " + thread.getLoopsSucceeded());
+        System.out.println("Total thread time in seconds: " + ((System.nanoTime() - thread.getFirstNanoTime()) / 1000000000));
 
         /* run each minute as a second for 10 minutes with 1 execution per second: */
-        thread = new TestThread(60, 60 * 10, 1);
+        thread = new Synchronizer(automator, 60, 60 * 10, 1);
         thread.start();
         while (thread.isAlive()) continue;
-        System.out.println("Total thread loops attempted: " + thread.getThreadLoopsAttempted());
-        System.out.println("Total thread loops evaluated: " + thread.getThreadLoopsSucceeded());
-        System.out.println("Total thread time in seconds: " + ((System.nanoTime() - thread.getThreadFirstNanoTime()) / 1000000000));
+        System.out.println("Total thread loops attempted: " + thread.getLoopsAttempted());
+        System.out.println("Total thread loops evaluated: " + thread.getLoopsSucceeded());
+        System.out.println("Total thread time in seconds: " + ((System.nanoTime() - thread.getFirstNanoTime()) / 1000000000));
 
         return true;
     }
