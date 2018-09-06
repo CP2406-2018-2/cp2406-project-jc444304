@@ -1,3 +1,4 @@
+// Author: Yvan Burrie
 
 /**
  *
@@ -85,19 +86,9 @@ public class Synchronizer extends Thread {
     /**
      *
      */
-    @Override
-    public synchronized void start() {
-
-        this.firstNanoTime = System.nanoTime();
-
-        super.start();
-    }
-
-    /**
-     *
-     */
     public void run() {
 
+        this.firstNanoTime = System.nanoTime();
         this.nextNanoTime = this.firstNanoTime;
         this.loopsAttempted = 0;
         this.loopsSucceeded = 0;
