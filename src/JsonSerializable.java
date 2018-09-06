@@ -1,6 +1,4 @@
-/**
- * @author Yvan Burrie
- */
+// Author: Yvan Burrie
 
 import org.json.simple.JSONObject;
 
@@ -12,7 +10,7 @@ interface JsonSerializable {
     /**
      *
      */
-    JSONObject JsonSerialize();
+    JSONObject jsonSerialize();
 }
 
 /**
@@ -21,7 +19,7 @@ interface JsonSerializable {
 interface JsonDeserializable extends JsonSerializable {
 
     /**
-     * 
+     *
      */
-    void JsonDeserialize(JSONObject jsonObject);
+    void jsonDeserialize(JSONObject jsonObject);
 }

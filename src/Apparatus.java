@@ -1,3 +1,4 @@
+import org.json.simple.JSONObject;
 
 /**
  * An apparatus is any kind of appliance or fixture that has a behavior in the household.
@@ -44,7 +45,7 @@ abstract class Device implements Apparatus, Synchronyzable, JsonDeserializable {
     }
 
     @Override
-    public JSONObject JsonSerialize() {
+    public JSONObject jsonSerialize() {
 
         JSONObject jsonObject = new JSONObject();
 
@@ -54,7 +55,7 @@ abstract class Device implements Apparatus, Synchronyzable, JsonDeserializable {
     }
 
     @Override
-    public void JsonDeserialize(JSONObject jsonObject) {
+    public void jsonDeserialize(JSONObject jsonObject) {
 
         Object jsonObjectName = jsonObject.get("Name");
         if (jsonObjectName instanceof String) {
