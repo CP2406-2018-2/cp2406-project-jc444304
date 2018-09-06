@@ -69,9 +69,6 @@ public class Trigger implements JsonDeserializable {
         }
     }
 
-    public Trigger(Automator automator) {
-    
-        this.automator = automator;
     }
 
     private ArrayList<Event> events;
@@ -95,5 +92,22 @@ public class Trigger implements JsonDeserializable {
     @Override
     public void jsonDeserialize(JSONObject jsonObject) {
 
+    }
+
+    public void synchronize(long loopsPerSecond) {
+
+        if (this.status != Status.READY) return;
+
+        //for (this.events: Event event) {
+
+        //event.sync();
+
+        //if (!event.isSuccessful()) return;
+        //}
+
+        //for (this.actions: Action actiom) {
+
+        //actiom.run();
+        //}
     }
 }
