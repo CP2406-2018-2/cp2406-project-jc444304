@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  *
  */
-public class Automator implements Synchronyzable, JsonDeserializable {
+public class Automator implements JsonDeserializable, Synchronyzable {
 
     /**
      *
@@ -40,16 +40,6 @@ public class Automator implements Synchronyzable, JsonDeserializable {
      */
     ArrayList<Trigger> triggers;
 
-    /**
-     * Points to the synchronization thread.
-     */
-    Synchronizer synchronizer;
-
-    public void synchronize(long loopsPerSecond) {
-
-        // TODO
-    }
-
     @Override
     public JSONObject jsonSerialize() {
         return null;
@@ -57,6 +47,70 @@ public class Automator implements Synchronyzable, JsonDeserializable {
 
     @Override
     public void jsonDeserialize(JSONObject jsonObject) {
+
+        Object bufferObject;
+        int index;
+
+        bufferObject = jsonObject.get("Venues");
+        if (bufferObject instanceof JSONArray) {
+            JSONArray jsonVenues = (JSONArray) bufferObject;
+            for (index = 0; index < jsonVenues.size(); index++) {
+                bufferObject = jsonVenues.get(index);
+                if (bufferObject instanceof JSONObject) {
+                    JSONObject jsonVenue = (JSONObject) bufferObject;
+                    bufferObject = jsonVenue.get("Type");
+                    if (bufferObject instanceof String) {
+                        String jsonVenueType = (String) bufferObject;
+                        Venue venue;
+                        if (jsonVenueType.toUpperCase().equals(IndoorVenue.TYPE)) {
+                            venue = new IndoorVenue(this);
+                        } else if (jsonVenueType.toUpperCase().equals(OutdoorVenue.TYPE)) {
+                            venue = new OutdoorVenue(this);
+                        }else {
+                            venue = new Venue(this);
+                        }
+                        venue.jsonDeserialize(jsonVenue);
+                        this.venues.add(venue);
+                    }
+                }
+            }
+        }
+
+        bufferObject = jsonObject.get("Devices");
+        if (bufferObject instanceof JSONArray) {
+            JSONArray jsonDevices = (JSONArray) bufferObject;
+            for (index = 0; index < jsonDevices.size(); index++) {
+                bufferObject = jsonDevices.get(index);
+                if (bufferObject instanceof JSONObject) {
+                    JSONObject jsonDevice = (JSONObject) bufferObject;
+                    bufferObject = jsonDevice.get("Type");
+                    if (bufferObject instanceof String) {
+                        String jsonDeviceType = (String) bufferObject;
+                        Device device;
+                        // TODO
+                    }
+                }
+            }
+        }
+
+        bufferObject = jsonObject.get("Triggers");
+        if (bufferObject instanceof JSONArray) {
+            JSONArray jsonTriggers = (JSONArray) bufferObject;
+            for (index = 0; index < jsonTriggers.size(); index++) {
+                bufferObject = jsonTriggers.get(index);
+                if (bufferObject instanceof JSONObject) {
+                    JSONObject jsonTrigger = (JSONObject) bufferObject;
+                    Trigger trigger = new Trigger(this);
+                    trigger.jsonDeserialize(jsonTrigger);
+                    this.triggers.add(trigger);
+                }
+            }
+        }
+    }
+
+    public void synchronize(long loopsPerSecond) {
+
+        // TODO
     }
 }
 
@@ -98,11 +152,22 @@ class Venue implements JsonDeserializable {
 
         JSONObject jsonObject = new JSONObject();
 
+        jsonObject.put("Type", TYPE);
+
+        jsonObject.put("Name", this.name);
+
         return jsonObject;
     }
 
     @Override
     public void jsonDeserialize(JSONObject jsonObject) {
+
+        Object bufferObject;
+
+        bufferObject = jsonObject.get("Name");
+        if (bufferObject instanceof String) {
+            this.name = (String) bufferObject;
+        }
     }
 }
 

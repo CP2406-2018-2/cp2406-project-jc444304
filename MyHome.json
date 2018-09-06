@@ -1,0 +1,45 @@
+{
+  "Venues": [
+    {
+      "Id": "KTC1",
+      "Type": "INDOOR",
+      "Name": "Kitchen"
+    },
+    {
+      "Id": "LVR1",
+      "Type": "INDOOR",
+      "Name": "Living Room"
+    },
+    {
+      "Id": "GRD1",
+      "Type": "OUTDOOR",
+      "Name": "Garden"
+    },
+    {
+      "Id": "GRG1",
+      "Type": "INDOOR",
+      "Name": "Garage"
+    }
+  ],
+  "Devices": [
+  ],
+  "Triggers": [
+  ],
+  "Scenarios": [
+  ],
+  "Period": [
+    {
+      "Year": 2018,
+      "Month": 1,
+      "Day": 15,
+      "Hour": 5
+    },
+    {
+      "Year": 2018,
+      "Month": 1,
+      "Day": 16,
+      "Hour": 4,
+      "Minute": 59
+    }
+  ]
+}
