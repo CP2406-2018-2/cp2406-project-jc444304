@@ -13,13 +13,25 @@ public class Automator implements JsonDeserializable, Synchronizable {
     /**
      * Points to the synchronization thread.
      */
-    private Synchronizer synchronizer;
+    protected Synchronizer synchronizer;
 
-    private long syncSpeed = 1;
+    /**
+     * Specifies the synchronization speed according to the configurations.
+     * @see Synchronizer::speed
+     */
+    protected long syncSpeed = 1;
 
-    private long syncLimit = 1;
+    /**
+     * Specifies the synchronization limit according to the configurations.
+     * @see Synchronizer::limit
+     */
+    protected long syncDuration = 1;
 
-    private long syncLoopsPerSec = 1;
+    /**
+     * Specifies the synchronization loops-per-second according to the configurations.
+     * @see Synchronizer::loopPerSecond
+     */
+    protected long syncLoopsPerSec = 1;
 
     /**
      *
@@ -65,9 +77,57 @@ public class Automator implements JsonDeserializable, Synchronizable {
      */
     protected ArrayList<Trigger> triggers = new ArrayList<>();
 
+    /**
+     * Determines whether the automation already launched.
+     */
+    private boolean launched = false;
+
+    /**
+     *
+     */
     public Automator() {
 
         this.setupSynchronizer();
+    }
+
+    /**
+     * Ensures a new synchronization session is available.
+     */
+    protected void setupSynchronizer() {
+
+        if (this.synchronizer != null && this.synchronizer.isAlive()) {
+            this.halt();
+        }
+
+        this.launched = false;
+        this.synchronizer = new Synchronizer(this);
+        this.synchronizer.setSpeed(this.syncSpeed);
+        this.synchronizer.setLimit(this.syncDuration * Synchronizer.NANO_SECS_PER_SEC);
+        this.synchronizer.setLoopsPerSecond(this.syncLoopsPerSec);
+    }
+
+    /**
+     * Starts a synchronization session.
+     */
+    public void launch() {
+
+        if (this.launched) {
+            this.setupSynchronizer();
+        }
+        this.synchronizer.start();
+        this.launched = true;
+    }
+
+    /**
+     * Stops the synchronization session if existent.
+     */
+    public void halt() {
+
+        if (this.synchronizer != null) {
+            this.synchronizer.interrupt();
+            this.synchronizer = null;
+            this.launched = false;
+        }
     }
 
     @Override
@@ -193,48 +253,35 @@ public class Automator implements JsonDeserializable, Synchronizable {
         }
     }
 
-    protected void setupSynchronizer() {
-
-        this.synchronizer = new Synchronizer(this);
-        this.synchronizer.setSpeed(this.syncSpeed);
-        this.synchronizer.setLimit(this.syncLimit);
-        this.synchronizer.setLoopsPerSecond(this.syncLoopsPerSec);
-    }
-
     /**
-     * Determines whether the automation already launched.
+     * Synchronizes everything that is synchronizable under the automator.
      */
-    private boolean launched = false;
-
-    public void launch() {
-
-        if (this.launched) {
-            this.setupSynchronizer();
-            this.launched = false;
-        }
-        this.synchronizer.start();
-        this.launched = true;
-    }
-
-    public void halt() {
-
-        if (this.synchronizer != null) {
-            this.synchronizer.interrupt();
-            this.launched = false;
-            this.synchronizer = null;
-        }
-    }
-
     public void synchronize(long loopsPerSecond) {
 
-        System.out.println("YYY");
+        /* Synchronize all venues: */
+        for (int i = 0; i < this.venues.size(); i++) {
+            Venue venue = this.venues.get(i);
+            venue.synchronize(loopsPerSecond);
+        }
+
+        /* Synchronize all venues: */
+        for (int i = 0; i < this.devices.size(); i++) {
+            Device device = this.devices.get(i);
+            device.synchronize(loopsPerSecond);
+        }
+
+        /* Synchronize all triggers: */
+        for (int i = 0; i < this.triggers.size(); i++) {
+            Trigger trigger = this.triggers.get(i);
+            trigger.synchronize(loopsPerSecond);
+        }
     }
 }
 
 /**
  *
  */
-class Venue implements JsonDeserializable, JsonSerializable {
+class Venue implements JsonDeserializable, JsonSerializable, Synchronizable {
 
     final public static String TYPE = "DEFAULT";
 
@@ -251,6 +298,12 @@ class Venue implements JsonDeserializable, JsonSerializable {
     public String getName() { return this.name; }
 
     public void setName(String name) { this.name = name; }
+
+    protected int level = 0;
+
+    public int getLevel() { return this.level; }
+
+    public void setLevel(int level) { this.level = level; }
 
     public Venue(Automator automator) {
 
@@ -271,7 +324,11 @@ class Venue implements JsonDeserializable, JsonSerializable {
 
         jsonObject.put("Type", TYPE);
 
+        jsonObject.put("Id", this.id);
+
         jsonObject.put("Name", this.name);
+
+        jsonObject.put("Level", this.level);
 
         return jsonObject;
     }
@@ -290,6 +347,17 @@ class Venue implements JsonDeserializable, JsonSerializable {
         if (bufferObject instanceof String) {
             this.name = (String) bufferObject;
         }
+
+        bufferObject = jsonObject.get("Level");
+        if (bufferObject instanceof Integer) {
+            this.level = (int) bufferObject;
+        }
+    }
+
+    @Override
+    public void synchronize(long loopsPerSecond) {
+
+        // TODO: any code for refreshing the venue in the thread must be placed here.
     }
 }
 

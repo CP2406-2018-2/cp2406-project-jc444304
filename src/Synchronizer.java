@@ -11,6 +11,11 @@ public class Synchronizer extends Thread {
     protected Synchronizable target;
 
     /**
+     * Specifies the number of nano-seconds in each second.
+     */
+    final public static long NANO_SECS_PER_SEC = 1000000000;
+
+    /**
      * Specifies the number of fake seconds per real second of the thread.
      * For example, set to 60 so that 1 minute is accelerated to 1 second in real-time.
      */
@@ -69,6 +74,15 @@ public class Synchronizer extends Thread {
      */
     private long pauseNanoSeconds;
 
+    /**
+     * Behaves like a clock in milli-seconds.
+     */
+    private long clock = 0;
+
+    public long getClock() { return this.clock; }
+
+    public void setClock(long clock) { this.clock = clock; }
+
     public Synchronizer(Synchronizable target) {
 
         this.target = target;
@@ -92,7 +106,7 @@ public class Synchronizer extends Thread {
         this.nextNanoTime = this.firstNanoTime;
         this.loopsAttempted = 0;
         this.loopsSucceeded = 0;
-        this.pauseNanoSeconds = (long) 1000000000 / this.speed / this.loopsPerSecond;
+        this.pauseNanoSeconds = NANO_SECS_PER_SEC / this.speed / this.loopsPerSecond;
 
         while (true) {
 
@@ -100,11 +114,15 @@ public class Synchronizer extends Thread {
 
             if (System.nanoTime() - this.nextNanoTime < this.pauseNanoSeconds) continue;
 
+            this.loopsSucceeded++;
+
             this.nextNanoTime += this.pauseNanoSeconds;
+
+            this.clock += 1000 / this.loopsPerSecond;
 
             this.target.synchronize(this.loopsPerSecond);
 
-            if (++this.loopsSucceeded >= this.limit * this.loopsPerSecond) break;
+            if (this.loopsSucceeded >= this.limit * this.loopsPerSecond) break;
         }
     }
 }

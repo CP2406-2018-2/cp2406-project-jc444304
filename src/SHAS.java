@@ -123,6 +123,8 @@ public class SHAS {
                         System.out.println("Currently using an automator.");
                     }
 
+                    System.out.println("Duration will last for " + automator.syncDuration + " seconds.");
+
                     long devicesCount = automator.devices.size();
                     long venuesCount = automator.venues.size();
                     System.out.println("Total of " + venuesCount + " venues containing " + devicesCount + " apparatuses:");
@@ -153,7 +155,7 @@ public class SHAS {
                         choice = input.nextLine();
 
                         if (choice.toLowerCase().startsWith("y")) {
-                            System.out.println("Launch automator...");
+                            System.out.println("Launching automator...");
                             automator.launch();
                             break;
                         }

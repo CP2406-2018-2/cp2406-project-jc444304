@@ -91,6 +91,17 @@
   "Triggers": [
   ],
   "Scenarios": [
+    {
+      "Type": "TEMPERATURE",
+      "StartDegrees": 15,
+      "StartHour": 6,
+      "EndDegrees": 20.0,
+      "EndHour": 18,
+      "PeekDegrees": 31.5,
+      "PeekHour": 12,
+      "ShadeDegrees": 10,
+      "ShadeHour": 2
+    }
   ],
   "Period": [
     {
