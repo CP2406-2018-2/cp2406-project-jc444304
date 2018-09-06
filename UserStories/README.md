@@ -34,6 +34,10 @@ NOTE: Environmental conditions and household activities must be detected.
 ```
 
 ```
+A user needs to inject scenarios into the simulator that will imitate real-life situations. (TODO).
+```
+
+```
 A user needs a CLI menu system to interact with the automator and simulator. (TODO).
 ```
 
