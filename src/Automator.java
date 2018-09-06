@@ -150,6 +150,10 @@ public class Automator implements JsonDeserializable, Synchronizable {
                                 device = new RefrigeratorDevice(venue);
                             } else if (jsonDeviceType.equals(LightDevice.TYPE)) {
                                 device = new LightDevice(venue);
+                            } else if (jsonDeviceType.equals(VentilatorDevice.TYPE)) {
+                                device = new VentilatorDevice(venue);
+                            } else if (jsonDeviceType.equals(AirConditionerDevice.TYPE)) {
+                                device = new AirConditionerDevice(venue);
                             }
                             if (device != null) {
                                 device.jsonDeserialize(jsonDevice);

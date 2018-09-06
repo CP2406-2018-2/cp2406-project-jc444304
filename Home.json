@@ -68,6 +68,18 @@
       "VenueId": "LVR",
       "Id": "LVR_LCR_LT",
       "Name": "Living-Room Left-Corner Light"
+    },
+    {
+      "Type": "AIR_CONDITIONER",
+      "VenueId": "LVR",
+      "Id": "LVR_AC",
+      "Name": "Living-Room Air-Conditioner"
+    },
+    {
+      "Type": "VENTILATOR",
+      "VenueId": "LVR",
+      "Id": "LVR_VNT",
+      "Name": "Living-Room Ventilator"
     }
   ],
   "Triggers": [

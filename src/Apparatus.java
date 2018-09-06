@@ -81,11 +81,37 @@ class LightDevice extends Device {
 /**
  *
  */
+class VentilatorDevice extends Device {
+
+    final public static String TYPE = "VENTILATOR";
+
+    public VentilatorDevice(Venue venue) {
+
+        super(venue);
+    }
+}
+
+/**
+ *
+ */
 class RefrigeratorDevice extends Device {
 
     final public static String TYPE = "REFRIGERATOR";
 
     public RefrigeratorDevice(Venue venue) {
+
+        super(venue);
+    }
+}
+
+/**
+ *
+ */
+class AirConditionerDevice extends Device {
+
+    final public static String TYPE = "AIR_CONDITIONER";
+
+    public AirConditionerDevice(Venue venue) {
 
         super(venue);
     }
