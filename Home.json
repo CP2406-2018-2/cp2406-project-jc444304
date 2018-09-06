@@ -80,6 +80,12 @@
       "VenueId": "LVR",
       "Id": "LVR_VNT",
       "Name": "Living-Room Ventilator"
+    },
+    {
+      "Type": "IRRIGATOR",
+      "VenueId": "GRD",
+      "Id": "GRD_IRR",
+      "Name": "Garden Sprinkler"
     }
   ],
   "Triggers": [
@@ -98,10 +104,12 @@
       "Month": 1,
       "Day": 16,
       "Hour": 4,
-      "Minute": 59
+      "Minute": 59,
+      "Second": 59
     }
   ],
   "Synchronizer": {
-    "Speed": 10
+    "Speed": 1,
+    "LoopsPerSecond": 10
   }
 }

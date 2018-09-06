@@ -76,27 +76,26 @@ public class Automator implements JsonDeserializable, Synchronizable {
         Object bufferObject;
         int index;
 
+        /* Load sync attributes: */
         bufferObject = jsonObject.get("Synchronizer");
         if (bufferObject instanceof JSONObject) {
             JSONObject jsonSync = (JSONObject) bufferObject;
             bufferObject = jsonSync.get("Speed");
             if (bufferObject != null) {
-                long syncSpeed = (long) bufferObject;
-                this.syncSpeed = syncSpeed;
+                this.syncSpeed = (long) bufferObject;
             }
             bufferObject = jsonSync.get("Limit");
             if (bufferObject != null) {
-                long syncLimit = (long) bufferObject;
-                this.syncLimit = syncLimit;
+                this.syncDuration = (long) bufferObject;
             }
             bufferObject = jsonSync.get("LoopsPerSecond");
             if (bufferObject != null) {
-                long syncLoopsPerSec = (long) bufferObject;
-                this.syncLoopsPerSec = syncLoopsPerSec;
+                this.syncLoopsPerSec = (long) bufferObject;
             }
             this.setupSynchronizer();
         }
 
+        /* Load all venues: */
         bufferObject = jsonObject.get("Venues");
         if (bufferObject instanceof JSONArray) {
             JSONArray jsonVenues = (JSONArray) bufferObject;
@@ -125,6 +124,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
             }
         }
 
+        /* Load all devices: */
         bufferObject = jsonObject.get("Devices");
         if (bufferObject instanceof JSONArray) {
             JSONArray jsonDevices = (JSONArray) bufferObject;
@@ -154,6 +154,18 @@ public class Automator implements JsonDeserializable, Synchronizable {
                                 device = new VentilatorDevice(venue);
                             } else if (jsonDeviceType.equals(AirConditionerDevice.TYPE)) {
                                 device = new AirConditionerDevice(venue);
+                            } else if (jsonDeviceType.equals(IrrigatorDevice.TYPE)) {
+                                device = new IrrigatorDevice(venue);
+                            } else if (jsonDeviceType.equals(DoorDevice.TYPE)) {
+                                device = new DoorDevice(venue);
+                            } else if (jsonDeviceType.equals(RollerDoorDevice.TYPE)) {
+                                device = new RollerDoorDevice(venue);
+                            } else if (jsonDeviceType.equals(OvenDevice.TYPE)) {
+                                device = new OvenDevice(venue);
+                            } else if (jsonDeviceType.equals(MotionSensorDevice.TYPE)) {
+                                device = new MotionSensorDevice(venue);
+                            } else if (jsonDeviceType.equals(VehicleDevice.TYPE)) {
+                                device = new VehicleDevice(venue);
                             }
                             if (device != null) {
                                 device.jsonDeserialize(jsonDevice);
@@ -165,6 +177,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
             }
         }
 
+        /* Load all triggers: */
         bufferObject = jsonObject.get("Triggers");
         if (bufferObject instanceof JSONArray) {
             JSONArray jsonTriggers = (JSONArray) bufferObject;
