@@ -254,3 +254,71 @@ class TemperatureScenario extends Scenario {
         // TODO: add code for temperature control here.
     }
 }
+
+/**
+ *
+ */
+class RefrigeratorScenario extends Scenario {
+
+    /**
+     * Specifies the daily number of defrosting cycles.
+     */
+    private long defrostIntervals = 2;
+
+    /**
+     * Specifies the total number of lasting minutes of defrosting cycles.
+     */
+    private double defrostHours = 0.5;
+
+    /**
+     * Specifies the amount of watts-per-hour during defrosting cycle.
+     */
+    private double defrostWatts = 280;
+
+    public double getDefrostWatts() { return this.defrostWatts; }
+
+    /**
+     * Specifies the number of daily cooling cycles.
+     */
+    private long coolingIntervals = 23;
+
+    /**
+     * Specifies the total number of hours
+     */
+    private double coolingHours = 13.5;
+
+    /**
+     * Specifies the minimum number of times the fridge door is opened daily.
+     */
+    private long doorOpenIntervalsMin = 5;
+
+    private long doorOpenIntervalsMax = 15;
+
+    /**
+     * Specifies the minimum time in seconds the fridge door lasts when opened.
+     */
+    private long doorOpenSecondsMin = 15;
+
+    private long doorOpenSecondsMax = 30;
+
+    /**
+     * Specifies the amount of watts-per-hour increase when the door is opened
+     */
+    private double doorOpenWattsIncrease = 20;
+
+    public RefrigeratorScenario(Simulator simulator) {
+
+        super(simulator);
+    }
+
+    @Override
+    public void jsonDeserialize(JSONObject jsonObject) {
+
+    }
+
+    @Override
+    public void synchronize(long loopsPerSecond) {
+
+        // TODO: add code for temperature control here.
+    }
+}
