@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -122,11 +123,18 @@ public class SHAS {
                         System.out.println("Currently using an automator.");
                     }
 
+                    long devicesCount = automator.devices.size();
                     long venuesCount = automator.venues.size();
-                    System.out.println("Total of " + venuesCount + " venues:");
+                    System.out.println("Total of " + venuesCount + " venues containing " + devicesCount + " apparatuses:");
+
                     for (index = 0; index < venuesCount; index++) {
                         Venue venue = automator.venues.get(index);
-                        System.out.println(" - Venue \"" + venue.getId() + "\" (" + venue.getName() + ").");
+                        System.out.println(" - Venue \"" + venue.getName() + "\"");
+                        ArrayList<Device> devicesInVenue = automator.getDevicesInVenue(venue);
+                        for (int i = 0; i < devicesInVenue.size(); i++) {
+                            Device device = devicesInVenue.get(i);
+                            System.out.println("   - Device \"" + device.getName() + "\"");
+                        }
                     }
                 }
 

@@ -1,26 +1,74 @@
 {
   "Venues": [
     {
-      "Id": "KTC1",
+      "Id": "KTC",
       "Type": "INDOOR",
       "Name": "Kitchen"
     },
     {
-      "Id": "LVR1",
+      "Id": "LVR",
       "Type": "INDOOR",
       "Name": "Living Room"
     },
     {
-      "Id": "GRD1",
+      "Id": "GRD",
       "Type": "OUTDOOR",
       "Name": "Garden"
     },
     {
-      "Id": "GRG1",
+      "Id": "GRG",
       "Name": "Garage"
     }
   ],
   "Devices": [
+    {
+      "Type": "REFRIGERATOR",
+      "VenueId": "KTC",
+      "Id": "KTC_REF",
+      "Name": "Kitchen Refrigerator"
+    },
+    {
+      "Type": "LIGHT",
+      "VenueId": "KTC",
+      "Id": "KTC_CK_LT",
+      "Name": "Kitchen Cooking Light"
+    },
+    {
+      "Type": "REFRIGERATOR",
+      "VenueId": "GRG",
+      "Id": "GRG_REF",
+      "Name": "Garage Refrigerator"
+    },
+    {
+      "Type": "LIGHT",
+      "VenueId": "GRG",
+      "Id": "GRG_IN_LT",
+      "Name": "Garage Inner Light"
+    },
+    {
+      "Type": "LIGHT",
+      "VenueId": "GRG",
+      "Id": "GRG_OT_LT",
+      "Name": "Garage Outer Light"
+    },
+    {
+      "Type": "LIGHT",
+      "VenueId": "LVR",
+      "Id": "LVR_MN_LT",
+      "Name": "Living-Room Main Light"
+    },
+    {
+      "Type": "LIGHT",
+      "VenueId": "LVR",
+      "Id": "LVR_RCR_LT",
+      "Name": "Living-Room Right-Corner Light"
+    },
+    {
+      "Type": "LIGHT",
+      "VenueId": "LVR",
+      "Id": "LVR_LCR_LT",
+      "Name": "Living-Room Left-Corner Light"
+    }
   ],
   "Triggers": [
   ],
@@ -42,7 +90,6 @@
     }
   ],
   "Synchronizer": {
-    "Speed": 10,
-    "Limit": 6
+    "Speed": 10
   }
 }

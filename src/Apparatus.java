@@ -1,3 +1,5 @@
+// Author: Yvan Burrie
+
 import org.json.simple.JSONObject;
 
 /**
@@ -26,32 +28,31 @@ interface Apparatus {
  */
 abstract class Device implements Apparatus, Synchronizable, JsonDeserializable {
 
-    @Override
-    public Status getStatus() {
-        return null;
-    }
+    protected Status status;
 
-    final public static String JsonMacro = "DEFAULT";
+    @Override
+    public Status getStatus() { return this.status; }
+
+    final public static String TYPE = "DEFAULT";
 
     protected String name = "Un-named Device";
 
-    public String getName() { return name; }
+    public String getName() { return this.name; }
 
     public void setName(String name) { this.name = name; }
+
+    protected Venue venue;
+
+    public Venue getVenue() { return this.venue; }
+
+    public Device(Venue venue) {
+
+        this.venue = venue;
+    }
 
     @Override
     public void synchronize(long loopsPerSecond) {
         return;
-    }
-
-    @Override
-    public JSONObject jsonSerialize() {
-
-        JSONObject jsonObject = new JSONObject();
-
-        jsonObject.put("Name", this.name);
-
-        return jsonObject;
     }
 
     @Override
@@ -67,6 +68,25 @@ abstract class Device implements Apparatus, Synchronizable, JsonDeserializable {
 /**
  * 
  */
-class Refrigerator extends Device {
+class LightDevice extends Device {
 
+    final public static String TYPE = "LIGHT";
+
+    public LightDevice(Venue venue) {
+
+        super(venue);
+    }
+}
+
+/**
+ *
+ */
+class RefrigeratorDevice extends Device {
+
+    final public static String TYPE = "REFRIGERATOR";
+
+    public RefrigeratorDevice(Venue venue) {
+
+        super(venue);
+    }
 }

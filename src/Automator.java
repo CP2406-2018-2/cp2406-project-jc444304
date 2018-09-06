@@ -44,21 +44,30 @@ public class Automator implements JsonDeserializable, Synchronizable {
     /**
      *
      */
-    protected ArrayList<Apparatus> devices;
+    protected ArrayList<Device> devices = new ArrayList<>();
+
+    /**
+     * Fetches all devices belonging to a venue.
+     */
+    public ArrayList<Device> getDevicesInVenue(Venue venue) {
+        ArrayList<Device> result = new ArrayList<>();
+        for (int i = 0; i < this.devices.size(); i++) {
+            Device device = this.devices.get(i);
+            if (device.getVenue().equals(venue)) {
+                result.add(device);
+            }
+        }
+        return result;
+    }
 
     /**
      *
      */
-    protected ArrayList<Trigger> triggers;
+    protected ArrayList<Trigger> triggers = new ArrayList<>();
 
     public Automator() {
 
         this.setupSynchronizer();
-    }
-
-    @Override
-    public JSONObject jsonSerialize() {
-        return null;
     }
 
     @Override
@@ -124,10 +133,29 @@ public class Automator implements JsonDeserializable, Synchronizable {
                 if (bufferObject instanceof JSONObject) {
                     JSONObject jsonDevice = (JSONObject) bufferObject;
                     bufferObject = jsonDevice.get("Type");
+                    String jsonDeviceType;
                     if (bufferObject instanceof String) {
-                        String jsonDeviceType = (String) bufferObject;
-                        Device device;
-                        // TODO
+                        jsonDeviceType = (String) bufferObject;
+                    } else {
+                        jsonDeviceType = Device.TYPE;
+                    }
+                    bufferObject = jsonDevice.get("VenueId");
+                    String jsonDeviceVenueId;
+                    if (bufferObject instanceof String) {
+                        jsonDeviceVenueId = (String) bufferObject;
+                        Venue venue = this.getVenueById(jsonDeviceVenueId);
+                        if (venue != null) {
+                            Device device = null;
+                            if (jsonDeviceType.equals(RefrigeratorDevice.TYPE)) {
+                                device = new RefrigeratorDevice(venue);
+                            } else if (jsonDeviceType.equals(LightDevice.TYPE)) {
+                                device = new LightDevice(venue);
+                            }
+                            if (device != null) {
+                                device.jsonDeserialize(jsonDevice);
+                                this.devices.add(device);
+                            }
+                        }
                     }
                 }
             }
@@ -189,7 +217,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
 /**
  *
  */
-class Venue implements JsonDeserializable {
+class Venue implements JsonDeserializable, JsonSerializable {
 
     final public static String TYPE = "DEFAULT";
 
