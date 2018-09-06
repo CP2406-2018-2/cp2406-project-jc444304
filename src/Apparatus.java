@@ -24,7 +24,7 @@ interface Apparatus {
 /**
  * A device is any apparatus that is connected to the automation of the household.
  */
-abstract class Device implements Apparatus, Synchronyzable, JsonDeserializable {
+abstract class Device implements Apparatus, Synchronizable, JsonDeserializable {
 
     @Override
     public Status getStatus() {

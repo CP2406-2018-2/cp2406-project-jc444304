@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  *
  */
-public class Automator implements JsonDeserializable, Synchronyzable {
+public class Automator implements JsonDeserializable, Synchronizable {
 
     /**
      *

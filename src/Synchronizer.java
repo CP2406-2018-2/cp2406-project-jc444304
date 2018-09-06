@@ -8,7 +8,7 @@ public class Synchronizer extends Thread {
     /**
      * Points to the dependency automator.
      */
-    protected Synchronyzable target;
+    protected Synchronizable target;
 
     /**
      * Specifies the number of fake seconds per real second of the thread.
@@ -69,12 +69,12 @@ public class Synchronizer extends Thread {
      */
     private long pauseNanoSeconds;
 
-    public Synchronizer(Synchronyzable target) {
+    public Synchronizer(Synchronizable target) {
 
         this.target = target;
     }
 
-    public Synchronizer(Synchronyzable target, long speed, long limit, long loopsPerSecond) {
+    public Synchronizer(Synchronizable target, long speed, long limit, long loopsPerSecond) {
 
         this.target = target;
 
@@ -112,7 +112,7 @@ public class Synchronizer extends Thread {
 /**
  *
  */
-interface Synchronyzable {
+interface Synchronizable {
 
     /**
      * @param loopsPerSecond Specifies the refresh rate of the call to run thread.
