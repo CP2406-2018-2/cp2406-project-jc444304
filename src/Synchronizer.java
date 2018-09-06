@@ -6,7 +6,7 @@
 public class Synchronizer extends Thread {
 
     /**
-     * Points to the dependency automator.
+     * Points to the dependency.
      */
     protected Synchronizable target;
 
@@ -23,7 +23,7 @@ public class Synchronizer extends Thread {
     /**
      * Specifies the expiration of the thread in number of fake seconds.
      */
-    protected long limit = 1;
+    protected long limit = 60 * 60 * 24 * 365;
 
     public long getLimit() { return this.limit; }
 

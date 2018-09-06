@@ -31,6 +31,7 @@ final public class Simulator extends Automator {
 
     public Simulator() {
 
+        super();
     }
 
     @Override

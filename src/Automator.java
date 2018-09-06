@@ -11,9 +11,20 @@ import java.util.ArrayList;
 public class Automator implements JsonDeserializable, Synchronizable {
 
     /**
+     * Points to the synchronization thread.
+     */
+    private Synchronizer synchronizer;
+
+    private long syncSpeed = 1;
+
+    private long syncLimit = 1;
+
+    private long syncLoopsPerSec = 1;
+
+    /**
      *
      */
-    ArrayList<Venue> venues;
+    protected ArrayList<Venue> venues = new ArrayList<>();
 
     /**
      * Fetches a venue by its ID.
@@ -33,12 +44,17 @@ public class Automator implements JsonDeserializable, Synchronizable {
     /**
      *
      */
-    ArrayList<Apparatus> devices;
+    protected ArrayList<Apparatus> devices;
 
     /**
      *
      */
-    ArrayList<Trigger> triggers;
+    protected ArrayList<Trigger> triggers;
+
+    public Automator() {
+
+        this.setupSynchronizer();
+    }
 
     @Override
     public JSONObject jsonSerialize() {
@@ -51,6 +67,27 @@ public class Automator implements JsonDeserializable, Synchronizable {
         Object bufferObject;
         int index;
 
+        bufferObject = jsonObject.get("Synchronizer");
+        if (bufferObject instanceof JSONObject) {
+            JSONObject jsonSync = (JSONObject) bufferObject;
+            bufferObject = jsonSync.get("Speed");
+            if (bufferObject != null) {
+                long syncSpeed = (long) bufferObject;
+                this.syncSpeed = syncSpeed;
+            }
+            bufferObject = jsonSync.get("Limit");
+            if (bufferObject != null) {
+                long syncLimit = (long) bufferObject;
+                this.syncLimit = syncLimit;
+            }
+            bufferObject = jsonSync.get("LoopsPerSecond");
+            if (bufferObject != null) {
+                long syncLoopsPerSec = (long) bufferObject;
+                this.syncLoopsPerSec = syncLoopsPerSec;
+            }
+            this.setupSynchronizer();
+        }
+
         bufferObject = jsonObject.get("Venues");
         if (bufferObject instanceof JSONArray) {
             JSONArray jsonVenues = (JSONArray) bufferObject;
@@ -59,19 +96,22 @@ public class Automator implements JsonDeserializable, Synchronizable {
                 if (bufferObject instanceof JSONObject) {
                     JSONObject jsonVenue = (JSONObject) bufferObject;
                     bufferObject = jsonVenue.get("Type");
+                    String jsonVenueType;
                     if (bufferObject instanceof String) {
-                        String jsonVenueType = (String) bufferObject;
-                        Venue venue;
-                        if (jsonVenueType.toUpperCase().equals(IndoorVenue.TYPE)) {
-                            venue = new IndoorVenue(this);
-                        } else if (jsonVenueType.toUpperCase().equals(OutdoorVenue.TYPE)) {
-                            venue = new OutdoorVenue(this);
-                        }else {
-                            venue = new Venue(this);
-                        }
-                        venue.jsonDeserialize(jsonVenue);
-                        this.venues.add(venue);
+                        jsonVenueType = (String) bufferObject;
+                    } else {
+                        jsonVenueType = Venue.TYPE;
                     }
+                    Venue venue;
+                    if (jsonVenueType.toUpperCase().equals(IndoorVenue.TYPE)) {
+                        venue = new IndoorVenue(this);
+                    } else if (jsonVenueType.toUpperCase().equals(OutdoorVenue.TYPE)) {
+                        venue = new OutdoorVenue(this);
+                    } else {
+                        venue = new Venue(this);
+                    }
+                    venue.jsonDeserialize(jsonVenue);
+                    this.venues.add(venue);
                 }
             }
         }
@@ -108,9 +148,41 @@ public class Automator implements JsonDeserializable, Synchronizable {
         }
     }
 
+    protected void setupSynchronizer() {
+
+        this.synchronizer = new Synchronizer(this);
+        this.synchronizer.setSpeed(this.syncSpeed);
+        this.synchronizer.setLimit(this.syncLimit);
+        this.synchronizer.setLoopsPerSecond(this.syncLoopsPerSec);
+    }
+
+    /**
+     * Determines whether the automation already launched.
+     */
+    private boolean launched = false;
+
+    public void launch() {
+
+        if (this.launched) {
+            this.setupSynchronizer();
+            this.launched = false;
+        }
+        this.synchronizer.start();
+        this.launched = true;
+    }
+
+    public void halt() {
+
+        if (this.synchronizer != null) {
+            this.synchronizer.interrupt();
+            this.launched = false;
+            this.synchronizer = null;
+        }
+    }
+
     public void synchronize(long loopsPerSecond) {
 
-        // TODO
+        System.out.println("YYY");
     }
 }
 
@@ -163,6 +235,11 @@ class Venue implements JsonDeserializable {
     public void jsonDeserialize(JSONObject jsonObject) {
 
         Object bufferObject;
+
+        bufferObject = jsonObject.get("Id");
+        if (bufferObject instanceof String) {
+            this.id = (String) bufferObject;
+        }
 
         bufferObject = jsonObject.get("Name");
         if (bufferObject instanceof String) {

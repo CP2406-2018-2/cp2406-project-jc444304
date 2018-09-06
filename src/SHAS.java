@@ -36,11 +36,6 @@ public class SHAS {
     private static Automator automator;
 
     /**
-     * Points to the synchronization thread.
-     */
-    private static Synchronizer synchronizer;
-
-    /**
      *
      */
     public static void main(String[] args) {
@@ -67,7 +62,7 @@ public class SHAS {
                 System.out.println(" - EXIT to quit.");
                 choice = input.nextLine();
 
-                if (choice.toLowerCase().startsWith("conf")) {
+                if (choice.toLowerCase().startsWith("con")) {
 
                     do {
                         System.out.println("Specify configuration JSON file name (or CANCEL to abort):");
@@ -117,20 +112,25 @@ public class SHAS {
                     } while (automator == null);
                 }
 
-                if (automator != null && choice.toLowerCase().startsWith("info")) {
+                if (automator != null && choice.toLowerCase().startsWith("inf")) {
+
+                    int index;
 
                     if (automator instanceof Simulator) {
-
-                        System.out.println("Currently using a simulator:");
-
+                        System.out.println("Currently using a simulator.");
                     } else {
+                        System.out.println("Currently using an automator.");
+                    }
 
-                        System.out.println("Currently using an automator:");
-
+                    long venuesCount = automator.venues.size();
+                    System.out.println("Total of " + venuesCount + " venues:");
+                    for (index = 0; index < venuesCount; index++) {
+                        Venue venue = automator.venues.get(index);
+                        System.out.println(" - Venue \"" + venue.getId() + "\" (" + venue.getName() + ").");
                     }
                 }
 
-                if (choice.toLowerCase().startsWith("start")) {
+                if (choice.toLowerCase().startsWith("st")) {
 
                     if (automator == null) {
                         System.out.println("Automator not created yet. Please configure first.");
@@ -144,18 +144,18 @@ public class SHAS {
                         System.out.println(" - NO to cancel.");
                         choice = input.nextLine();
 
-                        if (choice.toLowerCase().startsWith("yes")) {
-                            synchronizer = new Synchronizer(automator);
-                            synchronizer.start();
+                        if (choice.toLowerCase().startsWith("y")) {
+                            System.out.println("Launch automator...");
+                            automator.launch();
+                            break;
                         }
-
-                        if (choice.toLowerCase().startsWith("no")) {
+                        if (choice.toLowerCase().startsWith("n")) {
                             break;
                         }
                     }
                 }
 
-                if (choice.toLowerCase().startsWith("exit")) {
+                if (choice.toLowerCase().startsWith("ex")) {
 
                     for (; ; ) {
 
@@ -168,7 +168,6 @@ public class SHAS {
                         if (choice.toLowerCase().startsWith("y")) {
                             break;
                         }
-
                         if (choice.toLowerCase().startsWith("n")) {
                             continue MAIN_MENU;
                         }

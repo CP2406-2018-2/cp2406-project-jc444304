@@ -17,7 +17,6 @@
     },
     {
       "Id": "GRG1",
-      "Type": "INDOOR",
       "Name": "Garage"
     }
   ],
@@ -41,5 +40,9 @@
       "Hour": 4,
       "Minute": 59
     }
-  ]
+  ],
+  "Synchronizer": {
+    "Speed": 10,
+    "Limit": 6
+  }
 }
