@@ -140,7 +140,7 @@
     }
   ],
   "Synchronizer": {
-    "Speed": 1,
-    "LoopsPerSecond": 10
+    "Speed": 3600,
+    "LoopsPerSecond": 1
   }
 }
