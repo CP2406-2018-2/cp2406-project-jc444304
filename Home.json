@@ -101,6 +101,21 @@
       "PeekHour": 12,
       "ShadeDegrees": 10,
       "ShadeHour": 2
+    },
+    {
+      "Type": "REFRIGERATOR",
+      "DeviceId": "KTC_REF",
+      "DefrostIntervals": 2,
+      "DefrostHours": 0.5,
+      "DefrostWatts": 28,
+      "CoolingIntervals": 23,
+      "CoolingHours": 13.5,
+      "CoolingWatts": 3.5,
+      "DoorOpenIntervalsMin": 5,
+      "DoorOpenIntervalsMax": 15,
+      "DoorOpenSecondsMin": 15,
+      "DoorOpenSecondsMax": 30,
+      "DoorOpenWattsIncrease": 2
     }
   ],
   "Period": [

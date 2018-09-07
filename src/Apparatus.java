@@ -98,6 +98,12 @@ abstract class Device implements Apparatus, Synchronizable, JsonDeserializable {
 
     public void setName(String name) { this.name = name; }
 
+    protected String id;
+
+    public String getId() { return this.id; }
+
+    public void setId(String id) { this.id = id; }
+
     protected Venue venue;
 
     public Venue getVenue() { return this.venue; }

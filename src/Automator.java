@@ -59,12 +59,24 @@ public class Automator implements JsonDeserializable, Synchronizable {
     protected ArrayList<Device> devices = new ArrayList<>();
 
     /**
+     * Fetches a device by its ID.
+     * @return Returns null if the device could not be fetched.
+     */
+    public Device getDeviceById(String deviceId) {
+        for (Device device : this.devices) {
+            if (device.getId().equals(deviceId)) {
+                return device;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Fetches all devices belonging to a venue.
      */
     public ArrayList<Device> getDevicesInVenue(Venue venue) {
         ArrayList<Device> result = new ArrayList<>();
-        for (int i = 0; i < this.devices.size(); i++) {
-            Device device = this.devices.get(i);
+        for (Device device : this.devices) {
             if (device.getVenue().equals(venue)) {
                 result.add(device);
             }
@@ -141,15 +153,15 @@ public class Automator implements JsonDeserializable, Synchronizable {
         if (bufferObject instanceof JSONObject) {
             JSONObject jsonSync = (JSONObject) bufferObject;
             bufferObject = jsonSync.get("Speed");
-            if (bufferObject != null) {
+            if (bufferObject instanceof Long) {
                 this.syncSpeed = (long) bufferObject;
             }
             bufferObject = jsonSync.get("Limit");
-            if (bufferObject != null) {
+            if (bufferObject instanceof Long) {
                 this.syncDuration = (long) bufferObject;
             }
             bufferObject = jsonSync.get("LoopsPerSecond");
-            if (bufferObject != null) {
+            if (bufferObject instanceof Long) {
                 this.syncLoopsPerSec = (long) bufferObject;
             }
             this.setupSynchronizer();

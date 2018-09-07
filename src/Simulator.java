@@ -6,7 +6,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * The simulation system hijacks the automation system to alter its state of reality.
@@ -16,12 +16,12 @@ public class Simulator extends Automator {
     /**
      * Specifies the starting-date.
      */
-    protected Date date1 = new Date(2000, 1, 1, 5, 0);;
+    protected GregorianCalendar date1 = new GregorianCalendar(2000, 1, 1, 5, 0);;
 
     /**
      * Specifies the ending-date.
      */
-    protected Date date2 = new Date(2000, 1, 2, 4, 59, 59);
+    protected GregorianCalendar date2 = new GregorianCalendar(2000, 1, 2, 4, 59, 59);
 
     /**
      *
@@ -41,9 +41,9 @@ public class Simulator extends Automator {
     protected void setupDuration() {
 
         /* Differ the seconds from both dates: */
-        this.syncDuration = this.date2.getTime() - this.date1.getTime();
+        this.syncDuration = this.date2.compareTo(this.date1);
 
-        this.synchronizer.setClock(this.date1.getTime());
+        this.synchronizer.setClock(this.date1.getTimeInMillis());
     }
 
     @Override
@@ -95,6 +95,7 @@ public class Simulator extends Automator {
                         scenario = new TemperatureScenario(this);
                     }
                     if (scenario != null) {
+                        scenario.jsonDeserialize(jsonScenario);
                         this.scenarios.add(scenario);
                     }
                 }
@@ -102,7 +103,7 @@ public class Simulator extends Automator {
         }
     }
 
-    public Date jsonDeserializeDate(JSONObject jsonObject) {
+    public GregorianCalendar jsonDeserializeDate(JSONObject jsonObject) {
 
         Object bufferObject;
 
@@ -142,7 +143,7 @@ public class Simulator extends Automator {
             dateSec = (long) bufferObject;
         }
 
-        return new Date((int) dateYear, (int) dateMonth, (int) dateDay, (int) dateHour, (int) dateMin, (int) dateSec);
+        return new GregorianCalendar((int) dateYear, (int) dateMonth, (int) dateDay, (int) dateHour, (int) dateMin, (int) dateSec);
     }
 
     @Override
@@ -261,50 +262,60 @@ class TemperatureScenario extends Scenario {
 class RefrigeratorScenario extends Scenario {
 
     /**
+     * Points to the target refrigeration device which this scenario imposes on.
+     */
+    protected RefrigeratorDevice device;
+
+    /**
      * Specifies the daily number of defrosting cycles.
      */
-    private long defrostIntervals = 2;
+    private long defrostIntervals = 0;
 
     /**
      * Specifies the total number of lasting minutes of defrosting cycles.
      */
-    private double defrostHours = 0.5;
+    private double defrostHours = 0;
 
     /**
-     * Specifies the amount of watts-per-hour during defrosting cycle.
+     * Specifies the amount of watts-per-hour during defrosting cycle for each cubic metre.
      */
-    private double defrostWatts = 280;
+    private double defrostWatts = 0;
 
     public double getDefrostWatts() { return this.defrostWatts; }
 
     /**
      * Specifies the number of daily cooling cycles.
      */
-    private long coolingIntervals = 23;
+    private long coolingIntervals = 0;
 
     /**
      * Specifies the total number of hours
      */
-    private double coolingHours = 13.5;
+    private double coolingHours = 0;
+
+    /**
+     * Specifies the watts-per-hour usage on cooling cycle for each cubic metre.
+     */
+    private double coolingWatts = 0;
 
     /**
      * Specifies the minimum number of times the fridge door is opened daily.
      */
-    private long doorOpenIntervalsMin = 5;
+    private long doorOpenIntervalsMin = 0;
 
-    private long doorOpenIntervalsMax = 15;
+    private long doorOpenIntervalsMax = 0;
 
     /**
      * Specifies the minimum time in seconds the fridge door lasts when opened.
      */
-    private long doorOpenSecondsMin = 15;
+    private long doorOpenSecondsMin = 0;
 
-    private long doorOpenSecondsMax = 30;
+    private long doorOpenSecondsMax = 0;
 
     /**
-     * Specifies the amount of watts-per-hour increase when the door is opened
+     * Specifies the amount of watts-per-hour increase when the door is opened for each cubic metre.
      */
-    private double doorOpenWattsIncrease = 20;
+    private double doorOpenWattsIncrease = 0;
 
     public RefrigeratorScenario(Simulator simulator) {
 
@@ -314,6 +325,75 @@ class RefrigeratorScenario extends Scenario {
     @Override
     public void jsonDeserialize(JSONObject jsonObject) {
 
+        Object bufferObject;
+
+        Device device;
+        bufferObject = jsonObject.get("DeviceId");
+        if (bufferObject instanceof String) {
+            String deviceId = (String) bufferObject;
+            device = this.simulator.getDeviceById(deviceId);
+            if (device instanceof RefrigeratorDevice) {
+                this.device = (RefrigeratorDevice) device;
+            }
+        }
+        if (this.device == null) {
+            this.device = new RefrigeratorDevice(new Venue(this.simulator));
+        }
+
+        bufferObject = jsonObject.get("DefrostIntervals");
+        if (bufferObject instanceof Number) {
+            this.defrostIntervals = (long) bufferObject;
+        }
+
+        bufferObject = jsonObject.get("DefrostHours");
+        if (bufferObject instanceof Number) {
+            this.defrostHours = (double) bufferObject;
+        }
+
+        bufferObject = jsonObject.get("DefrostWatts");
+        if (bufferObject instanceof Number) {
+            this.defrostWatts = (double) bufferObject;
+        }
+
+        bufferObject = jsonObject.get("CoolingIntervals");
+        if (bufferObject instanceof Number) {
+            this.coolingIntervals = (long) bufferObject;
+        }
+
+        bufferObject = jsonObject.get("CoolingHours");
+        if (bufferObject instanceof Number) {
+            this.coolingHours = (double) bufferObject;
+        }
+
+        bufferObject = jsonObject.get("CoolingWatts");
+        if (bufferObject instanceof Number) {
+            this.coolingWatts = (double) bufferObject;
+        }
+
+        bufferObject = jsonObject.get("DoorOpenIntervalsMin");
+        if (bufferObject instanceof Number) {
+            this.doorOpenIntervalsMin = (long) bufferObject;
+        }
+
+        bufferObject = jsonObject.get("DoorOpenIntervalsMax");
+        if (bufferObject instanceof Number) {
+            this.doorOpenIntervalsMax = (long) bufferObject;
+        }
+
+        bufferObject = jsonObject.get("DoorOpenSecondsMin");
+        if (bufferObject instanceof Number) {
+            this.doorOpenSecondsMin = (long) bufferObject;
+        }
+
+        bufferObject = jsonObject.get("DoorOpenSecondsMax");
+        if (bufferObject instanceof Number) {
+            this.doorOpenSecondsMax = (long) bufferObject;
+        }
+
+        bufferObject = jsonObject.get("DoorOpenWattsIncrease");
+        if (bufferObject instanceof Number) {
+            this.doorOpenWattsIncrease = (double) bufferObject;
+        }
     }
 
     @Override
