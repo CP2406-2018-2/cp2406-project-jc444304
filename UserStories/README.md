@@ -8,27 +8,27 @@ Estimate: 4 days.
 ```
 
 ```
-A user needs to simulate the automation at various speeds to collect and analyse datasets.
+A user needs to simulate the automation at various speeds to collect and analyse datasets. (DONE).
 
 NOTE: The simulation speed, rate, and duration, should be optimizable.
 ```
 
 ```
-A user needs the entire household and its appliances to be configured by a loadable file.
+A user needs the entire household and its appliances to be configured by a loadable file. (DONE).
 
 NOTE: Preferrably use JSON serialization due to its popularity, robustness, and simplicity.
 ```
 
 ```
-A user needs to regulate electricity and water usage to maintain an energy efficient household.
+A user needs to regulate electricity and water usage to maintain an energy efficient household. (TODO).
 ```
 
 ```
-A user needs to set apparatuses within each venue of the household. (TODO).
+A user needs to set apparatuses within each venue of the household. (TEST).
 ```
 
 ```
-A user needs the automation to trigger events that force interaction between devices.
+A user needs the automation to trigger events that force interaction between devices. (TODO).
 
 NOTE: Environmental conditions and household activities must be detected.
 ```
@@ -38,9 +38,11 @@ A user needs to inject scenarios into the simulator that will imitate real-life 
 ```
 
 ```
-A user needs a CLI menu system to interact with the automator and simulator. (TODO).
+A user needs a CLI menu system to interact with the automator and simulator. (TEST).
 ```
 
 ```
 A user needs to sandbox Python scripting into each appliance for maximum customization. (TODO).
+
+Estimate: 1 day.
 ```
