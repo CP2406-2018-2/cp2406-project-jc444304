@@ -25,7 +25,8 @@
       "Type": "REFRIGERATOR",
       "VenueId": "KTC",
       "Id": "KTC_REF",
-      "Name": "Kitchen Refrigerator"
+      "Name": "Kitchen Refrigerator",
+      "Capacity": 100
     },
     {
       "Type": "LIGHT",
@@ -93,6 +94,8 @@
   "Scenarios": [
     {
       "Type": "TEMPERATURE",
+      "Name": "Household Temperature",
+      "Description": "Imitation of the indoor temperature affected by external conditions.",
       "StartDegrees": 15,
       "StartHour": 6,
       "EndDegrees": 20.0,
@@ -104,6 +107,8 @@
     },
     {
       "Type": "REFRIGERATOR",
+      "Name": "Kitchen Refrigerator",
+      "Description": "Imitation of the kitchen fridge.",
       "DeviceId": "KTC_REF",
       "DefrostIntervals": 2,
       "DefrostHours": 0.5,

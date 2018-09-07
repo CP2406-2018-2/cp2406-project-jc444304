@@ -93,6 +93,8 @@ public class Simulator extends Automator {
                     Scenario scenario = null;
                     if (scenarioType.equals(TemperatureScenario.TYPE)) {
                         scenario = new TemperatureScenario(this);
+                    } else if (scenarioType.equals(RefrigeratorScenario.TYPE)) {
+                        scenario = new RefrigeratorScenario(this);
                     }
                     if (scenario != null) {
                         scenario.jsonDeserialize(jsonScenario);
@@ -169,9 +171,33 @@ abstract class Scenario implements JsonDeserializable, Synchronizable {
 
     final public static String TYPE = "DEFAULT";
 
+    protected String name = "Un-named Scenario";
+
+    public String getName() { return name; }
+
+    protected String description = "No description provided";
+
+    public String getDescription() { return description; }
+
     public Scenario(Simulator simulator) {
 
         this.simulator = simulator;
+    }
+
+    @Override
+    public void jsonDeserialize(JSONObject jsonObject) {
+
+        Object bufferObject;
+
+        bufferObject = jsonObject.get("Name");
+        if (bufferObject instanceof String) {
+            this.name = (String) bufferObject;
+        }
+
+        bufferObject = jsonObject.get("Description");
+        if (bufferObject instanceof String) {
+            this.description = (String) bufferObject;
+        }
     }
 }
 
@@ -205,6 +231,8 @@ class TemperatureScenario extends Scenario {
 
     @Override
     public void jsonDeserialize(JSONObject jsonObject) {
+
+        super.jsonDeserialize(jsonObject);
 
         Object bufferObject;
 
@@ -260,6 +288,8 @@ class TemperatureScenario extends Scenario {
  *
  */
 class RefrigeratorScenario extends Scenario {
+
+    final public static String TYPE = "REFRIGERATOR";
 
     /**
      * Points to the target refrigeration device which this scenario imposes on.
@@ -325,6 +355,8 @@ class RefrigeratorScenario extends Scenario {
     @Override
     public void jsonDeserialize(JSONObject jsonObject) {
 
+        super.jsonDeserialize(jsonObject);
+
         Object bufferObject;
 
         Device device;
@@ -346,12 +378,12 @@ class RefrigeratorScenario extends Scenario {
         }
 
         bufferObject = jsonObject.get("DefrostHours");
-        if (bufferObject instanceof Number) {
+        if (bufferObject instanceof Double) {
             this.defrostHours = (double) bufferObject;
         }
 
         bufferObject = jsonObject.get("DefrostWatts");
-        if (bufferObject instanceof Number) {
+        if (bufferObject instanceof Double) {
             this.defrostWatts = (double) bufferObject;
         }
 
@@ -361,12 +393,12 @@ class RefrigeratorScenario extends Scenario {
         }
 
         bufferObject = jsonObject.get("CoolingHours");
-        if (bufferObject instanceof Number) {
+        if (bufferObject instanceof Double) {
             this.coolingHours = (double) bufferObject;
         }
 
         bufferObject = jsonObject.get("CoolingWatts");
-        if (bufferObject instanceof Number) {
+        if (bufferObject instanceof Double) {
             this.coolingWatts = (double) bufferObject;
         }
 
@@ -391,14 +423,23 @@ class RefrigeratorScenario extends Scenario {
         }
 
         bufferObject = jsonObject.get("DoorOpenWattsIncrease");
-        if (bufferObject instanceof Number) {
+        if (bufferObject instanceof Double) {
             this.doorOpenWattsIncrease = (double) bufferObject;
         }
     }
 
+    protected long coolingCyclesCount = 0;
+    protected long coolingCyclesHours = 0;
+    protected long coolingCycleTimeStart = 0;
+    protected long coolingCycleTimeEnd = 0;
+
     @Override
     public void synchronize(long loopsPerSecond) {
 
-        // TODO: add code for temperature control here.
+        /*
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTimeInMillis(this.simulator.synchronizer.getClock());
+        System.out.println(calendar);
+        */
     }
 }

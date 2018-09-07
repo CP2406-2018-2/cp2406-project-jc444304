@@ -75,7 +75,7 @@ public class Synchronizer extends Thread {
     private long pauseNanoSeconds;
 
     /**
-     * Behaves like a clock in milli-seconds.
+     * Behaves like a clock but in milli-seconds.
      */
     private long clock = 0;
 
