@@ -31,3 +31,11 @@ Estimate 6 hours.
 ```
 Find out the most suitable algorithm for simulating temperature change throughout the day. (TEST).
 ```
+
+```
+Research and test on embedding a Python interpretor that allows injection of user-scripted callbacks. (TODO).
+
+Estimate 3 days.
+
+NOTE: A Python simulation class must be dynmically created to bind the internal simulator class.
+```
