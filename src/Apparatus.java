@@ -7,20 +7,6 @@ import org.json.simple.JSONObject;
  */
 interface Apparatus {
 
-    /**
-     * 
-     */
-    enum Status {
-        MALFUNCTIONING,
-        UNRESPONSIVE,
-        WORKING,
-    }
-
-    /**
-     * Determines whether the apparatus is currently working.
-     * If not, then it may be malfunctioning, accidentally unplugged or uncharged, etc.
-     */
-    Status getStatus();
 }
 
 /**
@@ -85,9 +71,21 @@ interface GradientApparatus extends OpaqueApparatus {
  */
 abstract class Device implements Apparatus, Synchronizable, JsonDeserializable {
 
+    /**
+     *
+     */
+    enum Status {
+        MALFUNCTIONING,
+        UNRESPONSIVE,
+        WORKING,
+    }
+
+    /**
+     * Determines whether the apparatus is currently working.
+     * If not, then it may be malfunctioning, accidentally unplugged or uncharged, etc.
+     */
     protected Status status;
 
-    @Override
     public Status getStatus() { return this.status; }
 
     final public static String TYPE = "DEFAULT";
@@ -98,7 +96,7 @@ abstract class Device implements Apparatus, Synchronizable, JsonDeserializable {
 
     public void setName(String name) { this.name = name; }
 
-    protected String id;
+    protected String id = "ID";
 
     public String getId() { return this.id; }
 
@@ -188,17 +186,30 @@ class RefrigeratorDevice extends Device {
     final public static String TYPE = "REFRIGERATOR";
 
     /**
-     * Specifies the number of litres this refrigerator holds.
+     * Specifies the number of cubic litres this refrigerator holds.
      */
-    double capacity = 0.0;
+    long capacity = 0;
 
-    public double getCapacity() { return capacity; }
+    public long getCapacity() { return this.capacity; }
 
-    public void setCapacity(double capacity) { this.capacity = capacity; }
+    public void setCapacity(long capacity) { this.capacity = capacity; }
 
     public RefrigeratorDevice(Venue venue) {
 
         super(venue);
+    }
+
+    @Override
+    public void jsonDeserialize(JSONObject jsonObject) {
+
+        super.jsonDeserialize(jsonObject);
+
+        Object bufferObject;
+
+        bufferObject = jsonObject.get("Capacity");
+        if (bufferObject instanceof Number) {
+            this.capacity = (long) bufferObject;
+        }
     }
 }
 
