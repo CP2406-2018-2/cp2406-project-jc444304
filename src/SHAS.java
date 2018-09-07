@@ -14,7 +14,7 @@ import java.util.Scanner;
 /**
  *
  */
-public class SHAS {
+public abstract class SHAS {
 
     /**
      * Determines whether the application will print debugging information, assertion tests, and dump log files.
@@ -73,19 +73,7 @@ public class SHAS {
                             continue MAIN_MENU;
                         }
 
-                        String jsonFileContent;
-                        try {
-                            jsonFileContent = fetchFileContent(jsonFileName);
-                        } catch (IOException exception) {
-                            System.out.println("Unable to process JSON file!");
-                            continue;
-                        }
-                        try {
-                            parseConfigurations(jsonFileContent);
-                        } catch (ParseException exception) {
-                            System.out.println("Unable to process JSON configurations!");
-                            continue;
-                        }
+                        if (parseJsonFileForConfigs(jsonFileName)) continue;
 
                         System.out.println("JSON file parsed successfully.");
 
@@ -138,12 +126,42 @@ public class SHAS {
                             System.out.println("   - Device \"" + device.getName() + "\"");
                         }
                     }
+
+                    if (automator instanceof Simulator) {
+
+                        System.out.println("Total of " + ((Simulator) automator).scenarios.size() + " scenarios:");
+                        for (Scenario scenario : ((Simulator) automator).scenarios) {
+                            System.out.println(" - " + scenario.getName() + ": " + scenario.getDescription());
+                        }
+                    }
                 }
 
                 if (choice.toLowerCase().startsWith("st")) {
 
                     if (automator == null) {
-                        System.out.println("Automator not created yet. Please configure first.");
+
+                        for (; ; ) {
+
+                            System.out.println("Quickly start the simulator without configuring?");
+                            System.out.println(" - YES to continue.");
+                            System.out.println(" - NO to cancel.");
+                            choice = input.nextLine();
+
+                            if (choice.toLowerCase().startsWith("y")) {
+
+                                parseJsonFileForConfigs("Home.json");
+                                automator = new Simulator();
+                                System.out.println("Simulator successfully created.");
+                                automator.jsonDeserialize(configurations);
+                                System.out.println("Configurations successfully loaded.");
+                                System.out.println("Launching automator...");
+                                automator.launch();
+                                break;
+                            }
+                            if (choice.toLowerCase().startsWith("n")) {
+                                break;
+                            }
+                        }
                         continue MAIN_MENU;
                     }
 
@@ -186,6 +204,25 @@ public class SHAS {
                 }
             }
         }
+    }
+
+    private static boolean parseJsonFileForConfigs(String jsonFileName) {
+
+        String jsonFileContent;
+        try {
+            jsonFileContent = fetchFileContent(jsonFileName);
+        } catch (IOException exception) {
+            System.out.println("Unable to process JSON file!");
+            return true;
+        }
+        try {
+            parseConfigurations(jsonFileContent);
+        } catch (ParseException exception) {
+            System.out.println("Unable to process JSON configurations!");
+            return true;
+        }
+
+        return false;
     }
 
     private static JSONObject configurations;
