@@ -27,3 +27,7 @@ Research and test a trigger system acting as logical-gateways to unleash actions
 
 Estimate 6 hours.
 ```
+
+```
+Find out the most suitable algorithm for simulating temperature change throughout the day. (TEST).
+```
