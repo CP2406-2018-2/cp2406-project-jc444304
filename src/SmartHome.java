@@ -14,7 +14,7 @@ import java.util.Scanner;
 /**
  *
  */
-public abstract class SHAS {
+public abstract class SmartHome {
 
     /**
      * Determines whether the application will print debugging information, assertion tests, and dump log files.
@@ -41,7 +41,7 @@ public abstract class SHAS {
      */
     public static void main(String[] args) {
 
-        if (SHAS.GRAPHIC_INTERFACE) {
+        if (SmartHome.GRAPHIC_INTERFACE) {
             System.out.println("Graphical interface not available in this version.");
         } else {
 
@@ -52,7 +52,7 @@ public abstract class SHAS {
             MAIN_MENU:
             while (true) {
 
-                System.out.println("Welcome to the Smart Home Automation Simulator (SHAS):");
+                System.out.println("Welcome to the Smart Home Automation Simulator:");
                 if (automator == null) {
                     System.out.println(" - CONFIG to configure a new automator.");
                 } else {
