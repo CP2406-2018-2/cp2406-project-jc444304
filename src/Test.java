@@ -1,3 +1,7 @@
+// Author: Yvan Burrie
+
+import SmartHome.*;
+
 /**
  *
  */

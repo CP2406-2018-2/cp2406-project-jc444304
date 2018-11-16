@@ -11,10 +11,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import SmartHome.*;
+
 /**
  *
  */
-public abstract class SmartHome {
+public abstract class Home {
 
     /**
      * Determines whether the application will print debugging information, assertion tests, and dump log files.

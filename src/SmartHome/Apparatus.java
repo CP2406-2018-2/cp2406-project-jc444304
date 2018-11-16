@@ -1,5 +1,7 @@
 // Author: Yvan Burrie
 
+package SmartHome;
+
 import org.json.simple.JSONObject;
 
 /**

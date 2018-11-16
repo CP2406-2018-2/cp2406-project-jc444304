@@ -1,8 +1,8 @@
 // Author: Yvan Burrie
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+package SmartHome;
 
+import org.json.simple.*;
 import java.util.ArrayList;
 
 /**

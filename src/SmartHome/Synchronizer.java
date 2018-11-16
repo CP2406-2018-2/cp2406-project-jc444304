@@ -1,12 +1,14 @@
 // Author: Yvan Burrie
 
+package SmartHome;
+
 /**
  *
  */
 public class Synchronizer extends Thread {
 
     /**
-     * Points to the dependency.
+     * Points to the whatever class is dependent of the Synchronizable interface.
      */
     protected Synchronizable target;
 
@@ -21,34 +23,48 @@ public class Synchronizer extends Thread {
      */
     protected long speed = 1;
 
-    public long getSpeed() { return this.speed; }
+    public long getSpeed() {
+        return this.speed;
+    }
 
-    public void setSpeed(long speed) { this.speed = speed; }
+    public void setSpeed(long speed) {
+        this.speed = speed;
+    }
 
     /**
      * Specifies the expiration of the thread in number of fake seconds.
      */
     protected long limit = 60 * 60 * 24 * 365;
 
-    public long getLimit() { return this.limit; }
+    public long getLimit() {
+        return this.limit;
+    }
 
-    public void setLimit(long limit) { this.limit = limit; }
+    public void setLimit(long limit) {
+        this.limit = limit;
+    }
 
     /**
      * Specifies the number of loops executed per fake second.
      */
     protected long loopsPerSecond = 1;
 
-    public long getLoopsPerSecond() { return this.loopsPerSecond; }
+    public long getLoopsPerSecond() {
+        return this.loopsPerSecond;
+    }
 
-    public void setLoopsPerSecond(long loopsPerSecond) { this.loopsPerSecond = loopsPerSecond; }
+    public void setLoopsPerSecond(long loopsPerSecond) {
+        this.loopsPerSecond = loopsPerSecond;
+    }
 
     /**
      * Specifies the nano-time when the automation begins running.
      */
     private long firstNanoTime;
 
-    public long getFirstNanoTime() { return this.firstNanoTime; }
+    public long getFirstNanoTime() {
+        return this.firstNanoTime;
+    }
 
     /**
      * Specifies the next nano-time when the loop should reiterates.
@@ -60,14 +76,18 @@ public class Synchronizer extends Thread {
      */
     private long loopsAttempted;
 
-    public long getLoopsAttempted() { return this.loopsAttempted; }
+    public long getLoopsAttempted() {
+        return this.loopsAttempted;
+    }
 
     /**
      * Specifies the total number of thread loops that were used to execute code.
      */
     private long loopsSucceeded;
 
-    public long getLoopsSucceeded() { return this.loopsSucceeded; }
+    public long getLoopsSucceeded() {
+        return this.loopsSucceeded;
+    }
 
     /**
      * Specifies the current thread loop waiting time in nano-seconds.
@@ -79,9 +99,13 @@ public class Synchronizer extends Thread {
      */
     private long clock = 0;
 
-    public long getClock() { return this.clock; }
+    public long getClock() {
+        return this.clock;
+    }
 
-    public void setClock(long clock) { this.clock = clock; }
+    public void setClock(long clock) {
+        this.clock = clock;
+    }
 
     public Synchronizer(Synchronizable target) {
 
