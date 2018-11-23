@@ -2,8 +2,8 @@
 
 package SmartHome;
 
-import org.json.simple.*;
 import java.util.ArrayList;
+import org.json.simple.*;
 
 /**
  *
@@ -148,7 +148,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
         Object bufferObject;
         int index;
 
-        /* Load sync attributes: */
+        /* Load Synchronizer: */
         bufferObject = jsonObject.get("Synchronizer");
         if (bufferObject instanceof JSONObject) {
             JSONObject jsonSync = (JSONObject) bufferObject;
@@ -188,7 +188,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
                     } else if (jsonVenueType.toUpperCase().equals(OutdoorVenue.TYPE)) {
                         venue = new OutdoorVenue(this);
                     } else {
-                        venue = new Venue(this);
+                        throw new JsonDeserializeError(this, "Could not load venue into automator because of invalid type detected!");
                     }
                     venue.jsonDeserialize(jsonVenue);
                     this.venues.add(venue);
@@ -218,31 +218,42 @@ public class Automator implements JsonDeserializable, Synchronizable {
                         Venue venue = this.getVenueById(jsonDeviceVenueId);
                         if (venue != null) {
                             Device device = null;
-                            if (jsonDeviceType.equals(RefrigeratorDevice.TYPE)) {
-                                device = new RefrigeratorDevice(venue);
-                            } else if (jsonDeviceType.equals(LightDevice.TYPE)) {
-                                device = new LightDevice(venue);
-                            } else if (jsonDeviceType.equals(VentilatorDevice.TYPE)) {
-                                device = new VentilatorDevice(venue);
-                            } else if (jsonDeviceType.equals(AirConditionerDevice.TYPE)) {
-                                device = new AirConditionerDevice(venue);
-                            } else if (jsonDeviceType.equals(IrrigatorDevice.TYPE)) {
-                                device = new IrrigatorDevice(venue);
-                            } else if (jsonDeviceType.equals(DoorDevice.TYPE)) {
-                                device = new DoorDevice(venue);
-                            } else if (jsonDeviceType.equals(RollerDoorDevice.TYPE)) {
-                                device = new RollerDoorDevice(venue);
-                            } else if (jsonDeviceType.equals(OvenDevice.TYPE)) {
-                                device = new OvenDevice(venue);
-                            } else if (jsonDeviceType.equals(MotionSensorDevice.TYPE)) {
-                                device = new MotionSensorDevice(venue);
-                            } else if (jsonDeviceType.equals(VehicleDevice.TYPE)) {
-                                device = new VehicleDevice(venue);
+                            switch (jsonDeviceType) {
+                                case RefrigeratorDevice.TYPE:
+                                    device = new RefrigeratorDevice(venue);
+                                    break;
+                                case LightDevice.TYPE:
+                                    device = new LightDevice(venue);
+                                    break;
+                                case VentilatorDevice.TYPE:
+                                    device = new VentilatorDevice(venue);
+                                    break;
+                                case AirConditionerDevice.TYPE:
+                                    device = new AirConditionerDevice(venue);
+                                    break;
+                                case IrrigatorDevice.TYPE:
+                                    device = new IrrigatorDevice(venue);
+                                    break;
+                                case DoorDevice.TYPE:
+                                    device = new DoorDevice(venue);
+                                    break;
+                                case RollerDoorDevice.TYPE:
+                                    device = new RollerDoorDevice(venue);
+                                    break;
+                                case OvenDevice.TYPE:
+                                    device = new OvenDevice(venue);
+                                    break;
+                                case MotionSensorDevice.TYPE:
+                                    device = new MotionSensorDevice(venue);
+                                    break;
+                                case VehicleDevice.TYPE:
+                                    device = new VehicleDevice(venue);
+                                    break;
+                                default:
+                                    throw new JsonDeserializeError(this, "Could not load device into automator because of invalid type!");
                             }
-                            if (device != null) {
-                                device.jsonDeserialize(jsonDevice);
-                                this.devices.add(device);
-                            }
+                            device.jsonDeserialize(jsonDevice);
+                            this.devices.add(device);
                         }
                     }
                 }
@@ -271,20 +282,17 @@ public class Automator implements JsonDeserializable, Synchronizable {
     public void synchronize(long loopsPerSecond) {
 
         /* Synchronize all venues: */
-        for (int i = 0; i < this.venues.size(); i++) {
-            Venue venue = this.venues.get(i);
+        for (Venue venue : this.venues) {
             venue.synchronize(loopsPerSecond);
         }
 
-        /* Synchronize all venues: */
-        for (int i = 0; i < this.devices.size(); i++) {
-            Device device = this.devices.get(i);
+        /* Synchronize all devices: */
+        for (Device device : this.devices) {
             device.synchronize(loopsPerSecond);
         }
 
         /* Synchronize all triggers: */
-        for (int i = 0; i < this.triggers.size(); i++) {
-            Trigger trigger = this.triggers.get(i);
+        for (Trigger trigger : this.triggers) {
             trigger.synchronize(loopsPerSecond);
         }
     }
