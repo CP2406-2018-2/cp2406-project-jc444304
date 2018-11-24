@@ -13,40 +13,38 @@ public class Automator implements JsonDeserializable, Synchronizable {
     /**
      * Points to the synchronization thread.
      */
-    protected Synchronizer synchronizer;
+    Synchronizer synchronizer;
 
     /**
      * Specifies the synchronization speed according to the configurations.
      * @see Synchronizer::speed
      */
-    protected long syncSpeed = 1;
+    long syncSpeed = 1;
 
     /**
      * Specifies the synchronization limit according to the configurations.
      * @see Synchronizer::limit
      */
-    protected long syncDuration = 1;
+    long syncDuration = 1;
 
     /**
      * Specifies the synchronization loops-per-second according to the configurations.
      * @see Synchronizer::loopPerSecond
      */
-    protected long syncLoopsPerSec = 1;
+    long syncLoopsPerSec = 1;
 
     /**
      *
      */
-    protected ArrayList<Venue> venues = new ArrayList<>();
+    private ArrayList<Venue> venues = new ArrayList<>();
 
     /**
      * Fetches a venue by its ID.
      * @return Returns null if the venue could not be fetched.
      */
     public Venue getVenueById(String id) {
-        for (int i = 0; i < this.venues.size(); i++) {
-            Venue venue = this.venues.get(i);
-            String venueId = venue.getId();
-            if (venueId.equals(id)) {
+        for (Venue venue : venues) {
+            if (venue.id != null && venue.id.equals(id)) {
                 return venue;
             }
         }
@@ -56,15 +54,15 @@ public class Automator implements JsonDeserializable, Synchronizable {
     /**
      *
      */
-    protected ArrayList<Device> devices = new ArrayList<>();
+    private ArrayList<Device> devices = new ArrayList<>();
 
     /**
      * Fetches a device by its ID.
      * @return Returns null if the device could not be fetched.
      */
     public Device getDeviceById(String deviceId) {
-        for (Device device : this.devices) {
-            if (device.getId().equals(deviceId)) {
+        for (Device device : devices) {
+            if (device.id != null && device.id.equals(deviceId)) {
                 return device;
             }
         }
@@ -76,8 +74,8 @@ public class Automator implements JsonDeserializable, Synchronizable {
      */
     public ArrayList<Device> getDevicesInVenue(Venue venue) {
         ArrayList<Device> result = new ArrayList<>();
-        for (Device device : this.devices) {
-            if (device.getVenue().equals(venue)) {
+        for (Device device : devices) {
+            if (device.venue.equals(venue)) {
                 result.add(device);
             }
         }
@@ -142,6 +140,9 @@ public class Automator implements JsonDeserializable, Synchronizable {
         }
     }
 
+    /**
+     * Loads everything that must be initialized with the configuration file.
+     */
     @Override
     public void jsonDeserialize(JSONObject jsonObject) {
 
@@ -281,18 +282,18 @@ public class Automator implements JsonDeserializable, Synchronizable {
      */
     public void synchronize(long loopsPerSecond) {
 
-        /* Synchronize all venues: */
-        for (Venue venue : this.venues) {
+        /* Synchronize venues: */
+        for (Venue venue : venues) {
             venue.synchronize(loopsPerSecond);
         }
 
-        /* Synchronize all devices: */
-        for (Device device : this.devices) {
+        /* Synchronize devices: */
+        for (Device device : devices) {
             device.synchronize(loopsPerSecond);
         }
 
-        /* Synchronize all triggers: */
-        for (Trigger trigger : this.triggers) {
+        /* Synchronize triggers: */
+        for (Trigger trigger : triggers) {
             trigger.synchronize(loopsPerSecond);
         }
     }
