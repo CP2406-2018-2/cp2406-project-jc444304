@@ -306,6 +306,38 @@ public class Automator implements JsonDeserializable, Synchronizable {
     public JSONObject jsonSerialize(){
 
         JSONObject automatorBuffer = new JSONObject();
+
+        /* Save synchronizer: */
+        JSONObject synchronizerBuffer = new JSONObject();
+        synchronizerBuffer.put("Speed", syncSpeed);
+        synchronizerBuffer.put("Limit", syncSpeed);
+        synchronizerBuffer.put("LoopsPerSecond", syncLoopsPerSec);
+        automatorBuffer.put("Synchronizer", synchronizerBuffer);
+
+        /* Save venues: */
+        JSONArray venuesBuffer = new JSONArray();
+        for (Venue venue : venues) {
+            JSONObject venueBuffer = venue.jsonSerialize();
+            venuesBuffer.add(venueBuffer);
+        }
+        automatorBuffer.put("Venues", venuesBuffer);
+
+        /* Save devices: */
+        JSONArray devicesBuffer = new JSONArray();
+        for (Device device : devices) {
+            JSONObject deviceBuffer = device.jsonSerialize();
+            devicesBuffer.add(deviceBuffer);
+        }
+        automatorBuffer.put("Devices", devicesBuffer);
+
+        /* Save devices: */
+        JSONArray triggersBuffer = new JSONArray();
+        for (Trigger trigger : triggers) {
+            JSONObject triggerBuffer = trigger.jsonSerialize();
+            triggersBuffer.add(triggerBuffer);
+        }
+        automatorBuffer.put("Triggers", triggersBuffer);
+
         return automatorBuffer;
     }
 
