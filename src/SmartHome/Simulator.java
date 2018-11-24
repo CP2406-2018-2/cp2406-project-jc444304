@@ -1,14 +1,11 @@
-/*
- * @author Yvan Burrie
- */
+// Author: Yvan Burrie
 
 package SmartHome;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+
+import org.json.simple.*;
 
 /**
  * The simulation system hijacks the automation system to alter its state of reality.
@@ -155,8 +152,8 @@ public class Simulator extends Automator {
 
         super.synchronize(loopsPerSecond);
 
-        /* Synchronize all scenarios: */
-        for (Scenario scenario : this.scenarios) {
+        /* Synchronize scenarios: */
+        for (Scenario scenario : scenarios) {
             scenario.synchronize(loopsPerSecond);
         }
     }
