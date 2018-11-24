@@ -85,7 +85,20 @@ public class Automator implements JsonDeserializable, Synchronizable {
     /**
      *
      */
-    protected ArrayList<Trigger> triggers = new ArrayList<>();
+    private ArrayList<Trigger> triggers = new ArrayList<>();
+
+    /**
+     * Fetches a trigger by its ID.
+     * @return Returns null if the trigger could not be fetched.
+     */
+    public Trigger getTriggerById(String triggerId) {
+        for (Trigger trigger : triggers) {
+            if (trigger.id.equals(triggerId)) {
+                return trigger;
+            }
+        }
+        return null;
+    }
 
     /**
      * Determines whether the automation already launched.
