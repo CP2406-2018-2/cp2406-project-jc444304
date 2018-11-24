@@ -107,15 +107,14 @@ public class Synchronizer extends Thread {
         this.clock = clock;
     }
 
-    public Synchronizer(Synchronizable target) {
+    boolean paused = false;
 
+    public Synchronizer(Synchronizable target) {
         this.target = target;
     }
 
     public Synchronizer(Synchronizable target, long speed, long limit, long loopsPerSecond) {
-
         this.target = target;
-
         this.speed = speed;
         this.limit = limit;
         this.loopsPerSecond = loopsPerSecond;
@@ -126,27 +125,28 @@ public class Synchronizer extends Thread {
      */
     public void run() {
 
-        this.firstNanoTime = System.nanoTime();
-        this.nextNanoTime = this.firstNanoTime;
-        this.loopsAttempted = 0;
-        this.loopsSucceeded = 0;
-        this.pauseNanoSeconds = NANO_SECS_PER_SEC / this.speed / this.loopsPerSecond;
+        firstNanoTime = nextNanoTime = System.nanoTime();
+        loopsAttempted = 0;
+        loopsSucceeded = 0;
+        pauseNanoSeconds = NANO_SECS_PER_SEC / speed / loopsPerSecond;
 
         while (true) {
 
-            this.loopsAttempted++;
+            if (paused) continue;
 
-            if (System.nanoTime() - this.nextNanoTime < this.pauseNanoSeconds) continue;
+            loopsAttempted++;
 
-            this.loopsSucceeded++;
+            if (System.nanoTime() - nextNanoTime < pauseNanoSeconds) continue;
 
-            this.nextNanoTime += this.pauseNanoSeconds;
+            loopsSucceeded++;
 
-            this.clock += 1000 / this.loopsPerSecond;
+            nextNanoTime += pauseNanoSeconds;
 
-            this.target.synchronize(this.loopsPerSecond);
+            clock += 1000 / loopsPerSecond;
 
-            if (this.loopsSucceeded >= this.limit * this.loopsPerSecond) break;
+            target.synchronize(loopsPerSecond);
+
+            if (loopsSucceeded >= limit * loopsPerSecond) break;
         }
     }
 }
