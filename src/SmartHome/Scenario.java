@@ -2,51 +2,37 @@
 
 package SmartHome;
 
-import org.json.simple.JSONObject;
-
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import org.json.simple.*;
 
 /**
  * A scenario consists of customizable consequences injected into the automation system.
  */
-public abstract class Scenario implements JsonDeserializable, Synchronizable {
+abstract class Scenario extends Asset {
 
-    protected Simulator simulator;
 
-    public Simulator getSimulator() { return simulator; }
 
-    final public static String TYPE = "DEFAULT";
-
-    protected String name = "Un-named Scenario";
-
-    public String getName() { return name; }
-
-    protected String description = "No description provided";
-
-    public String getDescription() { return description; }
-
-    protected GregorianCalendar calendar = new GregorianCalendar();
-
-    public Scenario(Simulator simulator) {
-
-        this.simulator = simulator;
+    Scenario(Simulator simulator) {
+        super(simulator);
     }
 
     @Override
-    public void jsonDeserialize(JSONObject jsonObject) {
+    public void jsonDeserialize(JSONObject scenarioBuffer) {
 
-        Object bufferObject;
+        super.jsonDeserialize(scenarioBuffer);
 
-        bufferObject = jsonObject.get("Name");
-        if (bufferObject instanceof String) {
-            this.name = (String) bufferObject;
-        }
 
-        bufferObject = jsonObject.get("Description");
-        if (bufferObject instanceof String) {
-            this.description = (String) bufferObject;
-        }
+    }
+
+    @Override
+    public JSONObject jsonSerialize() {
+
+        JSONObject scenarioBuffer = super.jsonSerialize();
+
+
+        return scenarioBuffer;
     }
 }
 
@@ -73,7 +59,7 @@ class TemperatureScenario extends Scenario {
 
     private long shadeHour;
 
-    public TemperatureScenario(Simulator simulator) {
+    TemperatureScenario(Simulator simulator) {
 
         super(simulator);
     }
@@ -126,6 +112,7 @@ class TemperatureScenario extends Scenario {
         }
     }
 
+    @Override
     @Override
     public void synchronize(long loopsPerSecond) {
 
@@ -222,7 +209,7 @@ class RefrigeratorScenario extends Scenario {
      */
     private double doorOpenWattsIncrease = 0;
 
-    public RefrigeratorScenario(Simulator simulator) {
+    RefrigeratorScenario(Simulator simulator) {
 
         super(simulator);
     }
@@ -301,6 +288,11 @@ class RefrigeratorScenario extends Scenario {
         if (bufferObject instanceof Double) {
             this.doorOpenWattsIncrease = (double) bufferObject;
         }
+    }
+
+    @Override
+    public JSONObject jsonSerialize() {
+        return null;
     }
 
     protected long coolingCyclesCount = 0;

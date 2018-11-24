@@ -7,72 +7,30 @@ import org.json.simple.*;
 /**
  *
  */
-abstract class Venue implements JsonDeserializable, Synchronizable {
+abstract class Venue extends Asset {
 
-    final public static String TYPE = "DEFAULT";
-
-    protected Automator automator;
-
-    protected String id = "ID";
-
-    public String getId() {
-        return this.id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    protected String name = "Un-named Venue";
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    protected String description;
-
-    public Venue(Automator automator) {
-
-        this.automator = automator;
-    }
-
-    public Venue(Automator automator, String id) {
-
-        this.automator = automator;
-
-        this.id = id;
+    Venue(Automator automator) {
+        super(automator);
     }
 
     @Override
     public JSONObject jsonSerialize() {
 
-        JSONObject jsonVenue = new JSONObject();
+        JSONObject venueBuffer = super.jsonSerialize();
 
-        jsonVenue.put("Type", TYPE);
-        jsonVenue.put("Id", this.id);
-        jsonVenue.put("Name", this.name);
+        // TODO
 
-        return jsonVenue;
+        return venueBuffer;
     }
 
     @Override
-    public void jsonDeserialize(JSONObject jsonObject) {
+    public void jsonDeserialize(JSONObject venueBuffer) {
 
-        Object bufferObject;
+        super.jsonDeserialize(venueBuffer);
 
-        bufferObject = jsonObject.get("Id");
-        if (bufferObject instanceof String) {
-            this.id = (String) bufferObject;
-        }
+        Object objectBuffer = new JSONObject();
 
-        bufferObject = jsonObject.get("Name");
-        if (bufferObject instanceof String) {
-            this.name = (String) bufferObject;
-        }
+        // TODO
     }
 
     @Override
@@ -87,9 +45,9 @@ abstract class Venue implements JsonDeserializable, Synchronizable {
  */
 class OutdoorVenue extends Venue {
 
-    final public static String TYPE = "OUTDOOR";
+    final static String TYPE = "OUTDOOR";
 
-    public OutdoorVenue(Automator automator) {
+    OutdoorVenue(Automator automator) {
 
         super(automator);
     }
@@ -100,9 +58,9 @@ class OutdoorVenue extends Venue {
  */
 class IndoorVenue extends Venue {
 
-    final public static String TYPE = "INDOOR";
+    final static String TYPE = "INDOOR";
 
-    public IndoorVenue(Automator automator) {
+    IndoorVenue(Automator automator) {
 
         super(automator);
     }
