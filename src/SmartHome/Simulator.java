@@ -34,6 +34,14 @@ public class Simulator extends Automator {
         this.setupDuration();
     }
 
+    public Simulator(JSONObject jsonObject) {
+
+        super();
+
+        this.setupDuration();
+        this.jsonDeserializeDate(jsonObject);
+    }
+
     /**
      * Checks if the start and end dates are correct.
      */
@@ -46,59 +54,61 @@ public class Simulator extends Automator {
     }
 
     @Override
-    public void jsonDeserialize(JSONObject jsonObject) {
+    public void jsonDeserialize(JSONObject simulatorBuffer) {
 
-        super.jsonDeserialize(jsonObject);
+        super.jsonDeserialize(simulatorBuffer);
 
-        Object bufferObject;
+        Object objectBuffer;
 
-        bufferObject = jsonObject.get("Period");
-        if (bufferObject instanceof JSONArray) {
-            JSONArray jsonPeriod = (JSONArray) bufferObject;
+        objectBuffer = simulatorBuffer.get("Period");
+        if (objectBuffer instanceof JSONArray) {
+            JSONArray jsonPeriod = (JSONArray) objectBuffer;
             JSONObject jsonDate;
             /* Load start-time: */
             if (jsonPeriod.size() >= 1) {
-                bufferObject = jsonPeriod.get(0);
-                if (bufferObject instanceof JSONObject) {
-                    jsonDate = (JSONObject) bufferObject;
+                objectBuffer = jsonPeriod.get(0);
+                if (objectBuffer instanceof JSONObject) {
+                    jsonDate = (JSONObject) objectBuffer;
                     this.date1 = this.jsonDeserializeDate(jsonDate);
                 }
             }
             /* Load end-time: */
             if (jsonPeriod.size() >= 2) {
-                bufferObject = jsonPeriod.get(1);
-                if (bufferObject instanceof JSONObject) {
-                    jsonDate = (JSONObject) bufferObject;
+                objectBuffer = jsonPeriod.get(1);
+                if (objectBuffer instanceof JSONObject) {
+                    jsonDate = (JSONObject) objectBuffer;
                     this.date2 = this.jsonDeserializeDate(jsonDate);
                 }
             }
         }
         this.setupDuration();
 
-        bufferObject = jsonObject.get("Scenarios");
-        if (bufferObject instanceof JSONArray) {
-            JSONArray jsonScenarios = (JSONArray) bufferObject;
-            for (Object jsonScenario1 : jsonScenarios) {
-                bufferObject = jsonScenario1;
-                if (bufferObject instanceof JSONObject) {
-                    JSONObject jsonScenario = (JSONObject) bufferObject;
-                    bufferObject = jsonScenario.get("Type");
-                    String scenarioType;
-                    if (bufferObject instanceof String) {
-                        scenarioType = (String) bufferObject;
+        /* Load Scenarios: */
+        objectBuffer = simulatorBuffer.get("Scenarios");
+        if (objectBuffer instanceof JSONArray) {
+            JSONArray jsonScenarios = (JSONArray) objectBuffer;
+            for (Object elementBuffer : jsonScenarios) {
+                if (elementBuffer instanceof JSONObject) {
+                    JSONObject scenarioBuffer = (JSONObject) elementBuffer;
+                    objectBuffer = scenarioBuffer.get("Type");
+                    String scenarioTypeBuffer;
+                    if (objectBuffer instanceof String) {
+                        scenarioTypeBuffer = (String) objectBuffer;
                     } else {
-                        scenarioType = Scenario.TYPE;
+                        throw new JsonDeserializeError(this, "Invalid Scenario-Type!");
                     }
-                    Scenario scenario = null;
-                    if (scenarioType.equals(TemperatureScenario.TYPE)) {
-                        scenario = new TemperatureScenario(this);
-                    } else if (scenarioType.equals(RefrigeratorScenario.TYPE)) {
-                        scenario = new RefrigeratorScenario(this);
+                    Scenario scenario;
+                    switch (scenarioTypeBuffer.toUpperCase()) {
+                        case TemperatureScenario.TYPE:
+                            scenario = new TemperatureScenario(this, scenarioBuffer);
+                            break;
+                        case RefrigeratorScenario.TYPE:
+                            scenario = new RefrigeratorScenario(this, scenarioBuffer);
+                            break;
+                        default:
+                            throw new JsonDeserializeError(this, "Unrecognized Scenario-Type!");
                     }
-                    if (scenario != null) {
-                        scenario.jsonDeserialize(jsonScenario);
-                        this.scenarios.add(scenario);
-                    }
+                    this.scenarios.add(scenario);
                 }
             }
         }

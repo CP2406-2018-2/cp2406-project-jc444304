@@ -48,8 +48,12 @@ class OutdoorVenue extends Venue {
     final static String TYPE = "OUTDOOR";
 
     OutdoorVenue(Automator automator) {
-
         super(automator);
+    }
+
+    OutdoorVenue(Automator automator, JSONObject venueBuffer) {
+        super(automator);
+        jsonDeserialize(venueBuffer);
     }
 }
 
@@ -61,7 +65,11 @@ class IndoorVenue extends Venue {
     final static String TYPE = "INDOOR";
 
     IndoorVenue(Automator automator) {
-
         super(automator);
+    }
+
+    IndoorVenue(Automator automator, JSONObject venueBuffer) {
+        super(automator);
+        jsonDeserialize(venueBuffer);
     }
 }

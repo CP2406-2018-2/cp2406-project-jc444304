@@ -112,8 +112,86 @@ class Trigger extends Asset {
         final public static String TYPE = "DEFAULT";
     }
 
+    /**
+     * This action will force a trigger to be either READY or ASLEEP.
+     */
+    class ChangeTriggerStatusAction extends Action {
 
+        final public static String TYPE = "CHANGE_TRIGGER_STATUS";
 
+        protected String targetTriggerId = "";
+
+        protected boolean targetTriggerState = false;
+
+        @Override
+        public void synchronize(long loopsPerSec) {
+
+            Trigger targetTrigger = automator.getTriggerById(this.targetTriggerId);
+
+            if (targetTrigger != null) {
+                targetTrigger.status = this.targetTriggerState ? Status.READY : Status.ASLEEP;
+            }
+        }
+
+        @Override
+        public JSONObject jsonSerialize() {
+
+            JSONObject jsonObject = new JSONObject();
+
+            jsonObject.put("TargetTriggerId", this.targetTriggerId);
+            jsonObject.put("TargetTriggerState", this.targetTriggerState);
+
+            return jsonObject;
+        }
+
+        @Override
+        public void jsonDeserialize(JSONObject jsonObject) {
+
+            Object bufferObject;
+
+            bufferObject = jsonObject.get("TargetTriggerId");
+            if (bufferObject instanceof String) {
+                this.targetTriggerId = (String) bufferObject;
+            }
+
+            bufferObject = jsonObject.get("TargetTriggerState");
+            if (bufferObject instanceof Boolean) {
+                this.targetTriggerState = (boolean) bufferObject;
+            }
+        }
+    }
+
+    /**
+     * This action will force a trigger to be either READY or ASLEEP.
+     */
+    class OpaqueApparatusAction extends Action {
+
+        final public static String TYPE = "OPAQUE_APPARATUS";
+
+        protected String deviceTag = "TRG";
+
+        protected boolean state = false;
+
+        @Override
+        public void synchronize(long loopsPerSec) {
+
+            Device targetDevice = automator.getDeviceById(this.deviceTag);
+
+            if (targetDevice instanceof OpaqueApparatus) {
+                OpaqueApparatus opaqueApparatus = (OpaqueApparatus) targetDevice;
+                //opaqueApparatus.setState(this.);
+            }
+        }
+
+        @Override
+        public JSONObject jsonSerialize() {
+            return null;
+        }
+
+        @Override
+        public void jsonDeserialize(JSONObject jsonObject) {
+
+        }
     }
 
     private ArrayList<Action> actions = new ArrayList<>();
@@ -171,5 +249,10 @@ class Trigger extends Asset {
 
     Trigger(Automator automator) {
         super(automator);
+    }
+
+    Trigger(Automator automator, JSONObject triggerBuffer) {
+        super(automator);
+        jsonDeserialize(triggerBuffer);
     }
 }

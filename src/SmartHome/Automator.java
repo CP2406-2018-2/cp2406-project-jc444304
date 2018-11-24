@@ -101,6 +101,16 @@ public class Automator implements JsonDeserializable, Synchronizable {
     }
 
     /**
+     *
+     */
+    public Automator(JSONObject jsonObject) {
+
+        this.setupSynchronizer();
+
+        this.jsonDeserialize(jsonObject);
+    }
+
+    /**
      * Ensures a new synchronization session is available.
      */
     protected void setupSynchronizer() {
@@ -144,137 +154,146 @@ public class Automator implements JsonDeserializable, Synchronizable {
      * Loads everything that must be initialized with the configuration file.
      */
     @Override
-    public void jsonDeserialize(JSONObject jsonObject) {
+    public void jsonDeserialize(JSONObject automatorBuffer) {
 
-        Object bufferObject;
-        int index;
+        Object objectBuffer;
 
         /* Load Synchronizer: */
-        bufferObject = jsonObject.get("Synchronizer");
-        if (bufferObject instanceof JSONObject) {
-            JSONObject jsonSync = (JSONObject) bufferObject;
-            bufferObject = jsonSync.get("Speed");
-            if (bufferObject instanceof Long) {
-                this.syncSpeed = (long) bufferObject;
+        objectBuffer = automatorBuffer.get("Synchronizer");
+        if (objectBuffer instanceof JSONObject) {
+            JSONObject synchronizerBuffer = (JSONObject) objectBuffer;
+            objectBuffer = synchronizerBuffer.get("Speed");
+            if (objectBuffer instanceof Long) {
+                syncSpeed = (long) objectBuffer;
             }
-            bufferObject = jsonSync.get("Limit");
-            if (bufferObject instanceof Long) {
-                this.syncDuration = (long) bufferObject;
+            objectBuffer = synchronizerBuffer.get("Limit");
+            if (objectBuffer instanceof Long) {
+                syncDuration = (long) objectBuffer;
             }
-            bufferObject = jsonSync.get("LoopsPerSecond");
-            if (bufferObject instanceof Long) {
-                this.syncLoopsPerSec = (long) bufferObject;
+            objectBuffer = synchronizerBuffer.get("LoopsPerSecond");
+            if (objectBuffer instanceof Long) {
+                syncLoopsPerSec = (long) objectBuffer;
             }
             this.setupSynchronizer();
         }
 
-        /* Load all venues: */
-        bufferObject = jsonObject.get("Venues");
-        if (bufferObject instanceof JSONArray) {
-            JSONArray jsonVenues = (JSONArray) bufferObject;
-            for (index = 0; index < jsonVenues.size(); index++) {
-                bufferObject = jsonVenues.get(index);
-                if (bufferObject instanceof JSONObject) {
-                    JSONObject jsonVenue = (JSONObject) bufferObject;
-                    bufferObject = jsonVenue.get("Type");
-                    String jsonVenueType;
-                    if (bufferObject instanceof String) {
-                        jsonVenueType = (String) bufferObject;
+        /* Load venues: */
+        objectBuffer = automatorBuffer.get("Venues");
+        if (objectBuffer instanceof JSONArray) {
+            JSONArray venuesBuffer = (JSONArray) objectBuffer;
+            for (Object elementBuffer : venuesBuffer) {
+                objectBuffer = elementBuffer;
+                if (objectBuffer instanceof JSONObject) {
+                    JSONObject venueBuffer = (JSONObject) objectBuffer;
+                    objectBuffer = venueBuffer.get("Type");
+                    String venueTypeBuffer;
+                    if (objectBuffer instanceof String) {
+                        venueTypeBuffer = (String) objectBuffer;
                     } else {
-                        jsonVenueType = Venue.TYPE;
+                        throw new JsonDeserializeError(this, "Invalid Venue-Type!");
                     }
                     Venue venue;
-                    if (jsonVenueType.toUpperCase().equals(IndoorVenue.TYPE)) {
-                        venue = new IndoorVenue(this);
-                    } else if (jsonVenueType.toUpperCase().equals(OutdoorVenue.TYPE)) {
-                        venue = new OutdoorVenue(this);
-                    } else {
-                        throw new JsonDeserializeError(this, "Could not load venue into automator because of invalid type detected!");
+                    switch (venueTypeBuffer.toUpperCase()) {
+                        case IndoorVenue.TYPE:
+                            venue = new IndoorVenue(this, venueBuffer);
+                            break;
+                        case OutdoorVenue.TYPE:
+                            venue = new OutdoorVenue(this, venueBuffer);
+                            break;
+                        default:
+                            throw new JsonDeserializeError(this, "Could not load venue into automator because of invalid type detected!");
                     }
-                    venue.jsonDeserialize(jsonVenue);
-                    this.venues.add(venue);
+                    venues.add(venue);
                 }
             }
         }
 
-        /* Load all devices: */
-        bufferObject = jsonObject.get("Devices");
-        if (bufferObject instanceof JSONArray) {
-            JSONArray jsonDevices = (JSONArray) bufferObject;
-            for (index = 0; index < jsonDevices.size(); index++) {
-                bufferObject = jsonDevices.get(index);
-                if (bufferObject instanceof JSONObject) {
-                    JSONObject jsonDevice = (JSONObject) bufferObject;
-                    bufferObject = jsonDevice.get("Type");
-                    String jsonDeviceType;
-                    if (bufferObject instanceof String) {
-                        jsonDeviceType = (String) bufferObject;
+        /* Load devices: */
+        objectBuffer = automatorBuffer.get("Devices");
+        if (objectBuffer instanceof JSONArray) {
+            JSONArray devicesBuffer = (JSONArray) objectBuffer;
+            for (Object elementBuffer : devicesBuffer) {
+                objectBuffer = elementBuffer;
+                if (objectBuffer instanceof JSONObject) {
+                    JSONObject deviceBuffer = (JSONObject) objectBuffer;
+                    objectBuffer = deviceBuffer.get("Type");
+                    String deviceTypeBuffer;
+                    if (objectBuffer instanceof String) {
+                        deviceTypeBuffer = (String) objectBuffer;
                     } else {
-                        jsonDeviceType = Device.TYPE;
+                        throw new JsonDeserializeError(this, "Invalid Device-Type specified.");
                     }
-                    bufferObject = jsonDevice.get("VenueId");
-                    String jsonDeviceVenueId;
-                    if (bufferObject instanceof String) {
-                        jsonDeviceVenueId = (String) bufferObject;
-                        Venue venue = this.getVenueById(jsonDeviceVenueId);
-                        if (venue != null) {
-                            Device device = null;
-                            switch (jsonDeviceType) {
-                                case RefrigeratorDevice.TYPE:
-                                    device = new RefrigeratorDevice(venue);
-                                    break;
-                                case LightDevice.TYPE:
-                                    device = new LightDevice(venue);
-                                    break;
-                                case VentilatorDevice.TYPE:
-                                    device = new VentilatorDevice(venue);
-                                    break;
-                                case AirConditionerDevice.TYPE:
-                                    device = new AirConditionerDevice(venue);
-                                    break;
-                                case IrrigatorDevice.TYPE:
-                                    device = new IrrigatorDevice(venue);
-                                    break;
-                                case DoorDevice.TYPE:
-                                    device = new DoorDevice(venue);
-                                    break;
-                                case RollerDoorDevice.TYPE:
-                                    device = new RollerDoorDevice(venue);
-                                    break;
-                                case OvenDevice.TYPE:
-                                    device = new OvenDevice(venue);
-                                    break;
-                                case MotionSensorDevice.TYPE:
-                                    device = new MotionSensorDevice(venue);
-                                    break;
-                                case VehicleDevice.TYPE:
-                                    device = new VehicleDevice(venue);
-                                    break;
-                                default:
-                                    throw new JsonDeserializeError(this, "Could not load device into automator because of invalid type!");
-                            }
-                            device.jsonDeserialize(jsonDevice);
-                            this.devices.add(device);
+                    objectBuffer = deviceBuffer.get("VenueId");
+                    String venueIdBuffer;
+                    if (objectBuffer instanceof String) {
+                        venueIdBuffer = (String) objectBuffer;
+                        Venue venue = this.getVenueById(venueIdBuffer);
+                        if (venue == null) {
+                            throw new JsonDeserializeError(this, "Device has Venue with ID that does not correspond.");
                         }
+                        Device device;
+                        switch (deviceTypeBuffer.toUpperCase()) {
+                            case RefrigeratorDevice.TYPE:
+                                device = new RefrigeratorDevice(this, venue, deviceBuffer);
+                                break;
+                            case LightDevice.TYPE:
+                                device = new LightDevice(this, venue, deviceBuffer);
+                                break;
+                            case VentilatorDevice.TYPE:
+                                device = new VentilatorDevice(this, venue, deviceBuffer);
+                                break;
+                            case AirConditionerDevice.TYPE:
+                                device = new AirConditionerDevice(this, venue, deviceBuffer);
+                                break;
+                            case IrrigatorDevice.TYPE:
+                                device = new IrrigatorDevice(this, venue, deviceBuffer);
+                                break;
+                            case DoorDevice.TYPE:
+                                device = new DoorDevice(this, venue, deviceBuffer);
+                                break;
+                            case RollerDoorDevice.TYPE:
+                                device = new RollerDoorDevice(this, venue, deviceBuffer);
+                                break;
+                            case OvenDevice.TYPE:
+                                device = new OvenDevice(this, venue, deviceBuffer);
+                                break;
+                            case MotionSensorDevice.TYPE:
+                                device = new MotionSensorDevice(this, venue, deviceBuffer);
+                                break;
+                            case VehicleDevice.TYPE:
+                                device = new VehicleDevice(this, venue, deviceBuffer);
+                                break;
+                            default:
+                                throw new JsonDeserializeError(this, "Inexistent Device-Type!");
+                        }
+                        devices.add(device);
                     }
                 }
             }
         }
 
-        /* Load all triggers: */
-        bufferObject = jsonObject.get("Triggers");
-        if (bufferObject instanceof JSONArray) {
-            JSONArray jsonTriggers = (JSONArray) bufferObject;
-            for (index = 0; index < jsonTriggers.size(); index++) {
-                bufferObject = jsonTriggers.get(index);
-                if (bufferObject instanceof JSONObject) {
-                    JSONObject jsonTrigger = (JSONObject) bufferObject;
-                    Trigger trigger = new Trigger(this);
-                    trigger.jsonDeserialize(jsonTrigger);
-                    this.triggers.add(trigger);
+        /* Load triggers: */
+        objectBuffer = automatorBuffer.get("Triggers");
+        if (objectBuffer instanceof JSONArray) {
+            JSONArray triggersBuffer = (JSONArray) objectBuffer;
+            for (Object elementBuffer : triggersBuffer) {
+                if (elementBuffer instanceof JSONObject) {
+                    JSONObject triggerBuffer = (JSONObject) elementBuffer;
+                    Trigger trigger = new Trigger(this, triggerBuffer);
+                    triggers.add(trigger);
                 }
             }
         }
+    }
+
+    /**
+     * Saves eveyrthing that must be dumped in the configuration file.
+     */
+    @Override
+    public JSONObject jsonSerialize(){
+
+        JSONObject automatorBuffer = new JSONObject();
+        return automatorBuffer;
     }
 
     /**

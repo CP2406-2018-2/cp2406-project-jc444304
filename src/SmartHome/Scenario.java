@@ -12,7 +12,9 @@ import org.json.simple.*;
  */
 abstract class Scenario extends Asset {
 
+    String description;
 
+    GregorianCalendar calendar = new GregorianCalendar();
 
     Scenario(Simulator simulator) {
         super(simulator);
@@ -23,14 +25,20 @@ abstract class Scenario extends Asset {
 
         super.jsonDeserialize(scenarioBuffer);
 
+        Object objectBuffer;
 
+        objectBuffer = scenarioBuffer.get("Description");
+        if (objectBuffer instanceof String) {
+            description = (String) objectBuffer;
+        }
     }
 
-    @Override
+    //@Override
     public JSONObject jsonSerialize() {
 
         JSONObject scenarioBuffer = super.jsonSerialize();
 
+        scenarioBuffer.put("Description", description);
 
         return scenarioBuffer;
     }
@@ -60,8 +68,12 @@ class TemperatureScenario extends Scenario {
     private long shadeHour;
 
     TemperatureScenario(Simulator simulator) {
-
         super(simulator);
+    }
+
+    TemperatureScenario(Simulator simulator, JSONObject scenarioBuffer) {
+        super(simulator);
+        jsonDeserialize(scenarioBuffer);
     }
 
     @Override
@@ -113,10 +125,26 @@ class TemperatureScenario extends Scenario {
     }
 
     @Override
+    public JSONObject jsonSerialize() {
+
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("StartDegrees", this.startDegrees);
+        jsonObject.put("StartHour", this.startHour);
+        jsonObject.put("EndDegrees", this.endDegrees);
+        jsonObject.put("EndHour", this.endHour);
+        jsonObject.put("PeekDegrees", this.peekDegrees);
+        jsonObject.put("PeekHour", this.peekHour);
+        jsonObject.put("ShadeDegrees", this.shadeDegrees);
+        jsonObject.put("ShadeHour", this.shadeHour);
+
+        return jsonObject;
+    }
+
     @Override
     public void synchronize(long loopsPerSecond) {
 
-        this.calendar.setTimeInMillis(this.simulator.synchronizer.getClock());
+        this.calendar.setTimeInMillis(this.automator.synchronizer.getClock());
         int clockHour = this.calendar.get(Calendar.HOUR);
         int temperature;
 
@@ -210,81 +238,85 @@ class RefrigeratorScenario extends Scenario {
     private double doorOpenWattsIncrease = 0;
 
     RefrigeratorScenario(Simulator simulator) {
-
         super(simulator);
     }
 
-    @Override
-    public void jsonDeserialize(JSONObject jsonObject) {
+    RefrigeratorScenario(Simulator simulator, JSONObject scenarioBuffer) {
+        super(simulator);
+        jsonDeserialize(scenarioBuffer);
+    }
 
-        super.jsonDeserialize(jsonObject);
+    @Override
+    public void jsonDeserialize(JSONObject scenarioBuffer) {
+
+        super.jsonDeserialize(scenarioBuffer);
 
         Object bufferObject;
 
         Device device;
-        bufferObject = jsonObject.get("DeviceId");
+        bufferObject = scenarioBuffer.get("DeviceId");
         if (bufferObject instanceof String) {
             String deviceId = (String) bufferObject;
-            device = this.simulator.getDeviceById(deviceId);
+            device = this.automator.getDeviceById(deviceId);
             if (device instanceof RefrigeratorDevice) {
                 this.device = (RefrigeratorDevice) device;
             }
         }
         if (this.device == null) {
-            this.device = new RefrigeratorDevice(new Venue(this.simulator));
+            throw new JsonDeserializeError(this, "Could not load Refrigerator-Scenario into Simulator!");
         }
 
-        bufferObject = jsonObject.get("DefrostIntervals");
+        bufferObject = scenarioBuffer.get("DefrostIntervals");
         if (bufferObject instanceof Number) {
             this.defrostIntervals = (long) bufferObject;
         }
 
-        bufferObject = jsonObject.get("DefrostHours");
+        bufferObject = scenarioBuffer.get("DefrostHours");
         if (bufferObject instanceof Double) {
             this.defrostHours = (double) bufferObject;
         }
 
-        bufferObject = jsonObject.get("DefrostWatts");
+        bufferObject = scenarioBuffer.get("DefrostWatts");
         if (bufferObject instanceof Double) {
             this.defrostWatts = (double) bufferObject;
         }
 
-        bufferObject = jsonObject.get("CoolingIntervals");
+        bufferObject = scenarioBuffer.get("CoolingIntervals");
         if (bufferObject instanceof Number) {
             this.coolingIntervals = (long) bufferObject;
         }
 
-        bufferObject = jsonObject.get("CoolingHours");
+        bufferObject = scenarioBuffer.get("CoolingHours");
         if (bufferObject instanceof Double) {
             this.coolingHours = (double) bufferObject;
         }
 
-        bufferObject = jsonObject.get("CoolingWatts");
+        bufferObject = scenarioBuffer.get("CoolingWatts");
         if (bufferObject instanceof Double) {
             this.coolingWatts = (double) bufferObject;
         }
 
-        bufferObject = jsonObject.get("DoorOpenIntervalsMin");
+        bufferObject = scenarioBuffer.get("DoorOpenIntervalsMin");
         if (bufferObject instanceof Number) {
             this.doorOpenIntervalsMin = (long) bufferObject;
         }
 
-        bufferObject = jsonObject.get("DoorOpenIntervalsMax");
+        bufferObject = scenarioBuffer.get("DoorOpenIntervalsMax");
         if (bufferObject instanceof Number) {
             this.doorOpenIntervalsMax = (long) bufferObject;
         }
 
-        bufferObject = jsonObject.get("DoorOpenSecondsMin");
+        bufferObject = scenarioBuffer.get("DoorOpenSecondsMin");
         if (bufferObject instanceof Number) {
             this.doorOpenSecondsMin = (long) bufferObject;
         }
 
-        bufferObject = jsonObject.get("DoorOpenSecondsMax");
+        bufferObject = scenarioBuffer.get("DoorOpenSecondsMax");
         if (bufferObject instanceof Number) {
             this.doorOpenSecondsMax = (long) bufferObject;
         }
 
-        bufferObject = jsonObject.get("DoorOpenWattsIncrease");
+        bufferObject = scenarioBuffer.get("DoorOpenWattsIncrease");
         if (bufferObject instanceof Double) {
             this.doorOpenWattsIncrease = (double) bufferObject;
         }
@@ -298,6 +330,7 @@ class RefrigeratorScenario extends Scenario {
     protected long coolingCyclesCount = 0;
     protected long coolingCyclesHours = 0;
     protected long coolingCycleTimeStart = 0;
+
     protected long coolingCycleTimeEnd = 0;
 
     @Override
@@ -305,7 +338,7 @@ class RefrigeratorScenario extends Scenario {
 
         /*
         GregorianCalendar calendar = new GregorianCalendar();
-        calendar.setTimeInMillis(this.simulator.synchronizer.getClock());
+        calendar.setTimeInMillis(this.automator.synchronizer.getClock());
         System.out.println(calendar);
         */
     }
