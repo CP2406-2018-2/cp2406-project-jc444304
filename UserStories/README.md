@@ -42,6 +42,10 @@ A user needs a CLI system to interact with the automator and simulator. (DEPRECA
 ```
 
 ```
+A user needs a GUI system to interact with the automator and simulator. (TEST).
+```
+
+```
 A user needs to sandbox Python scripting into each venue for maximum customization. (TODO).
 
 Estimate: 1 day.
