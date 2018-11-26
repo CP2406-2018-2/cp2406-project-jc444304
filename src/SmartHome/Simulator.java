@@ -15,42 +15,44 @@ public class Simulator extends Automator {
     /**
      * Specifies the starting-date.
      */
-    protected GregorianCalendar date1 = new GregorianCalendar(2000, 1, 1, 5, 0);
+    Clock periodStart;
 
     /**
      * Specifies the ending-date.
      */
-    protected GregorianCalendar date2 = new GregorianCalendar(2000, 1, 2, 4, 59, 59);
+    Clock periodEnd;
 
     /**
      *
      */
-    protected ArrayList<Scenario> scenarios = new ArrayList<>();
+    ArrayList<Scenario> scenarios = new ArrayList<>();
 
     public Simulator() {
 
         super();
 
-        this.setupDuration();
+        setupDuration();
     }
 
     public Simulator(JSONObject jsonObject) {
 
         super();
 
-        this.setupDuration();
-        this.jsonDeserializeDate(jsonObject);
+        setupDuration();
+        jsonDeserialize(jsonObject);
     }
 
     /**
-     * Checks if the start and end dates are correct.
+     * Checks if the start and end dates are correct and differs them.
      */
-    protected void setupDuration() {
+    private void setupDuration() {
 
-        /* Differ the seconds from both dates: */
-        this.syncDuration = this.date2.compareTo(this.date1);
-
-        this.synchronizer.setClock(this.date1.getTimeInMillis());
+        syncDuration = periodEnd.compareTo(periodStart);
+        if (syncDuration < 0) {
+            periodStart = periodEnd;
+            periodEnd = periodStart;
+        }
+        synchronizer.setTime(periodStart.getTimeInMillis());
     }
 
     @Override
@@ -60,26 +62,15 @@ public class Simulator extends Automator {
 
         Object objectBuffer;
 
-        objectBuffer = simulatorBuffer.get("Period");
-        if (objectBuffer instanceof JSONArray) {
-            JSONArray jsonPeriod = (JSONArray) objectBuffer;
-            JSONObject jsonDate;
-            /* Load start-time: */
-            if (jsonPeriod.size() >= 1) {
-                objectBuffer = jsonPeriod.get(0);
-                if (objectBuffer instanceof JSONObject) {
-                    jsonDate = (JSONObject) objectBuffer;
-                    this.date1 = this.jsonDeserializeDate(jsonDate);
-                }
-            }
-            /* Load end-time: */
-            if (jsonPeriod.size() >= 2) {
-                objectBuffer = jsonPeriod.get(1);
-                if (objectBuffer instanceof JSONObject) {
-                    jsonDate = (JSONObject) objectBuffer;
-                    this.date2 = this.jsonDeserializeDate(jsonDate);
-                }
-            }
+        objectBuffer = simulatorBuffer.get("PeriodStart");
+        if (objectBuffer instanceof JSONObject) {
+            JSONObject clockBuffer = (JSONObject) objectBuffer;
+            periodStart = new Clock(clockBuffer);
+        }
+        objectBuffer = simulatorBuffer.get("PeriodEnd");
+        if (objectBuffer instanceof JSONObject) {
+            JSONObject clockBuffer = (JSONObject) objectBuffer;
+            periodEnd = new Clock(clockBuffer);
         }
         this.setupDuration();
 
@@ -114,47 +105,25 @@ public class Simulator extends Automator {
         }
     }
 
-    public GregorianCalendar jsonDeserializeDate(JSONObject jsonObject) {
+    @Override
+    public JSONObject jsonSerialize() {
 
-        Object bufferObject;
+        JSONObject simulatorBuffer = super.jsonSerialize();
 
-        long dateYear = 2000;
-        bufferObject = jsonObject.get("Year");
-        if (bufferObject instanceof Long) {
-            dateYear = (long) bufferObject;
+        if (periodStart != null) {
+            simulatorBuffer.put("PeriodStart", periodStart.jsonSerialize());
+        }
+        if (periodEnd != null) {
+            simulatorBuffer.put("PeriodEnd", periodEnd.jsonSerialize());
         }
 
-        long dateMonth = 1;
-        bufferObject = jsonObject.get("Month");
-        if (bufferObject instanceof Long) {
-            dateMonth = (long) bufferObject;
+        JSONArray scenariosBuffer = new JSONArray();
+        for (Scenario scenario : scenarios) {
+            scenariosBuffer.add(scenario.jsonSerialize());
         }
+        simulatorBuffer.put("Scenarios", scenariosBuffer);
 
-        long dateDay = 1;
-        bufferObject = jsonObject.get("Day");
-        if (bufferObject instanceof Long) {
-            dateDay = (long) bufferObject;
-        }
-
-        long dateHour = 0;
-        bufferObject = jsonObject.get("Hour");
-        if (bufferObject instanceof Long) {
-            dateHour = (long) bufferObject;
-        }
-
-        long dateMin = 0;
-        bufferObject = jsonObject.get("Minute");
-        if (bufferObject instanceof Long) {
-            dateMin = (long) bufferObject;
-        }
-
-        long dateSec = 0;
-        bufferObject = jsonObject.get("Second");
-        if (bufferObject instanceof Long) {
-            dateSec = (long) bufferObject;
-        }
-
-        return new GregorianCalendar((int) dateYear, (int) dateMonth, (int) dateDay, (int) dateHour, (int) dateMin, (int) dateSec);
+        return simulatorBuffer;
     }
 
     @Override
@@ -166,5 +135,58 @@ public class Simulator extends Automator {
         for (Scenario scenario : scenarios) {
             scenario.synchronize(loopsPerSecond);
         }
+    }
+}
+
+class Clock extends GregorianCalendar implements JsonDeserializable {
+
+    Clock(JSONObject clockBuffer) {
+        jsonDeserialize(clockBuffer);
+    }
+
+    @Override
+    public void jsonDeserialize(JSONObject clockBuffer) {
+
+        Object objectBuffer;
+
+        objectBuffer = clockBuffer.get("Year");
+        if (objectBuffer instanceof Integer) {
+            set(Clock.YEAR, (int) objectBuffer);
+        }
+        objectBuffer = clockBuffer.get("Month");
+        if (objectBuffer instanceof Integer) {
+            set(MONTH, (int) objectBuffer);
+        }
+        objectBuffer = clockBuffer.get("Day");
+        if (objectBuffer instanceof Integer) {
+            set(DAY_OF_MONTH, (int) objectBuffer);
+        }
+        objectBuffer = clockBuffer.get("Hour");
+        if (objectBuffer instanceof Integer) {
+            set(HOUR_OF_DAY, (int) objectBuffer);
+        }
+        objectBuffer = clockBuffer.get("Minute");
+        if (objectBuffer instanceof Integer) {
+            set(MINUTE, (int) objectBuffer);
+        }
+        objectBuffer = clockBuffer.get("Second");
+        if (objectBuffer instanceof Integer) {
+            set(SECOND, (int) objectBuffer);
+        }
+    }
+
+    @Override
+    public JSONObject jsonSerialize() {
+
+        JSONObject clockBuffer = new JSONObject();
+
+        clockBuffer.put("Year", get(YEAR));
+        clockBuffer.put("Month", get(MONTH));
+        clockBuffer.put("Day", get(DAY_OF_MONTH));
+        clockBuffer.put("Hour", get(HOUR_OF_DAY));
+        clockBuffer.put("Minute", get(MINUTE));
+        clockBuffer.put("Second", get(SECOND));
+
+        return clockBuffer;
     }
 }

@@ -15,7 +15,7 @@ public class Synchronizer extends Thread {
     /**
      * Specifies the number of nano-seconds in each second.
      */
-    final public static long NANO_SECS_PER_SEC = 1000000000;
+    final static long NANO_SECS_PER_SEC = 1000000000;
 
     /**
      * Specifies the number of fake seconds per real second of the thread.
@@ -97,14 +97,14 @@ public class Synchronizer extends Thread {
     /**
      * Behaves like a clock but in milli-seconds.
      */
-    private long clock = 0;
+    private long time = 0;
 
-    public long getClock() {
-        return this.clock;
+    public long getTime() {
+        return time;
     }
 
-    public void setClock(long clock) {
-        this.clock = clock;
+    public void setTime(long time) {
+        this.time = time;
     }
 
     boolean paused = false;
@@ -142,7 +142,7 @@ public class Synchronizer extends Thread {
 
             nextNanoTime += pauseNanoSeconds;
 
-            clock += 1000 / loopsPerSecond;
+            time += 1000 / loopsPerSecond;
 
             target.synchronize(loopsPerSecond);
 

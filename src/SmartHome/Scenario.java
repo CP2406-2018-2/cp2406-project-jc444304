@@ -144,7 +144,7 @@ class TemperatureScenario extends Scenario {
     @Override
     public void synchronize(long loopsPerSecond) {
 
-        this.calendar.setTimeInMillis(this.automator.synchronizer.getClock());
+        this.calendar.setTimeInMillis(this.automator.synchronizer.getTime());
         int clockHour = this.calendar.get(Calendar.HOUR);
         int temperature;
 
