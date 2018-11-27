@@ -50,3 +50,9 @@ A user needs to sandbox Python scripting into each venue for maximum customizati
 
 Estimate: 1 day.
 ```
+
+```
+A user needs a visual overview of the home to easily navigate through each venue and device. (TODO).
+
+NOTE: Preferably use SVG images.
+```
