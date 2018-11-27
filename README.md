@@ -19,3 +19,6 @@ The refrigerator is a continuously running appliance. Old refrigerators dating f
  - Two defrosting cycles, each lasting 15 minutes using 280 WpH.
  - Intervals of cooling processes lasting over 13 hours (each cycle separated every hour) using 35 WpH.
 The refrigerator compressor rests when the refrigeration temperature is below the maximum temperature or while processing a defrost cycle.
+
+## Inspirations
+ - [Garadget](https://www.garadget.com/) Garage door wireless control.

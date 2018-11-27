@@ -39,3 +39,8 @@ Estimate 3 days.
 
 NOTE: A Python simulation class must be dynmically created to bind the internal simulator class.
 ```
+
+```
+Research how garage doors work and implement it as a device.
+```
+
