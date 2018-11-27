@@ -4,10 +4,11 @@ A prototype for a centralized control over a domestic environment.
 ![Smart Home Automation Simulator](res/Logo.png)
 
 ## Dependencies
- - [JSON Simple](https://code.google.com/archive/p/json-simple/):
-   - Required for serializing data.
-   - The pre-downloaded JAR file should be available in the `lib` folder.
-   - Using Version `1.1.1`.
+ - **SDK:** 1.8
+ - **JDK:** 8
+ - **Libraries:**
+   - Simple-JSON 3.0.3
+   - Jython 2.7.0
 
 ## Apparatuses
 The following appliances or fixtures are available in the automation:

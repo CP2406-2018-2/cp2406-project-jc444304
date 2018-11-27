@@ -1,0 +1,146 @@
+{
+  "Venues": [
+    {
+      "Id": "KTC",
+      "Type": "INDOOR",
+      "Name": "Kitchen"
+    },
+    {
+      "Id": "LVR",
+      "Type": "INDOOR",
+      "Name": "Living Room"
+    },
+    {
+      "Id": "GRD",
+      "Type": "OUTDOOR",
+      "Name": "Garden"
+    },
+    {
+      "Id": "GRG",
+      "Name": "Garage"
+    }
+  ],
+  "Devices": [
+    {
+      "Type": "REFRIGERATOR",
+      "VenueId": "KTC",
+      "Id": "KTC_REF",
+      "Name": "Kitchen Refrigerator",
+      "Capacity": 100
+    },
+    {
+      "Type": "LIGHT",
+      "VenueId": "KTC",
+      "Id": "KTC_CK_LT",
+      "Name": "Kitchen Cooking Light"
+    },
+    {
+      "Type": "REFRIGERATOR",
+      "VenueId": "GRG",
+      "Id": "GRG_REF",
+      "Name": "Garage Refrigerator"
+    },
+    {
+      "Type": "LIGHT",
+      "VenueId": "GRG",
+      "Id": "GRG_IN_LT",
+      "Name": "Garage Inner Light"
+    },
+    {
+      "Type": "LIGHT",
+      "VenueId": "GRG",
+      "Id": "GRG_OT_LT",
+      "Name": "Garage Outer Light"
+    },
+    {
+      "Type": "LIGHT",
+      "VenueId": "LVR",
+      "Id": "LVR_MN_LT",
+      "Name": "Living-Room Main Light"
+    },
+    {
+      "Type": "LIGHT",
+      "VenueId": "LVR",
+      "Id": "LVR_RCR_LT",
+      "Name": "Living-Room Right-Corner Light"
+    },
+    {
+      "Type": "LIGHT",
+      "VenueId": "LVR",
+      "Id": "LVR_LCR_LT",
+      "Name": "Living-Room Left-Corner Light"
+    },
+    {
+      "Type": "AIR_CONDITIONER",
+      "VenueId": "LVR",
+      "Id": "LVR_AC",
+      "Name": "Living-Room Air-Conditioner"
+    },
+    {
+      "Type": "VENTILATOR",
+      "VenueId": "LVR",
+      "Id": "LVR_VNT",
+      "Name": "Living-Room Ventilator"
+    },
+    {
+      "Type": "IRRIGATOR",
+      "VenueId": "GRD",
+      "Id": "GRD_IRR",
+      "Name": "Garden Sprinkler"
+    }
+  ],
+  "Triggers": [
+  ],
+  "Scenarios": [
+    {
+      "Type": "TEMPERATURE",
+      "Name": "Household Temperature",
+      "Description": "Imitation of the indoor temperature affected by external conditions.",
+      "StartDegrees": 15,
+      "StartHour": 6,
+      "EndDegrees": 20.0,
+      "EndHour": 18,
+      "PeekDegrees": 31.5,
+      "PeekHour": 12,
+      "ShadeDegrees": 10,
+      "ShadeHour": 2
+    },
+    {
+      "Type": "REFRIGERATOR",
+      "Name": "Kitchen Refrigerator",
+      "Description": "Imitation of the kitchen fridge.",
+      "DeviceId": "KTC_REF",
+      "DefrostIntervals": 2,
+      "DefrostHours": 0.5,
+      "DefrostWatts": 28,
+      "CoolingIntervals": 23,
+      "CoolingHours": 13.5,
+      "CoolingWatts": 3.5,
+      "DoorOpenIntervalsMin": 5,
+      "DoorOpenIntervalsMax": 15,
+      "DoorOpenSecondsMin": 15,
+      "DoorOpenSecondsMax": 30,
+      "DoorOpenWattsIncrease": 2
+    }
+  ],
+  "Period": [
+    {
+      "Year": 2018,
+      "Month": 1,
+      "Day": 15,
+      "Hour": 5
+    },
+    {
+      "Year": 2018,
+      "Month": 1,
+      "Day": 16,
+      "Hour": 4,
+      "Minute": 59,
+      "Second": 59
+    }
+  ],
+  "Synchronizer": {
+    "Speed": 3600,
+    "LoopsPerSecond": 1
+  }
+}
