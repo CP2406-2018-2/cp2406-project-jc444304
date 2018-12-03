@@ -220,7 +220,29 @@ class RefrigeratorDevice extends Device {
 
         double currentTemperature = 0.0;
 
+        /**
+         * Determines whether the compressor is working to cool.
+         */
+        boolean cooling = false;
 
+        /**
+         * Determines whether the compressor is heating the internal layers.
+         */
+        boolean defrosting = false;
+
+        /**
+         * Specifies in radians the angle of the door opening.
+         */
+        double opened = 0.0;
+
+        public boolean isOpen() {
+            return opened <= 0;
+        }
+
+        /**
+         * Specifies the last time the door was opened.
+         */
+        long lastOpened = 0;
 
         Compartment() {
             super(RefrigeratorDevice.this.automator);
@@ -254,10 +276,12 @@ class RefrigeratorDevice extends Device {
         @Override
         public void synchronize(long loopsPerSecond) {
 
+            /* The compressor should only be cooling if the temperature  */
+            cooling = currentTemperature < maximumTemperature;
         }
     }
 
-    protected ArrayList<Compartment> compartments = new ArrayList<>();
+    private ArrayList<Compartment> compartments = new ArrayList<>();
 
     public RefrigeratorDevice(Automator automator, Venue venue) {
         super(automator, venue);
@@ -269,20 +293,22 @@ class RefrigeratorDevice extends Device {
     }
 
     @Override
-    public void jsonDeserialize(JSONObject jsonObject) throws JsonDeserializedError {
+    public void jsonDeserialize(JSONObject deviceBuffer) throws JsonDeserializedError {
 
-        super.jsonDeserialize(jsonObject);
+        super.jsonDeserialize(deviceBuffer);
 
-        Object bufferObject;
+        Object objectBuffer;
 
-        bufferObject = jsonObject.get("Compartments");
-        if (bufferObject instanceof JSONArray) {
-            JSONArray jsonCompartments = (JSONArray) bufferObject;
-            for (Object jsonCompartment: jsonCompartments) {
-                if (jsonCompartment instanceof JSONObject) {
-                    Compartment compartment = new Compartment();
-                    compartment.jsonDeserialize((JSONObject) jsonCompartment);
-                    this.compartments.add(compartment);
+        /* Deserialize Compartments: */
+        objectBuffer = deviceBuffer.get("Compartments");
+        if (objectBuffer instanceof JSONArray) {
+            JSONArray compartmentsBuffer = (JSONArray) objectBuffer;
+            for (Object elementBuffer : compartmentsBuffer) {
+                objectBuffer = elementBuffer;
+                if (objectBuffer instanceof JSONObject) {
+                    JSONObject compartmentBuffer = (JSONObject) objectBuffer;
+                    Compartment compartment = new Compartment(compartmentBuffer);
+                    compartments.add(compartment);
                 }
             }
         }
@@ -293,7 +319,8 @@ class RefrigeratorDevice extends Device {
 
         super.synchronize(loopsPerSecond);
 
-        for (Compartment compartment: compartments) {
+        /* Synchronize Compartments: */
+        for (Compartment compartment : compartments) {
             compartment.synchronize(loopsPerSecond);
         }
     }
