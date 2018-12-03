@@ -82,6 +82,9 @@ public class Simulator extends Automator {
                 if (elementBuffer instanceof JSONObject) {
                     JSONObject scenarioBuffer = (JSONObject) elementBuffer;
                     objectBuffer = scenarioBuffer.get("Type");
+                    if (objectBuffer == null) {
+                        throw new JsonDeserializedError("Unspecified Scenario-Type!", this);
+                    }
                     String scenarioTypeBuffer;
                     if (objectBuffer instanceof String) {
                         scenarioTypeBuffer = (String) objectBuffer;
@@ -99,7 +102,7 @@ public class Simulator extends Automator {
                         default:
                             throw new JsonDeserializedError("Unrecognized Scenario-Type!", this);
                     }
-                    this.scenarios.add(scenario);
+                    scenarios.add(scenario);
                 }
             }
         }
@@ -121,7 +124,8 @@ public class Simulator extends Automator {
         /* Serialize Scenarios: */
         JSONArray scenariosBuffer = new JSONArray();
         for (Scenario scenario : scenarios) {
-            scenariosBuffer.add(scenario.jsonSerialize());
+            JSONObject scenarioBuffer = scenario.jsonSerialize();
+            scenariosBuffer.add(scenarioBuffer);
         }
         simulatorBuffer.put("Scenarios", scenariosBuffer);
 

@@ -217,6 +217,9 @@ public class Automator implements JsonDeserializable, Synchronizable {
                 if (objectBuffer instanceof JSONObject) {
                     JSONObject deviceBuffer = (JSONObject) objectBuffer;
                     objectBuffer = deviceBuffer.get("Type");
+                    if (objectBuffer == null) {
+                        throw new JsonDeserializedError("Unspecified Device-Type!", this);
+                    }
                     String deviceTypeBuffer;
                     if (objectBuffer instanceof String) {
                         deviceTypeBuffer = (String) objectBuffer;
@@ -224,9 +227,11 @@ public class Automator implements JsonDeserializable, Synchronizable {
                         throw new JsonDeserializedError("Invalid Device-Type!", this);
                     }
                     objectBuffer = deviceBuffer.get("VenueId");
-                    String venueIdBuffer;
+                    if (objectBuffer == null) {
+                        throw new JsonDeserializedError("Unspecified Venue-ID from Device!", this);
+                    }
                     if (objectBuffer instanceof String) {
-                        venueIdBuffer = (String) objectBuffer;
+                        String venueIdBuffer = (String) objectBuffer;
                         Venue venue = this.getVenueById(venueIdBuffer);
                         if (venue == null) {
                             throw new JsonDeserializedError("Device has Venue with ID that does not correspond.", this);
@@ -309,7 +314,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
         }
         automatorBuffer.put("Venues", venuesBuffer);
 
-        /* Serialize Triggers: */
+        /* Serialize Devices: */
         JSONArray devicesBuffer = new JSONArray();
         for (Device device : devices) {
             JSONObject deviceBuffer = device.jsonSerialize();
@@ -317,7 +322,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
         }
         automatorBuffer.put("Devices", devicesBuffer);
 
-        /* Serialize Devices: */
+        /* Serialize Triggers: */
         JSONArray triggersBuffer = new JSONArray();
         for (Trigger trigger : triggers) {
             JSONObject triggerBuffer = trigger.jsonSerialize();
