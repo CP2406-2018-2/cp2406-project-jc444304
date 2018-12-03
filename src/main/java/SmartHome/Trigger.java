@@ -13,6 +13,10 @@ class Trigger extends Entity {
     /**
      * The user should add a description to the trigger to remember its behavior.
      */
+    /**
+     * When a trigger is looping, this means it will not be disabled after it is successful and the thread will try it again.
+     */
+    private boolean looping = false;
 
     enum Status {
         ASLEEP,
@@ -27,35 +31,20 @@ class Trigger extends Entity {
      */
     private Status status = Status.ASLEEP;
 
-    public Status getStatus() { return status; }
-
-    public void setStatus(Status status) { this.status = status; }
-
-    /**
-     * When a trigger is looping, this means it will not be disabled after it is successful and the thread will try it again.
-     */
-    private boolean looping = false;
-
-    public boolean isLooping() { return looping; }
-
-    public void setLooping(boolean looping) { this.looping = looping; }
-
     /**
      * Events in each trigger are tried for checking whether the trigger can fire actions.
      */
-        protected Trigger trigger;
-
     abstract class Event extends Entity {
-
-        /**
-         * Determines whether the event was successful upon trying.
-         */
-        protected boolean successful = false;
 
         /**
          * All events within a trigger can be AND'ED or OR'ED.
          */
-        protected boolean orWithPrevious = false;
+        boolean orPrevious = false;
+
+        /**
+         * Determines whether the event was successful upon trying.
+         */
+        boolean successful = false;
 
         public Event(Automator automator) {
             super(automator);
@@ -108,9 +97,10 @@ class Trigger extends Entity {
 
     private ArrayList<Event> events = new ArrayList<>();
 
+    private ArrayList<Action> actions = new ArrayList<>();
+
     abstract class Action extends Entity {
 
-        final public static String TYPE = "DEFAULT";
         public Action(Automator automator) {
             super(automator);
         }
@@ -121,14 +111,16 @@ class Trigger extends Entity {
      */
     class ChangeTriggerStatusAction extends Action {
 
-        final public static String TYPE = "CHANGE_TRIGGER_STATUS";
+        final static String TYPE = "CHANGE_TRIGGER_STATUS";
 
-        protected String targetTriggerId = "";
+        String targetTriggerId;
+
+        boolean targetTriggerState = false;
+
         public ChangeTriggerStatusAction() {
             super(Trigger.this.automator);
         }
 
-        protected boolean targetTriggerState = false;
         public ChangeTriggerStatusAction(JSONObject actionBuffer) throws JsonDeserializedError {
             super(Trigger.this.automator);
             jsonDeserialize(actionBuffer);
@@ -178,11 +170,11 @@ class Trigger extends Entity {
      */
     class OpaqueApparatusAction extends Action {
 
-        final public static String TYPE = "OPAQUE_APPARATUS";
+        final static String TYPE = "OPAQUE_APPARATUS";
 
-        protected String deviceTag = "TRG";
+        String deviceTag = "TRG";
 
-        protected boolean state = false;
+        boolean state = false;
 
         OpaqueApparatusAction() {
             super(Trigger.this.automator);

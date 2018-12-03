@@ -61,6 +61,7 @@ public class Simulator extends Automator {
 
         Object objectBuffer;
 
+        /* Deserialize periods: */
         objectBuffer = simulatorBuffer.get("PeriodStart");
         if (objectBuffer instanceof JSONObject) {
             JSONObject clockBuffer = (JSONObject) objectBuffer;
@@ -71,9 +72,9 @@ public class Simulator extends Automator {
             JSONObject clockBuffer = (JSONObject) objectBuffer;
             periodEnd = new Clock(clockBuffer);
         }
-        this.setupDuration();
+        setupDuration();
 
-        /* Load Scenarios: */
+        /* Deserialize Scenarios: */
         objectBuffer = simulatorBuffer.get("Scenarios");
         if (objectBuffer instanceof JSONArray) {
             JSONArray jsonScenarios = (JSONArray) objectBuffer;
@@ -109,6 +110,7 @@ public class Simulator extends Automator {
 
         JSONObject simulatorBuffer = super.jsonSerialize();
 
+        /* Serialize Periods: */
         if (periodStart != null) {
             simulatorBuffer.put("PeriodStart", periodStart.jsonSerialize());
         }
@@ -116,6 +118,7 @@ public class Simulator extends Automator {
             simulatorBuffer.put("PeriodEnd", periodEnd.jsonSerialize());
         }
 
+        /* Serialize Scenarios: */
         JSONArray scenariosBuffer = new JSONArray();
         for (Scenario scenario : scenarios) {
             scenariosBuffer.add(scenario.jsonSerialize());
@@ -130,7 +133,7 @@ public class Simulator extends Automator {
 
         super.synchronize(loopsPerSecond);
 
-        /* Synchronize scenarios: */
+        /* Synchronize Scenarios: */
         for (Scenario scenario : scenarios) {
             scenario.synchronize(loopsPerSecond);
         }

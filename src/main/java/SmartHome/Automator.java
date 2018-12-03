@@ -294,14 +294,14 @@ public class Automator implements JsonDeserializable, Synchronizable {
 
         JSONObject automatorBuffer = new JSONObject();
 
-        /* Save synchronizer: */
+        /* Serialize Synchronizer: */
         JSONObject synchronizerBuffer = new JSONObject();
         synchronizerBuffer.put("Speed", syncSpeed);
         synchronizerBuffer.put("Limit", syncSpeed);
         synchronizerBuffer.put("LoopsPerSecond", syncLoopsPerSec);
         automatorBuffer.put("Synchronizer", synchronizerBuffer);
 
-        /* Save venues: */
+        /* Serialize Venues: */
         JSONArray venuesBuffer = new JSONArray();
         for (Venue venue : venues) {
             JSONObject venueBuffer = venue.jsonSerialize();
@@ -309,7 +309,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
         }
         automatorBuffer.put("Venues", venuesBuffer);
 
-        /* Save devices: */
+        /* Serialize Triggers: */
         JSONArray devicesBuffer = new JSONArray();
         for (Device device : devices) {
             JSONObject deviceBuffer = device.jsonSerialize();
@@ -317,7 +317,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
         }
         automatorBuffer.put("Devices", devicesBuffer);
 
-        /* Save devices: */
+        /* Serialize Devices: */
         JSONArray triggersBuffer = new JSONArray();
         for (Trigger trigger : triggers) {
             JSONObject triggerBuffer = trigger.jsonSerialize();

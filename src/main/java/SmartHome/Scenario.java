@@ -14,7 +14,7 @@ abstract class Scenario extends Asset {
 
     GregorianCalendar calendar = new GregorianCalendar();
 
-    Scenario(Simulator simulator) {
+    public Scenario(Simulator simulator) {
         super(simulator);
     }
 
@@ -28,7 +28,7 @@ abstract class Scenario extends Asset {
  */
 class TemperatureScenario extends Scenario {
 
-    final public static String TYPE = "TEMPERATURE";
+    final static String TYPE = "TEMPERATURE";
 
     private double startDegrees;
 
@@ -46,7 +46,7 @@ class TemperatureScenario extends Scenario {
 
     private long shadeHour;
 
-    TemperatureScenario(Simulator simulator) {
+    public TemperatureScenario(Simulator simulator) {
         super(simulator);
     }
 
@@ -158,12 +158,12 @@ class TemperatureScenario extends Scenario {
  */
 class RefrigeratorScenario extends Scenario {
 
-    final public static String TYPE = "REFRIGERATOR";
+    final static String TYPE = "REFRIGERATOR";
 
     /**
      * Points to the target refrigeration device which this scenario imposes on.
      */
-    protected RefrigeratorDevice device;
+    RefrigeratorDevice device;
 
     /**
      * Specifies the daily number of defrosting cycles.

@@ -207,7 +207,7 @@ class RefrigeratorDevice extends Device {
     final static String TYPE = "REFRIGERATOR";
 
     /**
-     * A storage section of the refrigerator such as the freezer compared to the main storage.
+     * A storage section of the refrigerator such as the freezer.
      */
     class Compartment extends Asset {
 
@@ -216,13 +216,11 @@ class RefrigeratorDevice extends Device {
          */
         long capacity = 0;
 
-        public long getCapacity() { return this.capacity; }
+        double maximumTemperature = 0.0;
 
         double currentTemperature = 0.0;
 
-        public void setCapacity(long capacity) { this.capacity = capacity; }
 
-        protected double maximumTemperature = 4.0;
 
         Compartment() {
             super(RefrigeratorDevice.this.automator);
@@ -236,11 +234,15 @@ class RefrigeratorDevice extends Device {
         @Override
         public void jsonDeserialize(JSONObject jsonObject) {
 
-            Object bufferObject;
+            Object objectBuffer;
 
-            bufferObject = jsonObject.get("MaximumTemperature");
-            if (bufferObject instanceof Double) {
-                this.maximumTemperature = (double) bufferObject;
+            objectBuffer = jsonObject.get("Capacity");
+            if (objectBuffer instanceof Integer) {
+                capacity = (int) objectBuffer;
+            }
+            objectBuffer = jsonObject.get("MaximumTemperature");
+            if (objectBuffer instanceof Double) {
+                maximumTemperature = (double) objectBuffer;
             }
         }
 
@@ -257,7 +259,7 @@ class RefrigeratorDevice extends Device {
 
     protected ArrayList<Compartment> compartments = new ArrayList<>();
 
-    RefrigeratorDevice(Automator automator, Venue venue) {
+    public RefrigeratorDevice(Automator automator, Venue venue) {
         super(automator, venue);
     }
 
@@ -291,7 +293,7 @@ class RefrigeratorDevice extends Device {
 
         super.synchronize(loopsPerSecond);
 
-        for (Compartment compartment: this.compartments) {
+        for (Compartment compartment: compartments) {
             compartment.synchronize(loopsPerSecond);
         }
     }
