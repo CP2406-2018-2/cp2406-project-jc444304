@@ -15,12 +15,12 @@ public class Simulator extends Automator {
     /**
      * Specifies the starting-date.
      */
-    Clock periodStart;
+    Clock periodStart = new Clock();
 
     /**
      * Specifies the ending-date.
      */
-    Clock periodEnd;
+    Clock periodEnd = new Clock();
 
     /**
      *
@@ -146,7 +146,11 @@ public class Simulator extends Automator {
 
 class Clock extends GregorianCalendar implements JsonDeserializable {
 
-    Clock(JSONObject clockBuffer) {
+    public Clock() {
+
+    }
+
+    public Clock(JSONObject clockBuffer) {
         jsonDeserialize(clockBuffer);
     }
 
