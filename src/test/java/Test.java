@@ -10,10 +10,15 @@ import java.util.Scanner;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
+import javafx.scene.web.WebView;
 import org.jfree.graphics2d.svg.SVGGraphics2D;
 
 import SmartHome.*;
 
+import javax.swing.*;
 /**
  *
  */
@@ -28,6 +33,10 @@ public abstract class Test {
      */
     public static void main(String[] args) {
 
+        System.out.println("Attempting to test web browser...");
+        testWebBrowser();
+
+        System.out.println("Attempting to test SVG canvas...");
         testGraphics();
 
         Automator automator = new Automator();
@@ -55,6 +64,23 @@ public abstract class Test {
         System.out.println("Total thread loops attempted: " + thread.getLoopsAttempted());
         System.out.println("Total thread loops evaluated: " + thread.getLoopsSucceeded());
         System.out.println("Total thread time in seconds: " + ((System.nanoTime() - thread.getFirstNanoTime()) / 1000000000));
+
+        return true;
+    }
+
+    private static boolean testWebBrowser() {
+
+        JFXPanel panel = new JFXPanel();
+        Platform.runLater(() -> {
+            WebView webView = new WebView();
+            webView.getEngine().loadContent("<p>Test!!!</p>");
+            panel.setScene(new Scene(webView));
+        });
+
+        /* Show the SVG panel inside the frame: */
+        JFrame frame = new JFrame();
+        frame.add(panel);
+        frame.setVisible(true);
 
         return true;
     }
