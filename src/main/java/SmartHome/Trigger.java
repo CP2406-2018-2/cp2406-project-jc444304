@@ -11,8 +11,10 @@ import org.json.simple.*;
 class Trigger extends Entity {
 
     /**
-     * The user should add a description to the trigger to remember its behavior.
+     * Determines if the trigger will start at the very begining after being loaded.
      */
+    private boolean starting = false;
+
     /**
      * When a trigger is looping, this means it will not be disabled after it is successful and the thread will try it again.
      */
@@ -56,13 +58,26 @@ class Trigger extends Entity {
         }
 
         @Override
-            return null;
         public void jsonDeserialize(JSONObject eventBuffer) throws JsonDeserializedError {
+
+            super.jsonDeserialize(eventBuffer);
+
+            Object objectBuffer;
+
+            objectBuffer = eventBuffer.get("OrPrevious");
+            if (objectBuffer instanceof Boolean) {
+                orPrevious = (boolean) objectBuffer;
+            }
         }
 
         @Override
         public JSONObject jsonSerialize() throws JsonSerializedError {
 
+            JSONObject eventBuffer = super.jsonSerialize();
+
+            eventBuffer.put("OrPrevious", orPrevious);
+
+            return eventBuffer;
         }
     }
 
@@ -214,6 +229,77 @@ class Trigger extends Entity {
     public void jsonDeserialize(JSONObject triggerBuffer) throws JsonDeserializedError {
 
         super.jsonDeserialize(triggerBuffer);
+
+        Object objectBuffer;
+
+        objectBuffer = triggerBuffer.get("Starting");
+        if (objectBuffer instanceof Boolean) {
+            starting = (boolean) objectBuffer;
+        }
+        objectBuffer = triggerBuffer.get("Looping");
+        if (objectBuffer instanceof Boolean) {
+            looping = (boolean) objectBuffer;
+        }
+
+        /* Deserialize Events: */
+        objectBuffer = triggerBuffer.get("Events");
+        if (objectBuffer instanceof JSONArray) {
+            JSONArray eventsBuffer = (JSONArray) objectBuffer;
+            for (int i = 0; i < eventsBuffer.size(); i++) {
+                objectBuffer = eventsBuffer.get(i);
+                if (objectBuffer instanceof JSONObject) {
+                    JSONObject eventBuffer = (JSONObject) objectBuffer;
+                    objectBuffer = eventBuffer.get("Type");
+                    if (objectBuffer == null) {
+                        throw new JsonDeserializedError("", this);
+                    }
+                    if (objectBuffer instanceof String) {
+                        String eventTypeBuffer = (String) objectBuffer;
+                        Event event;
+                        switch (eventTypeBuffer.toUpperCase()) {
+                            case Event.JSON_TYPE:
+                                event = null;// TODO
+                                break;
+                            default:
+                                throw new JsonDeserializedError("", this);
+                        }
+                        events.add(event);
+                    } else {
+                        throw new JsonDeserializedError("", this);
+                    }
+                }
+            }
+        }
+
+        /* Deserialize Actions: */
+        objectBuffer = triggerBuffer.get("Actions");
+        if (objectBuffer instanceof JSONArray) {
+            JSONArray actionsBuffer = (JSONArray) objectBuffer;
+            for (int i = 0; i < actionsBuffer.size(); i++) {
+                objectBuffer = actionsBuffer.get(i);
+                if (objectBuffer instanceof JSONObject) {
+                    JSONObject actionBuffer = (JSONObject) objectBuffer;
+                    objectBuffer = actionBuffer.get("Type");
+                    if (objectBuffer == null) {
+                        throw new JsonDeserializedError("", this);
+                    }
+                    if (objectBuffer instanceof String) {
+                        String actionTypeBuffer = (String) objectBuffer;
+                        Action action;
+                        switch (actionTypeBuffer.toUpperCase()) {
+                            case ChangeTriggerStatusAction.TYPE:
+                                action = new ChangeTriggerStatusAction(actionBuffer);
+                                break;
+                            default:
+                                throw new JsonDeserializedError("", this);
+                        }
+                        actions.add(action);
+                    } else {
+                        throw new JsonDeserializedError("", this);
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -221,9 +307,25 @@ class Trigger extends Entity {
 
         JSONObject triggerBuffer = super.jsonSerialize();
 
+        triggerBuffer.put("Starting", starting);
+        triggerBuffer.put("Looping", looping);
+        JSONArray eventsBuffer = new JSONArray();
+        for (Event event : events) {
+            JSONObject eventBuffer = event.jsonSerialize();
+            eventsBuffer.add(eventBuffer);
+        }
+        triggerBuffer.put("Events", eventsBuffer);
+        JSONArray actionsBuffer = new JSONArray();
+        for (Action action : actions) {
+            JSONObject actionBuffer = action.jsonSerialize();
+            actionsBuffer.add(actionBuffer);
+        }
+        triggerBuffer.put("Actions", actionsBuffer);
+
         return triggerBuffer;
     }
 
+    @Override
     public void synchronize(long loopsPerSecond) {
 
         /* Check if this trigger is eligible to run: */
@@ -236,14 +338,14 @@ class Trigger extends Entity {
         if (!events.isEmpty()) {
 
             /* If the first event is AND'ED with its previous, then the initial result must be TRUE, vice versa: */
-            boolean eventsResult = events.get(0).orWithPrevious;
+            boolean eventsResult = events.get(0).orPrevious;
 
             /* Try out each event: */
-            for (Event event : this.events) {
+            for (Event event : events) {
                 event.synchronize(loopsPerSecond);
 
                 /* Either AND or OR the result with the previous event: */
-                if (event.orWithPrevious) {
+                if (event.orPrevious) {
                     eventsResult |= event.successful;
                 } else {
                     eventsResult &= event.successful;
@@ -251,14 +353,14 @@ class Trigger extends Entity {
 
                 /* As soon as the result fails, prevent actions from firing: */
                 if (!eventsResult) {
-                    this.status = Status.TRIED;
+                    status = Status.TRIED;
                     return;
                 }
             }
         }
 
         /* Fire all actions: */
-        for (Action action : this.actions) {
+        for (Action action : actions) {
             action.synchronize(loopsPerSecond);
         }
 
