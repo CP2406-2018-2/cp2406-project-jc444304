@@ -1,5 +1,6 @@
 // Author: Yvan Burrie
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -19,14 +20,13 @@ public abstract class Test {
 
     private static Automator automator;
 
-    private static Scanner input;
+    private static Scanner input = new Scanner(System.in);
 
     /**
      *
      */
     public static void main(String[] args) {
 
-        input = new Scanner(System.in);
 
         Automator automator = new Automator();
     }
@@ -34,7 +34,7 @@ public abstract class Test {
     /**
      *
      */
-    private static boolean doThread() {
+    private static boolean testSynchronizer() {
 
         Synchronizer thread;
 
