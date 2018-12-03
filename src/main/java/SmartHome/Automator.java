@@ -202,24 +202,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
                 objectBuffer = elementBuffer;
                 if (objectBuffer instanceof JSONObject) {
                     JSONObject venueBuffer = (JSONObject) objectBuffer;
-                    objectBuffer = venueBuffer.get("Type");
-                    String venueTypeBuffer;
-                    if (objectBuffer instanceof String) {
-                        venueTypeBuffer = (String) objectBuffer;
-                    } else {
-                        throw new JsonDeserializeError(this, "Invalid Venue-Type!");
-                    }
-                    Venue venue;
-                    switch (venueTypeBuffer.toUpperCase()) {
-                        case IndoorVenue.TYPE:
-                            venue = new IndoorVenue(this, venueBuffer);
-                            break;
-                        case OutdoorVenue.TYPE:
-                            venue = new OutdoorVenue(this, venueBuffer);
-                            break;
-                        default:
-                            throw new JsonDeserializeError(this, "Could not load venue into automator because of invalid type detected!");
-                    }
+                    Venue venue = new Venue(this, venueBuffer);
                     venues.add(venue);
                 }
             }
