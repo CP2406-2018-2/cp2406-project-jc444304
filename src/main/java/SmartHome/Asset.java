@@ -4,6 +4,8 @@ package SmartHome;
 
 import org.json.simple.*;
 
+import java.util.ArrayList;
+
 abstract class Asset implements JsonDeserializable, JsonTypeable, Synchronizable {
 
     Automator automator;
@@ -28,6 +30,9 @@ abstract class Asset implements JsonDeserializable, JsonTypeable, Synchronizable
     }
 }
 
+/**
+ * An entity is anything that is drawn, saved, and part of the automation system.
+ */
 abstract class Entity extends Asset {
 
     String id;
@@ -104,6 +109,7 @@ abstract class Entity extends Asset {
                 JSONArray pointBuffer = new JSONArray();
                 pointBuffer.add(point.x);
                 pointBuffer.add(point.y);
+                dimensionBuffer.add(pointBuffer);
             }
             entityBuffer.put("Dimension", dimensionBuffer);
         }
