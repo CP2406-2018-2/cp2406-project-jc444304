@@ -34,12 +34,11 @@ public class Simulator extends Automator {
         setupDuration();
     }
 
-    public Simulator(JSONObject jsonObject) {
+    public Simulator(JSONObject simulatorBuffer) throws JsonDeserializedError {
 
         super();
-
         setupDuration();
-        jsonDeserialize(jsonObject);
+        jsonDeserialize(simulatorBuffer);
     }
 
     /**
@@ -56,7 +55,7 @@ public class Simulator extends Automator {
     }
 
     @Override
-    public void jsonDeserialize(JSONObject simulatorBuffer) {
+    public void jsonDeserialize(JSONObject simulatorBuffer) throws JsonDeserializedError {
 
         super.jsonDeserialize(simulatorBuffer);
 
@@ -86,7 +85,7 @@ public class Simulator extends Automator {
                     if (objectBuffer instanceof String) {
                         scenarioTypeBuffer = (String) objectBuffer;
                     } else {
-                        throw new JsonDeserializeError(this, "Invalid Scenario-Type!");
+                        throw new JsonDeserializedError("Invalid Scenario-Type!", this);
                     }
                     Scenario scenario;
                     switch (scenarioTypeBuffer.toUpperCase()) {
@@ -97,7 +96,7 @@ public class Simulator extends Automator {
                             scenario = new RefrigeratorScenario(this, scenarioBuffer);
                             break;
                         default:
-                            throw new JsonDeserializeError(this, "Unrecognized Scenario-Type!");
+                            throw new JsonDeserializedError("Unrecognized Scenario-Type!", this);
                     }
                     this.scenarios.add(scenario);
                 }
@@ -106,7 +105,7 @@ public class Simulator extends Automator {
     }
 
     @Override
-    public JSONObject jsonSerialize() {
+    public JSONObject jsonSerialize() throws JsonSerializedError {
 
         JSONObject simulatorBuffer = super.jsonSerialize();
 

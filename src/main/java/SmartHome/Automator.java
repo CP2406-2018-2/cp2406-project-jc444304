@@ -116,7 +116,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
     /**
      *
      */
-    public Automator(JSONObject jsonObject) {
+    public Automator(JSONObject jsonObject) throws JsonDeserializedError {
 
         this.setupSynchronizer();
 
@@ -171,7 +171,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
      * Loads everything that must be initialized with the configuration file.
      */
     @Override
-    public void jsonDeserialize(JSONObject automatorBuffer) {
+    public void jsonDeserialize(JSONObject automatorBuffer) throws JsonDeserializedError {
 
         Object objectBuffer;
 
@@ -238,7 +238,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
                     if (objectBuffer instanceof String) {
                         deviceTypeBuffer = (String) objectBuffer;
                     } else {
-                        throw new JsonDeserializeError(this, "Invalid Device-Type specified.");
+                        throw new JsonDeserializedError("Invalid Device-Type!", this);
                     }
                     objectBuffer = deviceBuffer.get("VenueId");
                     String venueIdBuffer;
@@ -246,7 +246,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
                         venueIdBuffer = (String) objectBuffer;
                         Venue venue = this.getVenueById(venueIdBuffer);
                         if (venue == null) {
-                            throw new JsonDeserializeError(this, "Device has Venue with ID that does not correspond.");
+                            throw new JsonDeserializedError("Device has Venue with ID that does not correspond.", this);
                         }
                         Device device;
                         switch (deviceTypeBuffer.toUpperCase()) {
@@ -281,7 +281,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
                                 device = new VehicleDevice(this, venue, deviceBuffer);
                                 break;
                             default:
-                                throw new JsonDeserializeError(this, "Inexistent Device-Type!");
+                                throw new JsonDeserializedError("Inexistent Device-Type!", this);
                         }
                         devices.add(device);
                     }
@@ -307,7 +307,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
      * Saves eveyrthing that must be dumped in the configuration file.
      */
     @Override
-    public JSONObject jsonSerialize(){
+    public JSONObject jsonSerialize() throws JsonSerializedError {
 
         JSONObject automatorBuffer = new JSONObject();
 

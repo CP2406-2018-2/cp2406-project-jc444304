@@ -5,65 +5,48 @@ package SmartHome;
 import org.json.simple.*;
 
 /**
- * Use JSON for the configurations instead of re-inventing the wheel.
+ * Forces encoded JSON representation.
  */
-interface JsonSerialization {
-
-}
-
-/**
- *
- */
-interface JsonSerializable extends JsonSerialization {
+interface JsonSerializable {
 
     /**
      *
      */
-    JSONObject jsonSerialize();
+    JSONObject jsonSerialize() throws JsonSerializedError;
 }
 
 /**
- *
+ * Forces decoded JSON representation.
  */
 interface JsonDeserializable extends JsonSerializable {
 
     /**
      *
      */
-    void jsonDeserialize(JSONObject jsonObject);
+    void jsonDeserialize(JSONObject jsonObject) throws JsonDeserializedError;
 }
 
 /**
- * An error caused when using the above JSON interfaces.
+ * An error caused when encoding JSON data.
  */
-abstract class JsonSerializationError extends RuntimeException {
+class JsonSerializedError extends Exception {
 
-    protected JsonSerialization jsonObject;
-
-    protected String erorrMessage;
-
-    JsonSerializationError (JsonSerializable object, String message) {
-        this.jsonObject = object;
-        this.erorrMessage = message;
+    JsonSerializedError(String message, JsonSerializable object) {
+        super(message);
     }
 }
 
 /**
- * An error caused when writing JSON data.
+ * An error caused when decoding JSON data.
  */
-class JsonSerializeError extends JsonSerializationError {
+class JsonDeserializedError extends Exception {
 
-    JsonSerializeError(JsonSerializable object, String message) {
-        super(object, message);
+    JsonDeserializedError(String message, JsonSerializable object) {
+        super(message);
     }
 }
 
-/**
- * An error caused when reading JSON data.
- */
-class JsonDeserializeError extends JsonSerializationError {
+interface JsonTypeable {
 
-    JsonDeserializeError(JsonSerializable object, String message) {
-        super(object, message);
-    }
+    String JSON_TYPE = "DEFAULT";
 }

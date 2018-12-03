@@ -12,35 +12,14 @@ import org.json.simple.*;
  */
 abstract class Scenario extends Asset {
 
-    String description;
-
     GregorianCalendar calendar = new GregorianCalendar();
 
     Scenario(Simulator simulator) {
         super(simulator);
     }
 
-    @Override
-    public void jsonDeserialize(JSONObject scenarioBuffer) {
-
-        super.jsonDeserialize(scenarioBuffer);
-
-        Object objectBuffer;
-
-        objectBuffer = scenarioBuffer.get("Description");
-        if (objectBuffer instanceof String) {
-            description = (String) objectBuffer;
-        }
-    }
-
-    //@Override
-    public JSONObject jsonSerialize() {
-
-        JSONObject scenarioBuffer = super.jsonSerialize();
-
-        scenarioBuffer.put("Description", description);
-
-        return scenarioBuffer;
+    public Scenario(Simulator simulator, JSONObject scenarioBuffer) throws JsonDeserializedError {
+        super(simulator, scenarioBuffer);
     }
 }
 
@@ -71,13 +50,13 @@ class TemperatureScenario extends Scenario {
         super(simulator);
     }
 
-    TemperatureScenario(Simulator simulator, JSONObject scenarioBuffer) {
         super(simulator);
         jsonDeserialize(scenarioBuffer);
+    public TemperatureScenario(Simulator simulator, JSONObject scenarioBuffer) throws JsonDeserializedError {
     }
 
     @Override
-    public void jsonDeserialize(JSONObject jsonObject) {
+    public void jsonDeserialize(JSONObject scenarioBuffer) throws JsonDeserializedError {
 
         super.jsonDeserialize(jsonObject);
 
@@ -241,15 +220,13 @@ class RefrigeratorScenario extends Scenario {
         super(simulator);
     }
 
-    RefrigeratorScenario(Simulator simulator, JSONObject scenarioBuffer) {
         super(simulator);
         jsonDeserialize(scenarioBuffer);
+    RefrigeratorScenario(Simulator simulator, JSONObject scenarioBuffer) throws JsonDeserializedError {
     }
 
     @Override
-    public void jsonDeserialize(JSONObject scenarioBuffer) {
-
-        super.jsonDeserialize(scenarioBuffer);
+    public void jsonDeserialize(JSONObject scenarioBuffer) throws JsonDeserializedError {
 
         Object bufferObject;
 
@@ -323,8 +300,12 @@ class RefrigeratorScenario extends Scenario {
     }
 
     @Override
-    public JSONObject jsonSerialize() {
         return null;
+    public JSONObject jsonSerialize() throws JsonSerializedError {
+
+        JSONObject scenarioBuffer = super.jsonSerialize();
+
+        return scenarioBuffer;
     }
 
     protected long coolingCyclesCount = 0;

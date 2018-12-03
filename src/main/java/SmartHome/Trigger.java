@@ -8,12 +8,11 @@ import org.json.simple.*;
 /**
  * Each trigger acts like a logical-gateway where events are tried on a thread and fire actions if successful.
  */
-class Trigger extends Asset {
+class Trigger extends Entity {
 
     /**
      * The user should add a description to the trigger to remember its behavior.
      */
-    String description;
 
     enum Status {
         ASLEEP,
@@ -44,11 +43,9 @@ class Trigger extends Asset {
     /**
      * Events in each trigger are tried for checking whether the trigger can fire actions.
      */
-    abstract protected class Event implements JsonDeserializable, Synchronizable {
-
         protected Trigger trigger;
 
-        final static String TYPE = "DEFAULT";
+    abstract class Event extends Entity {
 
         /**
          * Determines whether the event was successful upon trying.
@@ -60,18 +57,22 @@ class Trigger extends Asset {
          */
         protected boolean orWithPrevious = false;
 
-        public Event(Trigger trigger) {
+        public Event(Automator automator) {
+            super(automator);
+        }
 
-            this.trigger = trigger;
+        public Event(Automator automator, JSONObject eventBuffer) throws JsonDeserializedError {
+            super(automator);
+            jsonDeserialize(eventBuffer);
         }
 
         @Override
-        public JSONObject jsonSerialize() {
             return null;
+        public void jsonDeserialize(JSONObject eventBuffer) throws JsonDeserializedError {
         }
 
         @Override
-        public void jsonDeserialize(JSONObject jsonObject) {
+        public JSONObject jsonSerialize() throws JsonSerializedError {
 
         }
     }
@@ -107,9 +108,12 @@ class Trigger extends Asset {
 
     private ArrayList<Event> events = new ArrayList<>();
 
-    abstract protected class Action implements JsonDeserializable, Synchronizable {
+    abstract class Action extends Entity {
 
         final public static String TYPE = "DEFAULT";
+        public Action(Automator automator) {
+            super(automator);
+        }
     }
 
     /**
@@ -120,43 +124,51 @@ class Trigger extends Asset {
         final public static String TYPE = "CHANGE_TRIGGER_STATUS";
 
         protected String targetTriggerId = "";
+        public ChangeTriggerStatusAction() {
+            super(Trigger.this.automator);
+        }
 
         protected boolean targetTriggerState = false;
+        public ChangeTriggerStatusAction(JSONObject actionBuffer) throws JsonDeserializedError {
+            super(Trigger.this.automator);
+            jsonDeserialize(actionBuffer);
+        }
+
+        @Override
+        public void jsonDeserialize(JSONObject actionBuffer) throws JsonDeserializedError {
+
+            super.jsonDeserialize(actionBuffer);
+
+            Object bufferObject;
+
+            bufferObject = actionBuffer.get("TargetTriggerId");
+            if (bufferObject instanceof String) {
+                targetTriggerId = (String) bufferObject;
+            }
+            bufferObject = actionBuffer.get("TargetTriggerState");
+            if (bufferObject instanceof Boolean) {
+                targetTriggerState = (boolean) bufferObject;
+            }
+        }
+
+        @Override
+        public JSONObject jsonSerialize() throws JsonSerializedError {
+
+            JSONObject actionBuffer = super.jsonSerialize();
+
+            actionBuffer.put("TargetTriggerId", targetTriggerId);
+            actionBuffer.put("TargetTriggerState", targetTriggerState);
+
+            return actionBuffer;
+        }
 
         @Override
         public void synchronize(long loopsPerSec) {
 
-            Trigger targetTrigger = automator.getTriggerById(this.targetTriggerId);
+            Trigger targetTrigger = automator.getTriggerById(targetTriggerId);
 
             if (targetTrigger != null) {
-                targetTrigger.status = this.targetTriggerState ? Status.READY : Status.ASLEEP;
-            }
-        }
-
-        @Override
-        public JSONObject jsonSerialize() {
-
-            JSONObject jsonObject = new JSONObject();
-
-            jsonObject.put("TargetTriggerId", this.targetTriggerId);
-            jsonObject.put("TargetTriggerState", this.targetTriggerState);
-
-            return jsonObject;
-        }
-
-        @Override
-        public void jsonDeserialize(JSONObject jsonObject) {
-
-            Object bufferObject;
-
-            bufferObject = jsonObject.get("TargetTriggerId");
-            if (bufferObject instanceof String) {
-                this.targetTriggerId = (String) bufferObject;
-            }
-
-            bufferObject = jsonObject.get("TargetTriggerState");
-            if (bufferObject instanceof Boolean) {
-                this.targetTriggerState = (boolean) bufferObject;
+                targetTrigger.status = targetTriggerState ? Status.READY : Status.ASLEEP;
             }
         }
     }
@@ -172,15 +184,13 @@ class Trigger extends Asset {
 
         protected boolean state = false;
 
+        OpaqueApparatusAction() {
+            super(Trigger.this.automator);
+        }
+
         @Override
-        public void synchronize(long loopsPerSec) {
+        public void jsonDeserialize(JSONObject jsonObject) {
 
-            Device targetDevice = automator.getDeviceById(this.deviceTag);
-
-            if (targetDevice instanceof OpaqueApparatus) {
-                OpaqueApparatus opaqueApparatus = (OpaqueApparatus) targetDevice;
-                //opaqueApparatus.setState(this.);
-            }
         }
 
         @Override
@@ -189,21 +199,37 @@ class Trigger extends Asset {
         }
 
         @Override
-        public void jsonDeserialize(JSONObject jsonObject) {
+        public void synchronize(long loopsPerSec) {
 
+            Device targetDevice = automator.getDeviceById(this.deviceTag);
+
+            if (targetDevice instanceof OpaqueStateApparatus) {
+                OpaqueStateApparatus opaqueApparatus = (OpaqueStateApparatus) targetDevice;
+                //opaqueApparatus.setState(this.);
+            }
         }
     }
 
-    private ArrayList<Action> actions = new ArrayList<>();
+    public Trigger(Automator automator) {
+        super(automator);
+    }
 
-    @Override
-    public JSONObject jsonSerialize() {
-        return null;
+    public Trigger(Automator automator, JSONObject triggerBuffer) throws JsonDeserializedError {
+        super(automator, triggerBuffer);
     }
 
     @Override
-    public void jsonDeserialize(JSONObject jsonObject) {
+    public void jsonDeserialize(JSONObject triggerBuffer) throws JsonDeserializedError {
 
+        super.jsonDeserialize(triggerBuffer);
+    }
+
+    @Override
+    public JSONObject jsonSerialize() throws JsonSerializedError {
+
+        JSONObject triggerBuffer = super.jsonSerialize();
+
+        return triggerBuffer;
     }
 
     public void synchronize(long loopsPerSecond) {
@@ -245,14 +271,5 @@ class Trigger extends Asset {
         }
 
         this.status = Status.DONE;
-    }
-
-    Trigger(Automator automator) {
-        super(automator);
-    }
-
-    Trigger(Automator automator, JSONObject triggerBuffer) {
-        super(automator);
-        jsonDeserialize(triggerBuffer);
     }
 }

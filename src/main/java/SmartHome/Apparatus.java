@@ -72,7 +72,7 @@ interface GradientApparatus extends OpaqueApparatus {
 /**
  * A device is any apparatus that is connected to the automation of the household.
  */
-abstract class Device extends Asset implements Apparatus {
+abstract class Device extends Entity implements Apparatus {
 
     /**
      *
@@ -87,65 +87,54 @@ abstract class Device extends Asset implements Apparatus {
      * Determines whether the apparatus is currently working.
      * If not, then it may be malfunctioning, accidentally unplugged or uncharged, etc.
      */
-    protected Status status;
-
-    public Status getStatus() {
-        return this.status;
-    }
+    Status status;
 
     /**
-     * Specifies where this device is located within a single venue.
+     * Specifies where this Device is located within a single Venue.
      */
     Venue venue;
 
-    Device(Automator automator, Venue venue) {
+    public Device(Automator automator, Venue venue) {
         super(automator);
         this.venue = venue;
     }
 
+    public Device(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
+        super(automator);
+        this.venue = venue;
+        jsonDeserialize(deviceBuffer);
+    }
+
+    @Override
+    public void jsonDeserialize(JSONObject deviceBuffer) throws JsonDeserializedError {
+
+        super.jsonDeserialize(deviceBuffer);
+    }
+
+    @Override
+    public JSONObject jsonSerialize() throws JsonSerializedError {
+
+        JSONObject deviceBuffer = super.jsonSerialize();
+
+        if (venue == null) {
+            throw new JsonSerializedError("Cannot encode Device!", this);
+        }
+
+        deviceBuffer.put("VenueId", venue.id);
+
+        return deviceBuffer;
+    }
+
     @Override
     public void synchronize(long loopsPerSecond) {
-        return;
-    }
 
-    @Override
-    public void jsonDeserialize(JSONObject jsonObject) {
-
-        Object jsonObjectName = jsonObject.get("Name");
-        if (jsonObjectName instanceof String) {
-            this.name = (String) jsonObjectName;
-        }
-    }
-
-    @Override
-    public JSONObject jsonSerialize() {
-
-        JSONObject jsonObject = new JSONObject();
-
-        jsonObject.put("Type", this.TYPE);
-        jsonObject.put("Name", this.name);
-
-        return jsonObject;
-    }
-}
-
-/**
- * 
- */
-abstract class SensorDevice extends Device {
-
-    final static String TYPE = "SENSOR";
-
-    SensorDevice(Automator automator, Venue venue) {
-
-        super(automator, venue);
     }
 }
 
 /**
  *
  */
-class MotionSensorDevice extends SensorDevice {
+class MotionSensorDevice extends Device implements DetectableApparatus {
 
     final static String TYPE = "MOTION_SENSOR";
 
@@ -153,9 +142,14 @@ class MotionSensorDevice extends SensorDevice {
         super(automator, venue);
     }
 
-    MotionSensorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) {
+    MotionSensorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
+    }
+
+    @Override
+    public boolean handleDetection(boolean detection) {
+        return false;
     }
 }
 
@@ -170,7 +164,7 @@ class LightDevice extends Device {
         super(automator, venue);
     }
 
-    LightDevice(Automator automator, Venue venue, JSONObject deviceBuffer) {
+    LightDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -187,7 +181,7 @@ class VentilatorDevice extends Device {
         super(automator, venue);
     }
 
-    VentilatorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) {
+    VentilatorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -199,7 +193,7 @@ class DishWasherDevice extends Device {
         super(automator, venue);
     }
 
-    DishWasherDevice(Automator automator, Venue venue, JSONObject deviceBuffer) {
+    DishWasherDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -215,9 +209,7 @@ class RefrigeratorDevice extends Device {
     /**
      * A storage section of the refrigerator such as the freezer compared to the main storage.
      */
-    class Compartment implements JsonDeserializable, Synchronizable {
-
-        protected String name = "Unknown Compartment";
+    class Compartment extends Asset {
 
         /**
          * Specifies the number of cubic litres this refrigerator holds.
@@ -226,11 +218,20 @@ class RefrigeratorDevice extends Device {
 
         public long getCapacity() { return this.capacity; }
 
+        double currentTemperature = 0.0;
+
         public void setCapacity(long capacity) { this.capacity = capacity; }
 
         protected double maximumTemperature = 4.0;
 
-        protected double currentTemperature = 0.0;
+        Compartment() {
+            super(RefrigeratorDevice.this.automator);
+        }
+
+        public Compartment(JSONObject compartmentBuffer) {
+            super(RefrigeratorDevice.this.automator);
+            jsonDeserialize(compartmentBuffer);
+        }
 
         @Override
         public void jsonDeserialize(JSONObject jsonObject) {
@@ -260,13 +261,13 @@ class RefrigeratorDevice extends Device {
         super(automator, venue);
     }
 
-    RefrigeratorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) {
+    public RefrigeratorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
 
     @Override
-    public void jsonDeserialize(JSONObject jsonObject) {
+    public void jsonDeserialize(JSONObject jsonObject) throws JsonDeserializedError {
 
         super.jsonDeserialize(jsonObject);
 
@@ -307,7 +308,7 @@ class AirConditionerDevice extends Device {
         super(automator, venue);
     }
 
-    AirConditionerDevice(Automator automator, Venue venue, JSONObject deviceBuffer) {
+    AirConditionerDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -324,7 +325,7 @@ class IrrigatorDevice extends Device {
         super(automator, venue);
     }
 
-    IrrigatorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) {
+    IrrigatorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -341,7 +342,7 @@ class OvenDevice extends Device {
         super(automator, venue);
     }
 
-    OvenDevice(Automator automator, Venue venue, JSONObject deviceBuffer) {
+    OvenDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -358,7 +359,7 @@ class VehicleDevice extends Device {
         super(automator, venue);
     }
 
-    VehicleDevice(Automator automator, Venue venue, JSONObject deviceBuffer) {
+    VehicleDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -375,7 +376,7 @@ abstract class AccessDevice extends Device {
         super(automator, venue);
     }
 
-    AccessDevice(Automator automator, Venue venue, JSONObject deviceBuffer) {
+    AccessDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -392,7 +393,7 @@ class DoorDevice extends AccessDevice {
         super(automator, venue);
     }
 
-    DoorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) {
+    DoorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -409,7 +410,7 @@ class RollerDoorDevice extends AccessDevice {
         super(automator, venue);
     }
 
-    RollerDoorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) {
+    RollerDoorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }

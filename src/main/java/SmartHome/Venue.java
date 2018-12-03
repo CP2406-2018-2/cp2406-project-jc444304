@@ -7,24 +7,19 @@ import org.json.simple.*;
 /**
  *
  */
-abstract class Venue extends Asset {
+class Venue extends Entity {
 
-    Venue(Automator automator) {
+    public Venue(Automator automator) {
         super(automator);
     }
 
-    @Override
-    public JSONObject jsonSerialize() {
-
-        JSONObject venueBuffer = super.jsonSerialize();
-
-        // TODO
-
-        return venueBuffer;
+    public Venue(Automator automator, JSONObject venueBuffer) throws JsonDeserializedError {
+        super(automator);
+        jsonDeserialize(venueBuffer);
     }
 
     @Override
-    public void jsonDeserialize(JSONObject venueBuffer) {
+    public void jsonDeserialize(JSONObject venueBuffer) throws JsonDeserializedError {
 
         super.jsonDeserialize(venueBuffer);
 
@@ -34,42 +29,18 @@ abstract class Venue extends Asset {
     }
 
     @Override
+    public JSONObject jsonSerialize() throws JsonSerializedError {
+
+        JSONObject venueBuffer = super.jsonSerialize();
+
+        venueBuffer.put("Outdoor", outdoor);
+
+        return venueBuffer;
+    }
+
+    @Override
     public void synchronize(long loopsPerSecond) {
 
-        // TODO: any code for refreshing the venue in the thread must be placed here.
-    }
-}
-
-/**
- *
- */
-class OutdoorVenue extends Venue {
-
-    final static String TYPE = "OUTDOOR";
-
-    OutdoorVenue(Automator automator) {
-        super(automator);
-    }
-
-    OutdoorVenue(Automator automator, JSONObject venueBuffer) {
-        super(automator);
-        jsonDeserialize(venueBuffer);
-    }
-}
-
-/**
- *
- */
-class IndoorVenue extends Venue {
-
-    final static String TYPE = "INDOOR";
-
-    IndoorVenue(Automator automator) {
-        super(automator);
-    }
-
-    IndoorVenue(Automator automator, JSONObject venueBuffer) {
-        super(automator);
-        jsonDeserialize(venueBuffer);
+        // TODO
     }
 }
