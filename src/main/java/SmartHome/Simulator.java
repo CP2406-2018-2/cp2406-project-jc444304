@@ -12,6 +12,8 @@ import org.json.simple.*;
  */
 public class Simulator extends Automator {
 
+    final static String JSON_TYPE = "SIMULATOR";
+
     /**
      * Specifies the starting-date.
      */
@@ -25,12 +27,11 @@ public class Simulator extends Automator {
     /**
      *
      */
-    ArrayList<Scenario> scenarios = new ArrayList<>();
+    private ArrayList<Scenario> scenarios = new ArrayList<>();
 
     public Simulator() {
 
         super();
-
         setupDuration();
     }
 
@@ -77,10 +78,10 @@ public class Simulator extends Automator {
         /* Deserialize Scenarios: */
         objectBuffer = simulatorBuffer.get("Scenarios");
         if (objectBuffer instanceof JSONArray) {
-            JSONArray jsonScenarios = (JSONArray) objectBuffer;
-            for (Object elementBuffer : jsonScenarios) {
+            JSONArray scenariosBuffer = (JSONArray) objectBuffer;
+            for (Object elementBuffer : scenariosBuffer) {
                 if (elementBuffer instanceof JSONObject) {
-                    JSONObject scenarioBuffer = (JSONObject) elementBuffer;
+                    JSONObject scenarioBuffer = (JSONObject) objectBuffer;
                     objectBuffer = scenarioBuffer.get("Type");
                     if (objectBuffer == null) {
                         throw new JsonDeserializedError("Unspecified Scenario-Type!", this);
@@ -89,7 +90,7 @@ public class Simulator extends Automator {
                     if (objectBuffer instanceof String) {
                         scenarioTypeBuffer = (String) objectBuffer;
                     } else {
-                        throw new JsonDeserializedError("Invalid Scenario-Type!", this);
+                        throw new JsonDeserializedError("Invalid Scenario-Type buffer!", this);
                     }
                     Scenario scenario;
                     switch (scenarioTypeBuffer.toUpperCase()) {
@@ -103,6 +104,8 @@ public class Simulator extends Automator {
                             throw new JsonDeserializedError("Unrecognized Scenario-Type!", this);
                     }
                     scenarios.add(scenario);
+                } else {
+                    throw new JsonDeserializedError("Invalid Scenario buffer!", this);
                 }
             }
         }

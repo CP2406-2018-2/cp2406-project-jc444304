@@ -3,12 +3,15 @@
 package SmartHome;
 
 import java.util.ArrayList;
+
 import org.json.simple.*;
 
 /**
- *
+ * The automation system merely reflects the reality of a domestic environment.
  */
-public class Automator implements JsonDeserializable, Synchronizable {
+public class Automator implements JsonDeserializable, JsonTypeable, Synchronizable {
+
+    final static String JSON_TYPE = "AUTOMATOR";
 
     /**
      * Points to the synchronization thread.
@@ -110,17 +113,16 @@ public class Automator implements JsonDeserializable, Synchronizable {
      */
     public Automator() {
 
-        this.setupSynchronizer();
+        setupSynchronizer();
     }
 
     /**
      *
      */
-    public Automator(JSONObject jsonObject) throws JsonDeserializedError {
+    public Automator(JSONObject automatorBuffer) throws JsonDeserializedError {
 
-        this.setupSynchronizer();
-
-        this.jsonDeserialize(jsonObject);
+        setupSynchronizer();
+        jsonDeserialize(automatorBuffer);
     }
 
     /**
@@ -128,15 +130,15 @@ public class Automator implements JsonDeserializable, Synchronizable {
      */
     protected void setupSynchronizer() {
 
-        if (this.synchronizer != null && this.synchronizer.isAlive()) {
-            this.halt();
+        if (synchronizer != null && synchronizer.isAlive()) {
+            halt();
         }
 
-        this.launched = false;
-        this.synchronizer = new Synchronizer(this);
-        this.synchronizer.setSpeed(this.syncSpeed);
-        this.synchronizer.setLimit(this.syncDuration * Synchronizer.NANO_SECS_PER_SEC);
-        this.synchronizer.setLoopsPerSecond(this.syncLoopsPerSec);
+        launched = false;
+        synchronizer = new Synchronizer(this);
+        synchronizer.setSpeed(syncSpeed);
+        synchronizer.setLimit(syncDuration * Synchronizer.NANO_SECS_PER_SEC);
+        synchronizer.setLoopsPerSecond(syncLoopsPerSec);
     }
 
     /**
@@ -269,7 +271,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
                                 device = new VehicleDevice(this, venue, deviceBuffer);
                                 break;
                             default:
-                                throw new JsonDeserializedError("Inexistent Device-Type!", this);
+                                throw new JsonDeserializedError("Unknown Device-Type!", this);
                         }
                         devices.add(device);
                     }
@@ -282,8 +284,9 @@ public class Automator implements JsonDeserializable, Synchronizable {
         if (objectBuffer instanceof JSONArray) {
             JSONArray triggersBuffer = (JSONArray) objectBuffer;
             for (Object elementBuffer : triggersBuffer) {
-                if (elementBuffer instanceof JSONObject) {
-                    JSONObject triggerBuffer = (JSONObject) elementBuffer;
+                objectBuffer = elementBuffer;
+                if (objectBuffer instanceof JSONObject) {
+                    JSONObject triggerBuffer = (JSONObject) objectBuffer;
                     Trigger trigger = new Trigger(this, triggerBuffer);
                     triggers.add(trigger);
                 }
@@ -302,7 +305,6 @@ public class Automator implements JsonDeserializable, Synchronizable {
         /* Serialize Synchronizer: */
         JSONObject synchronizerBuffer = new JSONObject();
         synchronizerBuffer.put("Speed", syncSpeed);
-        synchronizerBuffer.put("Limit", syncSpeed);
         synchronizerBuffer.put("LoopsPerSecond", syncLoopsPerSec);
         automatorBuffer.put("Synchronizer", synchronizerBuffer);
 
@@ -337,7 +339,6 @@ public class Automator implements JsonDeserializable, Synchronizable {
      * Synchronizes everything that is synchronizable under the automator.
      */
     public void synchronize(long loopsPerSecond) {
-        System.out.println(synchronizer.getTime());
 
         /* Synchronize venues: */
         for (Venue venue : venues) {

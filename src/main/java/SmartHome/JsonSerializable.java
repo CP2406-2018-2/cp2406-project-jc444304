@@ -48,5 +48,5 @@ class JsonDeserializedError extends Exception {
 
 interface JsonTypeable {
 
-    String JSON_TYPE = "DEFAULT";
+    final static String JSON_TYPE = "DEFAULT";
 }
