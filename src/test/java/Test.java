@@ -19,6 +19,7 @@ import org.jfree.graphics2d.svg.SVGGraphics2D;
 import SmartHome.*;
 
 import javax.swing.*;
+
 /**
  *
  */
@@ -33,11 +34,11 @@ public abstract class Test {
      */
     public static void main(String[] args) {
 
-        System.out.println("Attempting to test web browser...");
-        testWebBrowser();
-
         System.out.println("Attempting to test SVG canvas...");
         testGraphics();
+
+        System.out.println("Attempting to test web browser...");
+        testWebBrowser();
 
         Automator automator = new Automator();
     }
@@ -68,12 +69,27 @@ public abstract class Test {
         return true;
     }
 
+    static String canvasEncoded;
+
+    private static boolean testGraphics() {
+
+        SVGGraphics2D canvas = new SVGGraphics2D(300, 300);
+        canvas.setPaint(Color.RED);
+        canvas.draw(new Rectangle(50, 50, 200, 200));
+        canvasEncoded = canvas.getSVGElement();
+
+        /* Print XML code to see if the vector was rendered: */
+        System.out.println(canvasEncoded);
+
+        return true;
+    }
+
     private static boolean testWebBrowser() {
 
         JFXPanel panel = new JFXPanel();
         Platform.runLater(() -> {
             WebView webView = new WebView();
-            webView.getEngine().loadContent("<p>Test!!!</p>");
+            webView.getEngine().loadContent(canvasEncoded);
             panel.setScene(new Scene(webView));
         });
 
@@ -81,17 +97,6 @@ public abstract class Test {
         JFrame frame = new JFrame();
         frame.add(panel);
         frame.setVisible(true);
-
-        return true;
-    }
-
-    private static boolean testGraphics() {
-
-        SVGGraphics2D canvas = new SVGGraphics2D(300, 300);
-        canvas.setPaint(Color.RED);
-        canvas.draw(new Rectangle(50, 50, 200, 200));
-        String canvasEncoded = canvas.getSVGElement();
-        System.out.println(canvasEncoded);
 
         return true;
     }
