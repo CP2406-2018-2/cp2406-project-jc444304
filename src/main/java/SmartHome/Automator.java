@@ -18,6 +18,22 @@ public class Automator implements JsonDeserializable, JsonTypeable, Synchronizab
      */
     long sizeX, sizeY;
 
+    long getSizeX() {
+        return sizeX;
+    }
+
+    void setSizeX(long sizeX) {
+        this.sizeX = sizeX;
+    }
+
+    long getSizeY() {
+        return sizeY;
+    }
+
+    void setSizeY(long sizeY) {
+        this.sizeY = sizeY;
+    }
+
     /**
      * Points to the synchronization thread.
      */
