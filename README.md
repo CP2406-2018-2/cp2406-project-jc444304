@@ -22,3 +22,6 @@ The refrigerator compressor rests when the refrigeration temperature is below th
 
 ## Inspirations
  - [Garadget](https://www.garadget.com/) Garage door wireless control.
+
+## References
+ - [Fireworks Export Extension](http://fireworks.abeall.com/extensions/commands/Export/): used for exporting PNG to SVG.
