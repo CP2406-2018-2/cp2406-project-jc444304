@@ -14,6 +14,11 @@ public class Automator implements JsonDeserializable, JsonTypeable, Synchronizab
     final static String JSON_TYPE = "AUTOMATOR";
 
     /**
+     * Specifies the width and height of the overview.
+     */
+    long sizeX, sizeY;
+
+    /**
      * Points to the synchronization thread.
      */
     Synchronizer synchronizer;
