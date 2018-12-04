@@ -4,6 +4,8 @@ package SmartHome;
 
 import org.json.simple.*;
 
+import java.awt.*;
+import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 
 abstract class Asset implements JsonDeserializable, JsonTypeable, Synchronizable {
@@ -41,7 +43,7 @@ abstract class Entity extends Asset {
 
     String description;
 
-    ArrayList<Point> dimension;
+    ArrayList<Point> dimensions;
 
     public Entity(Automator automator) {
         super(automator);
@@ -68,22 +70,23 @@ abstract class Entity extends Asset {
         if (objectBuffer instanceof String) {
             description = (String) objectBuffer;
         }
-        objectBuffer = entityBuffer.get("Dimension");
+        objectBuffer = entityBuffer.get("Dimensions");
         if (objectBuffer instanceof JSONArray) {
+            dimensions = new ArrayList<>();
             JSONArray dimensionBuffer = (JSONArray) objectBuffer;
             for (Object elementBuffer : dimensionBuffer) {
                 if (elementBuffer instanceof JSONArray) {
                     JSONArray pointBuffer = (JSONArray) elementBuffer;
-                    int pointX = 0, pointY = 0;
+                    long pointX = 0, pointY = 0;
                     objectBuffer = pointBuffer.get(0);
-                    if (objectBuffer instanceof Integer) {
-                        pointX = (int) objectBuffer;
+                    if (objectBuffer instanceof Long) {
+                        pointX = (long) objectBuffer;
                     }
                     objectBuffer = pointBuffer.get(1);
-                    if (objectBuffer instanceof Integer) {
-                        pointY = (int) objectBuffer;
+                    if (objectBuffer instanceof Long) {
+                        pointY = (long) objectBuffer;
                     }
-                    dimension.add(new Point(pointX, pointY));
+                    dimensions.add(new Point((int) pointX, (int) pointY));
                 }
             }
         }
@@ -103,27 +106,42 @@ abstract class Entity extends Asset {
         if (description != null) {
             entityBuffer.put("Description", description);
         }
-        if (dimension != null) {
+        if (dimensions != null) {
             JSONArray dimensionBuffer = new JSONArray();
-            for (Point point : dimension) {
+            for (Point point : dimensions) {
                 JSONArray pointBuffer = new JSONArray();
                 pointBuffer.add(point.x);
                 pointBuffer.add(point.y);
                 dimensionBuffer.add(pointBuffer);
             }
-            entityBuffer.put("Dimension", dimensionBuffer);
+            entityBuffer.put("Dimensions", dimensionBuffer);
         }
 
         return entityBuffer;
     }
 
-    class Point {
+    /**
+     * Generates a path polygon according to the Asset dimensions.
+     * @return Returns an instance of a Path or null if no points are present.
+     */
+    public GeneralPath toPath() {
 
-        int x, y;
+        GeneralPath path = null;
 
-        Point(int x, int y) {
-            this.x = x;
-            this.y = y;
+        if (dimensions != null) {
+            int pointsSize = dimensions.size();
+            path = new GeneralPath(GeneralPath.WIND_EVEN_ODD, pointsSize);
+            for (int i = 0; i < pointsSize; i++) {
+                Point point = dimensions.get(i);
+                if (i == 0) {
+                    path.moveTo(point.x, point.y);
+                } else {
+                    path.lineTo(point.x, point.y);
+                }
+            }
+            path.closePath();
         }
+
+        return path;
     }
 }
