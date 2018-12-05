@@ -56,3 +56,9 @@ A user needs a visual overview of the home to easily navigate through each venue
 
 NOTE: Preferably use SVG images. (DEPRECATED).
 ```
+
+```
+A user needs to draw the vectors of everything part of the home. (TODO).
+
+NOTE: Vectors need to be JSON formatted. Walls are also needed.
+```

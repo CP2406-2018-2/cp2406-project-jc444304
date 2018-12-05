@@ -121,7 +121,7 @@ abstract class Entity extends Asset {
     }
 
     /**
-     * Generates a path polygon according to the Asset dimensions.
+     * Generates a path polygon according to dimensions.
      * @return Returns an instance of a Path or null if no points are present.
      */
     public GeneralPath toPath() {
