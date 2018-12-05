@@ -62,6 +62,10 @@ NOTE: Preferably use SVG images. (DEPRECATED).
 ```
 
 ```
+A user needs a guide to clarify how to use the application and simulation. (TEST).
+```
+
+```
 A user needs to draw the vectors of everything part of the home. (TODO).
 
 NOTE: Vectors need to be JSON formatted. Walls are also needed.
