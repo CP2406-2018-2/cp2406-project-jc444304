@@ -60,6 +60,21 @@ public class Automator implements JsonDeserializable, JsonTypeable, Synchronizab
     /**
      *
      */
+    private ArrayList<Fixture> fixtures = new ArrayList<>();
+
+    /**
+     * Fetches a Fixture by its ID.
+     * @return Returns null if the Fixture could not be fetched.
+     */
+    public Fixture getFixtureById(String id) {
+        for (Fixture fixture : fixtures) {
+            if (fixture.id != null && fixture.id.equals(id)) {
+                return fixture;
+            }
+        }
+        return null;
+    }
+
     private ArrayList<Venue> venues = new ArrayList<>();
 
     /**
