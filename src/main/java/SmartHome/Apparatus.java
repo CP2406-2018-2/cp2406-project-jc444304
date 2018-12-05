@@ -463,23 +463,7 @@ class VehicleDevice extends Device {
 /**
  *
  */
-abstract class AccessDevice extends Device {
-
-    final static String TYPE = "ACCESS";
-
-    public AccessDevice(Automator automator, Venue venue) {
-        super(automator, venue);
-    }
-
-    public AccessDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
-        super(automator, venue, deviceBuffer);
-    }
-}
-
-/**
- *
- */
-class DoorDevice extends AccessDevice {
+class DoorDevice extends Device {
 
     final static String JSON_TYPE = "DOOR";
 
@@ -501,7 +485,7 @@ class DoorDevice extends AccessDevice {
 /**
  *
  */
-class RollerDoorDevice extends AccessDevice {
+class RollerDoorDevice extends DoorDevice {
 
     final static String JSON_TYPE = "ROLLER_DOOR";
 
