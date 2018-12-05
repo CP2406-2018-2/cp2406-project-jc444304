@@ -7,6 +7,7 @@
 >
 	<g id="Images">
 		<image opacity="0.502" visibility="hidden" x="1" y="13" width="300" height="250" xlink:href="Unit.svg.images/image1.png"/>
+		<path id="SUN_MOVEMENT" d="M 62 0 L 238 250 " stroke="#ff6600" stroke-width="1" fill="none"/>
 	</g>
 	<g id="Floors">
 		<path id="KITCHEN" d="M 38 152 L 137 152 L 137 215 L 38 215 L 38 152 Z" fill="#cccccc"/>
