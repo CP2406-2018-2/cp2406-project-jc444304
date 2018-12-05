@@ -10,6 +10,8 @@ import org.json.simple.*;
 interface JsonSerializable {
 
     JSONObject jsonSerialize() throws JsonSerializedError;
+
+    String getJsonType();
 }
 
 /**
@@ -17,7 +19,7 @@ interface JsonSerializable {
  */
 interface JsonDeserializable extends JsonSerializable {
 
-    void jsonDeserialize(JSONObject jsonObject) throws JsonDeserializedError;
+    void jsonDeserialize(JSONObject jsonBuffer) throws JsonDeserializedError;
 }
 
 /**
@@ -25,7 +27,7 @@ interface JsonDeserializable extends JsonSerializable {
  */
 class JsonSerializedError extends Exception {
 
-    JsonSerializedError(String message, JsonSerializable object) {
+    JsonSerializedError(String message, JsonSerializable instance) {
         super(message);
     }
 }
@@ -38,9 +40,4 @@ class JsonDeserializedError extends Exception {
     JsonDeserializedError(String message, JsonSerializable object) {
         super(message);
     }
-}
-
-interface JsonTypeable {
-
-    final static String JSON_TYPE = "DEFAULT";
 }

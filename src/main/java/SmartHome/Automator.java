@@ -9,7 +9,7 @@ import org.json.simple.*;
 /**
  * The automation system merely reflects the reality of a domestic environment.
  */
-public class Automator implements JsonDeserializable, JsonTypeable, Synchronizable {
+public class Automator implements JsonDeserializable, Synchronizable {
 
     final static String JSON_TYPE = "AUTOMATOR";
 
@@ -279,37 +279,37 @@ public class Automator implements JsonDeserializable, JsonTypeable, Synchronizab
                         }
                         Device device;
                         switch (deviceTypeBuffer.toUpperCase()) {
-                            case RefrigeratorDevice.TYPE:
+                            case RefrigeratorDevice.JSON_TYPE:
                                 device = new RefrigeratorDevice(this, venue, deviceBuffer);
                                 break;
-                            case LightDevice.TYPE:
+                            case LightDevice.JSON_TYPE:
                                 device = new LightDevice(this, venue, deviceBuffer);
                                 break;
-                            case VentilatorDevice.TYPE:
+                            case VentilatorDevice.JSON_TYPE:
                                 device = new VentilatorDevice(this, venue, deviceBuffer);
                                 break;
-                            case AirConditionerDevice.TYPE:
+                            case AirConditionerDevice.JSON_TYPE:
                                 device = new AirConditionerDevice(this, venue, deviceBuffer);
                                 break;
-                            case IrrigatorDevice.TYPE:
+                            case IrrigatorDevice.JSON_TYPE:
                                 device = new IrrigatorDevice(this, venue, deviceBuffer);
                                 break;
-                            case DoorDevice.TYPE:
+                            case DoorDevice.JSON_TYPE:
                                 device = new DoorDevice(this, venue, deviceBuffer);
                                 break;
-                            case RollerDoorDevice.TYPE:
+                            case RollerDoorDevice.JSON_TYPE:
                                 device = new RollerDoorDevice(this, venue, deviceBuffer);
                                 break;
-                            case OvenDevice.TYPE:
+                            case OvenDevice.JSON_TYPE:
                                 device = new OvenDevice(this, venue, deviceBuffer);
                                 break;
-                            case MotionSensorDevice.TYPE:
+                            case MotionSensorDevice.JSON_TYPE:
                                 device = new MotionSensorDevice(this, venue, deviceBuffer);
                                 break;
-                            case VehicleDevice.TYPE:
+                            case VehicleDevice.JSON_TYPE:
                                 device = new VehicleDevice(this, venue, deviceBuffer);
                                 break;
-                            case WindowDevice.TYPE:
+                            case WindowDevice.JSON_TYPE:
                                 device = new WindowDevice(this, venue, deviceBuffer);
                                 break;
                             default:

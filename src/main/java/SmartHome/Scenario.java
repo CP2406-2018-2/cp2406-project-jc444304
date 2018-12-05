@@ -28,7 +28,12 @@ abstract class Scenario extends Entity {
  */
 class TemperatureScenario extends Scenario {
 
-    final static String TYPE = "TEMPERATURE";
+    final static String JSON_TYPE = "TEMPERATURE";
+
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
 
     private double startDegrees;
 
@@ -157,7 +162,12 @@ class TemperatureScenario extends Scenario {
  */
 class RefrigeratorScenario extends Scenario {
 
-    final static String TYPE = "REFRIGERATOR";
+    final static String JSON_TYPE = "REFRIGERATOR";
+
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
 
     /**
      * Points to the target refrigeration device which this scenario imposes on.

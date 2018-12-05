@@ -136,13 +136,18 @@ abstract class Device extends Entity implements Apparatus {
  */
 class MotionSensorDevice extends Device implements DetectableApparatus {
 
-    final static String TYPE = "MOTION_SENSOR";
+    final static String JSON_TYPE = "MOTION_SENSOR";
 
-    MotionSensorDevice(Automator automator, Venue venue) {
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
+
+    public MotionSensorDevice(Automator automator, Venue venue) {
         super(automator, venue);
     }
 
-    MotionSensorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
+    public MotionSensorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -155,7 +160,12 @@ class MotionSensorDevice extends Device implements DetectableApparatus {
 
 class WindowDevice extends Device {
 
-    final static String TYPE = "WINDOW";
+    final static String JSON_TYPE = "WINDOW";
+
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
 
     public WindowDevice(Automator automator, Venue venue) {
         super(automator, venue);
@@ -172,13 +182,18 @@ class WindowDevice extends Device {
  */
 class LightDevice extends Device {
 
-    final static String TYPE = "LIGHT";
+    final static String JSON_TYPE = "LIGHT";
 
-    LightDevice(Automator automator, Venue venue) {
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
+
+    public LightDevice(Automator automator, Venue venue) {
         super(automator, venue);
     }
 
-    LightDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
+    public LightDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -189,13 +204,18 @@ class LightDevice extends Device {
  */
 class VentilatorDevice extends Device {
 
-    final static String TYPE = "VENTILATOR";
+    final static String JSON_TYPE = "VENTILATOR";
 
-    VentilatorDevice(Automator automator, Venue venue) {
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
+
+    public VentilatorDevice(Automator automator, Venue venue) {
         super(automator, venue);
     }
 
-    VentilatorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
+    public VentilatorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -203,11 +223,18 @@ class VentilatorDevice extends Device {
 
 class DishWasherDevice extends Device {
 
-    DishWasherDevice(Automator automator, Venue venue) {
+    final static String JSON_TYPE = "DISH_WASHER";
+
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
+
+    public DishWasherDevice(Automator automator, Venue venue) {
         super(automator, venue);
     }
 
-    DishWasherDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
+    public DishWasherDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -218,7 +245,12 @@ class DishWasherDevice extends Device {
  */
 class RefrigeratorDevice extends Device {
 
-    final static String TYPE = "REFRIGERATOR";
+    final static String JSON_TYPE = "REFRIGERATOR";
+
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
 
     /**
      * A storage section of the refrigerator such as the freezer.
@@ -345,13 +377,18 @@ class RefrigeratorDevice extends Device {
  */
 class AirConditionerDevice extends Device {
 
-    final static String TYPE = "AIR_CONDITIONER";
+    final static String JSON_TYPE = "AIR_CONDITIONER";
 
-    AirConditionerDevice(Automator automator, Venue venue) {
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
+
+    public AirConditionerDevice(Automator automator, Venue venue) {
         super(automator, venue);
     }
 
-    AirConditionerDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
+    public AirConditionerDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -362,13 +399,18 @@ class AirConditionerDevice extends Device {
  */
 class IrrigatorDevice extends Device {
 
-    final static String TYPE = "IRRIGATOR";
+    final static String JSON_TYPE = "IRRIGATOR";
 
-    IrrigatorDevice(Automator automator, Venue venue) {
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
+
+    public IrrigatorDevice(Automator automator, Venue venue) {
         super(automator, venue);
     }
 
-    IrrigatorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
+    public IrrigatorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -379,13 +421,18 @@ class IrrigatorDevice extends Device {
  */
 class OvenDevice extends Device {
 
-    final static String TYPE = "OVEN";
+    final static String JSON_TYPE = "OVEN";
 
-    OvenDevice(Automator automator, Venue venue) {
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
+
+    public OvenDevice(Automator automator, Venue venue) {
         super(automator, venue);
     }
 
-    OvenDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
+    public OvenDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -396,13 +443,18 @@ class OvenDevice extends Device {
  */
 class VehicleDevice extends Device {
 
-    final static String TYPE = "VEHICLE";
+    final static String JSON_TYPE = "VEHICLE";
 
-    VehicleDevice(Automator automator, Venue venue) {
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
+
+    public VehicleDevice(Automator automator, Venue venue) {
         super(automator, venue);
     }
 
-    VehicleDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
+    public VehicleDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -415,13 +467,12 @@ abstract class AccessDevice extends Device {
 
     final static String TYPE = "ACCESS";
 
-    AccessDevice(Automator automator, Venue venue) {
+    public AccessDevice(Automator automator, Venue venue) {
         super(automator, venue);
     }
 
-    AccessDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
-        super(automator, venue);
-        jsonDeserialize(deviceBuffer);
+    public AccessDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
+        super(automator, venue, deviceBuffer);
     }
 }
 
@@ -430,13 +481,18 @@ abstract class AccessDevice extends Device {
  */
 class DoorDevice extends AccessDevice {
 
-    final static String TYPE = "DOOR";
+    final static String JSON_TYPE = "DOOR";
 
-    DoorDevice(Automator automator, Venue venue) {
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
+
+    public DoorDevice(Automator automator, Venue venue) {
         super(automator, venue);
     }
 
-    DoorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
+    public DoorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }
@@ -447,13 +503,18 @@ class DoorDevice extends AccessDevice {
  */
 class RollerDoorDevice extends AccessDevice {
 
-    final static String TYPE = "ROLLER_DOOR";
+    final static String JSON_TYPE = "ROLLER_DOOR";
 
-    RollerDoorDevice(Automator automator, Venue venue) {
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
+
+    public RollerDoorDevice(Automator automator, Venue venue) {
         super(automator, venue);
     }
 
-    RollerDoorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
+    public RollerDoorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
         super(automator, venue);
         jsonDeserialize(deviceBuffer);
     }

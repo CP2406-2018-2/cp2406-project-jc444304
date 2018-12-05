@@ -94,10 +94,10 @@ public class Simulator extends Automator {
                     }
                     Scenario scenario;
                     switch (scenarioTypeBuffer.toUpperCase()) {
-                        case TemperatureScenario.TYPE:
+                        case TemperatureScenario.JSON_TYPE:
                             scenario = new TemperatureScenario(this, scenarioBuffer);
                             break;
-                        case RefrigeratorScenario.TYPE:
+                        case RefrigeratorScenario.JSON_TYPE:
                             scenario = new RefrigeratorScenario(this, scenarioBuffer);
                             break;
                         default:

@@ -8,7 +8,12 @@ import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 
-abstract class Asset implements JsonDeserializable, JsonTypeable, Synchronizable {
+abstract class Asset implements JsonDeserializable, Synchronizable {
+
+    @Override
+    public String getJsonType() {
+        return null;
+    }
 
     Automator automator;
 
@@ -26,7 +31,10 @@ abstract class Asset implements JsonDeserializable, JsonTypeable, Synchronizable
 
         JSONObject assetBuffer = new JSONObject();
 
-        assetBuffer.put("Type", JSON_TYPE);
+        String jsonType = getJsonType();
+        if (jsonType != null) {
+            assetBuffer.put("Type", jsonType);
+        }
 
         return assetBuffer;
     }
@@ -50,7 +58,8 @@ abstract class Entity extends Asset {
     }
 
     public Entity(Automator automator, JSONObject entityBuffer) throws JsonDeserializedError {
-        super(automator, entityBuffer);
+        super(automator);
+        jsonDeserialize(entityBuffer);
     }
 
     @Override
