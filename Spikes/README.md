@@ -45,5 +45,5 @@ Research how garage doors work and implement it as a device.
 ```
 
 ```
-Find out the most suitable SVG library and how to use it.
+Find out the most suitable SVG library and how to use it. (DEPRECATED).
 ```
