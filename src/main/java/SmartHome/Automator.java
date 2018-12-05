@@ -83,7 +83,7 @@ public class Automator implements JsonDeserializable, JsonTypeable, Synchronizab
      */
     public Venue getVenueById(String id) {
         for (Venue venue : venues) {
-            if (venue.id.equals(id)) {
+            if (venue.id != null && venue.id.equals(id)) {
                 return venue;
             }
         }
@@ -101,7 +101,7 @@ public class Automator implements JsonDeserializable, JsonTypeable, Synchronizab
      */
     public Device getDeviceById(String deviceId) {
         for (Device device : devices) {
-            if (device.id.equals(deviceId)) {
+            if (device.id != null && device.id.equals(deviceId)) {
                 return device;
             }
         }
@@ -132,7 +132,7 @@ public class Automator implements JsonDeserializable, JsonTypeable, Synchronizab
      */
     public Trigger getTriggerById(String triggerId) {
         for (Trigger trigger : triggers) {
-            if (trigger.id.equals(triggerId)) {
+            if (trigger.id != null && trigger.id.equals(triggerId)) {
                 return trigger;
             }
         }
