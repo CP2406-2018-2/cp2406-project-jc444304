@@ -9,9 +9,6 @@ import org.json.simple.*;
  */
 interface JsonSerializable {
 
-    /**
-     *
-     */
     JSONObject jsonSerialize() throws JsonSerializedError;
 }
 
@@ -20,9 +17,6 @@ interface JsonSerializable {
  */
 interface JsonDeserializable extends JsonSerializable {
 
-    /**
-     *
-     */
     void jsonDeserialize(JSONObject jsonObject) throws JsonDeserializedError;
 }
 

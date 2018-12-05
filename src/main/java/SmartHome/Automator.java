@@ -75,11 +75,14 @@ public class Automator implements JsonDeserializable, JsonTypeable, Synchronizab
         return null;
     }
 
+    /**
+     * Contains a list of Venue instances.
+     */
     private ArrayList<Venue> venues = new ArrayList<>();
 
     /**
-     * Fetches a venue by its ID.
-     * @return Returns null if the venue could not be fetched.
+     * Fetches a Venue by its ID.
+     * @return Returns null if the Venue could not be fetched.
      */
     public Venue getVenueById(String id) {
         for (Venue venue : venues) {
@@ -91,13 +94,13 @@ public class Automator implements JsonDeserializable, JsonTypeable, Synchronizab
     }
 
     /**
-     *
+     * Contains the list of Device instances.
      */
     private ArrayList<Device> devices = new ArrayList<>();
 
     /**
-     * Fetches a device by its ID.
-     * @return Returns null if the device could not be fetched.
+     * Fetches a Device by its ID.
+     * @return Returns null if the Device could not be fetched.
      */
     public Device getDeviceById(String deviceId) {
         for (Device device : devices) {
@@ -122,13 +125,13 @@ public class Automator implements JsonDeserializable, JsonTypeable, Synchronizab
     }
 
     /**
-     *
+     * Contains a list of Trigger instances.
      */
     private ArrayList<Trigger> triggers = new ArrayList<>();
 
     /**
-     * Fetches a trigger by its ID.
-     * @return Returns null if the trigger could not be fetched.
+     * Fetches a Trigger by its ID.
+     * @return Returns null if the Trigger could not be fetched.
      */
     public Trigger getTriggerById(String triggerId) {
         for (Trigger trigger : triggers) {

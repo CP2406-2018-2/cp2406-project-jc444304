@@ -13,7 +13,7 @@ interface Apparatus {
 }
 
 /**
- * A passive apparatus behaves as an input for the household, for example, a motion sensor.
+ * Passively behaves as an input, for example, a motion sensor.
  */
 interface DetectableApparatus extends Apparatus {
 

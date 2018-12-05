@@ -114,6 +114,9 @@ class Trigger extends Entity {
 
     private ArrayList<Action> actions = new ArrayList<>();
 
+    /**
+     *
+     */
     abstract class Action extends Entity {
 
         public Action(Automator automator) {
