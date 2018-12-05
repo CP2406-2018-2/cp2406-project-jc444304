@@ -153,6 +153,20 @@ class MotionSensorDevice extends Device implements DetectableApparatus {
     }
 }
 
+class WindowDevice extends Device {
+
+    final static String TYPE = "WINDOW";
+
+    public WindowDevice(Automator automator, Venue venue) {
+        super(automator, venue);
+    }
+
+    public WindowDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
+        super(automator, venue);
+        super.jsonDeserialize(deviceBuffer);
+    }
+}
+
 /**
  *
  */

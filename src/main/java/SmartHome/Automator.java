@@ -306,6 +306,9 @@ public class Automator implements JsonDeserializable, JsonTypeable, Synchronizab
                             case VehicleDevice.TYPE:
                                 device = new VehicleDevice(this, venue, deviceBuffer);
                                 break;
+                            case WindowDevice.TYPE:
+                                device = new WindowDevice(this, venue, deviceBuffer);
+                                break;
                             default:
                                 throw new JsonDeserializedError("Unknown Device-Type!", this);
                         }
