@@ -12,7 +12,7 @@ class Venue extends Entity {
     /**
      * Determines whether this Venue is affected by external factors such as wind, rain, etc.
      */
-    boolean outdoor = true;
+    boolean outdoor = false;
 
     public Venue(Automator automator) {
         super(automator);
@@ -41,7 +41,9 @@ class Venue extends Entity {
 
         JSONObject venueBuffer = super.jsonSerialize();
 
-        venueBuffer.put("Outdoor", outdoor);
+        if (outdoor) {
+            venueBuffer.put("Outdoor", true);
+        }
 
         return venueBuffer;
     }
