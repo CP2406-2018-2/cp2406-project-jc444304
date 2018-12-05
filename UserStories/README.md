@@ -28,6 +28,10 @@ A user needs apparatuses (devices) within each venue of the household. (DONE).
 ```
 
 ```
+A user needs fixtures such as walls and benches within the household.
+```
+
+```
 A user needs a trigger system to allow interaction between venues and devices. (TEST).
 
 NOTE: Environmental conditions and household activities must be detected.
