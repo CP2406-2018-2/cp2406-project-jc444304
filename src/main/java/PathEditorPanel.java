@@ -74,6 +74,9 @@ public class PathEditorPanel extends JPanel implements ActionListener {
         if (eventSource == createButton) {
             handleCreatePoints();
         }
+        if (eventSource == removeButton) {
+            handleRemovePoints();
+        }
     }
 
     private boolean handleCreatePoints() {
@@ -101,6 +104,26 @@ public class PathEditorPanel extends JPanel implements ActionListener {
             entity.getDimensions().add(pointsSelector.getSelectedIndex() + 1, new Point(pointX, pointY));
             setupListModel();
             return true;
+        }
+    }
+
+    private boolean handleRemovePoints() {
+
+        int[] selectedIndices = pointsSelector.getSelectedIndices();
+        int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove (" + selectedIndices.length + ") point(s).");
+        switch (dialogResult) {
+            case JOptionPane.YES_OPTION:
+                ArrayList<Point> points = new ArrayList<>();
+                for (int selectedIndex : selectedIndices) {
+                    points.add(entity.getDimensions().get(selectedIndex));
+                }
+                for (Point point : points) {
+                    entity.getDimensions().remove(point);
+                }
+                setupListModel();
+                return true;
+            default:
+                return false;
         }
     }
 }
