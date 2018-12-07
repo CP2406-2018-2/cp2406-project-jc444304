@@ -94,6 +94,21 @@ public class Automator implements JsonDeserializable, Synchronizable {
     }
 
     /**
+
+    /**
+     * Deletes a Venue by its ID.
+     * @param venueId
+     * @return Returns the deleted Venue or null if the Venue could not be fetched.
+     */
+    public Venue removeVenueById(String venueId) {
+        for (Venue venue : venues) {
+            if (venue.id != null && venue.id.equals(venueId)) {
+                venues.remove(venue);
+                return venue;
+            }
+        }
+        return null;
+    }
      * Fetches a Venue by its ID.
      * @return Returns null if the Venue could not be fetched.
      */
