@@ -33,9 +33,7 @@ class HomeError extends RuntimeException {
  */
 class MainFrame extends JFrame implements ActionListener {
 
-    private final static String APPLICATION_NAME = "Smart Home Automator Simulator";
-    private final static int APPLICATION_WIDTH = 800;
-    private final static int APPLICATION_HEIGHT = 600;
+    final public static String APPLICATION_NAME = "Home Auto";
 
     private JFileChooser fileChooser = new JFileChooser();
 
@@ -75,7 +73,7 @@ class MainFrame extends JFrame implements ActionListener {
     MainFrame() {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
+        setSize(800, 600);
         setLayout(new BorderLayout());
 
         setJMenuBar(menuBar);
