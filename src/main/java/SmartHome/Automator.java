@@ -329,9 +329,6 @@ public class Automator implements JsonDeserializable, Synchronizable {
                     if (objectBuffer instanceof String) {
                         String venueIdBuffer = (String) objectBuffer;
                         Venue venue = this.getVenueById(venueIdBuffer);
-                        if (venue == null) {
-                            throw new JsonDeserializedError("Device has Venue with ID that does not correspond.", this);
-                        }
                         Device device;
                         switch (deviceTypeBuffer.toUpperCase()) {
                             case RefrigeratorDevice.JSON_TYPE:
