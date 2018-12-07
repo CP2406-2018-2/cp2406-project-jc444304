@@ -4,13 +4,12 @@ package SmartHome;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
 import org.json.simple.*;
 
 /**
  * A scenario consists of customizable consequences injected into the automation system.
  */
-abstract class Scenario extends Entity {
+public abstract class Scenario extends Entity {
 
     GregorianCalendar calendar = new GregorianCalendar();
 
@@ -62,48 +61,39 @@ class TemperatureScenario extends Scenario {
     @Override
     public void jsonDeserialize(JSONObject scenarioBuffer) throws JsonDeserializedError {
 
-        super.jsonDeserialize(jsonObject);
+        Object objectBuffer;
 
-        Object bufferObject;
-
-        bufferObject = jsonObject.get("StartDegrees");
-        if (bufferObject instanceof Double) {
-            this.startDegrees = (double) bufferObject;
+        objectBuffer = scenarioBuffer.get("StartDegrees");
+        if (objectBuffer instanceof Double) {
+            startDegrees = (double) objectBuffer;
         }
-
-        bufferObject = jsonObject.get("StartHour");
-        if (bufferObject instanceof Long) {
-            this.startHour = (long) bufferObject;
+        objectBuffer = scenarioBuffer.get("StartHour");
+        if (objectBuffer instanceof Long) {
+            startHour = (long) objectBuffer;
         }
-
-        bufferObject = jsonObject.get("EndDegrees");
-        if (bufferObject instanceof Double) {
-            this.endDegrees = (double) bufferObject;
+        objectBuffer = scenarioBuffer.get("EndDegrees");
+        if (objectBuffer instanceof Double) {
+            endDegrees = (double) objectBuffer;
         }
-
-        bufferObject = jsonObject.get("EndHour");
-        if (bufferObject instanceof Long) {
-            this.endHour = (long) bufferObject;
+        objectBuffer = scenarioBuffer.get("EndHour");
+        if (objectBuffer instanceof Long) {
+            endHour = (long) objectBuffer;
         }
-
-        bufferObject = jsonObject.get("PeekDegrees");
-        if (bufferObject instanceof Double) {
-            this.peekDegrees = (double) bufferObject;
+        objectBuffer = scenarioBuffer.get("PeekDegrees");
+        if (objectBuffer instanceof Double) {
+            peekDegrees = (double) objectBuffer;
         }
-
-        bufferObject = jsonObject.get("PeekHour");
-        if (bufferObject instanceof Long) {
-            this.peekHour = (long) bufferObject;
+        objectBuffer = scenarioBuffer.get("PeekHour");
+        if (objectBuffer instanceof Long) {
+            peekHour = (long) objectBuffer;
         }
-
-        bufferObject = jsonObject.get("ShadeDegrees");
-        if (bufferObject instanceof Double) {
-            this.shadeDegrees = (double) bufferObject;
+        objectBuffer = scenarioBuffer.get("ShadeDegrees");
+        if (objectBuffer instanceof Double) {
+            shadeDegrees = (double) objectBuffer;
         }
-
-        bufferObject = jsonObject.get("ShadeHour");
-        if (bufferObject instanceof Long) {
-            this.shadeHour = (long) bufferObject;
+        objectBuffer = scenarioBuffer.get("ShadeHour");
+        if (objectBuffer instanceof Integer) {
+            shadeHour = (int) objectBuffer;
         }
     }
 
