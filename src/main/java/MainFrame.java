@@ -360,12 +360,24 @@ class MainFrame extends JFrame implements ActionListener {
         update();
     }
 
+    AboutFrame aboutFrame;
+
     private void handleAbout() {
-        // TODO
+
+        if (aboutFrame == null) {
+            aboutFrame = new AboutFrame();
+        }
+        aboutFrame.setVisible(true);
     }
 
+    GuideFrame guideFrame;
+
     private void handleGuide() {
-        // TODO
+
+        if (guideFrame == null) {
+            guideFrame = new GuideFrame();
+        }
+        guideFrame.setVisible(true);
     }
 
     private static String openFile(String fileName) throws IOException {
