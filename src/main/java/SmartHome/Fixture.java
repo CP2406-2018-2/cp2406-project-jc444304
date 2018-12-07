@@ -23,6 +23,9 @@ public abstract class Fixture extends Entity {
     }
 }
 
+/**
+ *
+ */
 class WallFixture extends Fixture {
 
     final static String JSON_TYPE = "WALL";

@@ -67,6 +67,10 @@ public class Automator implements JsonDeserializable, Synchronizable {
      */
     private ArrayList<Fixture> fixtures = new ArrayList<>();
 
+    public ArrayList<Fixture> getFixtures() {
+        return fixtures;
+    }
+
     /**
      * Fetches a Fixture by its ID.
      * @return Returns null if the Fixture could not be fetched.
@@ -266,7 +270,40 @@ public class Automator implements JsonDeserializable, Synchronizable {
             }
         }
 
-        /* Load devices: */
+        /* Deserialize Fixtures: */
+        objectBuffer = automatorBuffer.get("Fixtures");
+        if (objectBuffer instanceof JSONArray) {
+            JSONArray fixturesBuffer = (JSONArray) objectBuffer;
+            for (Object elementBuffer : fixturesBuffer) {
+                objectBuffer = elementBuffer;
+                if (objectBuffer instanceof JSONObject) {
+                    JSONObject fixtureBuffer = (JSONObject) objectBuffer;
+                    objectBuffer = fixtureBuffer.get("Type");
+                    if (objectBuffer == null) {
+                        throw new JsonDeserializedError("Unspecified Fixture-Type!", this);
+                    }
+                    String fixtureTypeBuffer;
+                    if (objectBuffer instanceof String) {
+                        fixtureTypeBuffer = (String) objectBuffer;
+                    } else {
+                        throw new JsonDeserializedError("Invalid Fixture-Type!", this);
+                    }
+                    Fixture fixture;
+                    switch (fixtureTypeBuffer.toUpperCase()) {
+                        case WallFixture.JSON_TYPE:
+                            fixture = new WallFixture(this, fixtureBuffer);
+                            break;
+                        case BenchFixture.JSON_TYPE:
+                            fixture = new WallFixture(this, fixtureBuffer);
+                            break;
+                        default:
+                            throw new JsonDeserializedError("Unknown Fixture-Type!", this);
+                    }
+                    fixtures.add(fixture);
+                }
+            }
+        }
+
         /* Deserialize Devices: */
         objectBuffer = automatorBuffer.get("Devices");
         if (objectBuffer instanceof JSONArray) {
@@ -375,6 +412,14 @@ public class Automator implements JsonDeserializable, Synchronizable {
             venuesBuffer.add(venueBuffer);
         }
         automatorBuffer.put("Venues", venuesBuffer);
+
+        /* Serialize Fixtures: */
+        JSONArray fixturesBuffer = new JSONArray();
+        for (Fixture fixture : fixtures) {
+            JSONObject fixtureBuffer = fixture.jsonSerialize();
+            venuesBuffer.add(fixtureBuffer);
+        }
+        automatorBuffer.put("Fixtures", fixturesBuffer);
 
         /* Serialize Devices: */
         JSONArray devicesBuffer = new JSONArray();
