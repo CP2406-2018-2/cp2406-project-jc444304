@@ -69,5 +69,38 @@ public class PathEditorPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent event) {
 
+        Object eventSource = event.getSource();
+
+        if (eventSource == createButton) {
+            handleCreatePoints();
+        }
+    }
+
+    private boolean handleCreatePoints() {
+
+        String coordinateInput = "0,0";
+        while (true) {
+            coordinateInput = JOptionPane.showInputDialog(this, "X,Y Coordinate", coordinateInput);
+            if (coordinateInput == null) {
+                /* Cancel creating point. */
+                return false;
+            }
+            String[] ordinates = coordinateInput.split(",");
+            if (ordinates.length != 2) {
+                JOptionPane.showMessageDialog(this, "A coordinate must have 2 digits separated by a comma.");
+                continue;
+            }
+            int pointX, pointY;
+            try {
+                pointX = new Integer(ordinates[0]);
+                pointY = new Integer(ordinates[1]);
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(this, "Ordinates must be a digit.");
+                continue;
+            }
+            entity.getDimensions().add(pointsSelector.getSelectedIndex() + 1, new Point(pointX, pointY));
+            setupListModel();
+            return true;
+        }
     }
 }
