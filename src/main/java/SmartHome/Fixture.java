@@ -2,7 +2,7 @@
 
 package SmartHome;
 
-import org.json.simple.JSONObject;
+import org.json.simple.*;
 
 /**
  *
@@ -27,6 +27,11 @@ class WallFixture extends Fixture {
 
     final static String JSON_TYPE = "WALL";
 
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
+
     public WallFixture(Automator automator) {
         super(automator);
     }
@@ -36,9 +41,17 @@ class WallFixture extends Fixture {
     }
 }
 
+/**
+ *
+ */
 class BenchFixture extends Fixture {
 
     final static String JSON_TYPE = "BENCH";
+
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
 
     public BenchFixture(Automator automator) {
         super(automator);

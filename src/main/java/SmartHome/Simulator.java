@@ -14,6 +14,11 @@ public class Simulator extends Automator {
 
     final static String JSON_TYPE = "SIMULATOR";
 
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
+
     /**
      * Specifies the starting-date.
      */

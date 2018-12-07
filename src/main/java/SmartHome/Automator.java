@@ -13,6 +13,11 @@ public class Automator implements JsonDeserializable, Synchronizable {
 
     final static String JSON_TYPE = "AUTOMATOR";
 
+    @Override
+    public String getJsonType() {
+        return JSON_TYPE;
+    }
+
     /**
      * Specifies the width and height of the overview.
      */
@@ -80,6 +85,10 @@ public class Automator implements JsonDeserializable, Synchronizable {
      */
     private ArrayList<Venue> venues = new ArrayList<>();
 
+    public ArrayList<Venue> getVenues() {
+        return venues;
+    }
+
     /**
      * Fetches a Venue by its ID.
      * @return Returns null if the Venue could not be fetched.
@@ -97,6 +106,10 @@ public class Automator implements JsonDeserializable, Synchronizable {
      * Contains the list of Device instances.
      */
     private ArrayList<Device> devices = new ArrayList<>();
+
+    public ArrayList<Device> getDevices() {
+        return devices;
+    }
 
     /**
      * Fetches a Device by its ID.
@@ -128,6 +141,10 @@ public class Automator implements JsonDeserializable, Synchronizable {
      * Contains a list of Trigger instances.
      */
     private ArrayList<Trigger> triggers = new ArrayList<>();
+
+    public ArrayList<Trigger> getTriggers() {
+        return triggers;
+    }
 
     /**
      * Fetches a Trigger by its ID.
@@ -216,7 +233,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
 
         Object objectBuffer;
 
-        /* Load Synchronizer: */
+        /* Deserialize Synchronizer: */
         objectBuffer = automatorBuffer.get("Synchronizer");
         if (objectBuffer instanceof JSONObject) {
             JSONObject synchronizerBuffer = (JSONObject) objectBuffer;
@@ -235,7 +252,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
             this.setupSynchronizer();
         }
 
-        /* Load venues: */
+        /* Deserialize Venues: */
         objectBuffer = automatorBuffer.get("Venues");
         if (objectBuffer instanceof JSONArray) {
             JSONArray venuesBuffer = (JSONArray) objectBuffer;
@@ -250,6 +267,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
         }
 
         /* Load devices: */
+        /* Deserialize Devices: */
         objectBuffer = automatorBuffer.get("Devices");
         if (objectBuffer instanceof JSONArray) {
             JSONArray devicesBuffer = (JSONArray) objectBuffer;
@@ -321,7 +339,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
             }
         }
 
-        /* Load triggers: */
+        /* Deserialize Triggers: */
         objectBuffer = automatorBuffer.get("Triggers");
         if (objectBuffer instanceof JSONArray) {
             JSONArray triggersBuffer = (JSONArray) objectBuffer;
@@ -337,7 +355,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
     }
 
     /**
-     * Saves eveyrthing that must be dumped in the configuration file.
+     * Saves everything that must be dumped in the configuration file.
      */
     @Override
     public JSONObject jsonSerialize() throws JsonSerializedError {

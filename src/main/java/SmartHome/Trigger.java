@@ -8,17 +8,33 @@ import org.json.simple.*;
 /**
  * Each trigger acts like a logical-gateway where events are tried on a thread and fire actions if successful.
  */
-class Trigger extends Entity {
+public class Trigger extends Entity {
 
     /**
-     * Determines if the trigger will start at the very begining after being loaded.
+     * Determines if the trigger will start at the very beginning after being loaded.
      */
     private boolean starting = false;
+
+    public boolean isStarting() {
+        return starting;
+    }
+
+    public void setStarting(boolean starting) {
+        this.starting = starting;
+    }
 
     /**
      * When a trigger is looping, this means it will not be disabled after it is successful and the thread will try it again.
      */
     private boolean looping = false;
+
+    public boolean isLooping() {
+        return looping;
+    }
+
+    public void setLooping(boolean looping) {
+        this.looping = looping;
+    }
 
     enum Status {
         ASLEEP,
@@ -33,6 +49,12 @@ class Trigger extends Entity {
      */
     private Status status = Status.ASLEEP;
 
+    private ArrayList<Event> events = new ArrayList<>();
+
+    public ArrayList<Event> getEvents() {
+        return events;
+    }
+
     /**
      * Events in each trigger are tried for checking whether the trigger can fire actions.
      */
@@ -43,17 +65,25 @@ class Trigger extends Entity {
          */
         boolean orPrevious = false;
 
+        public boolean isOrPrevious() {
+            return orPrevious;
+        }
+
+        public void setOrPrevious(boolean orPrevious) {
+            this.orPrevious = orPrevious;
+        }
+
         /**
          * Determines whether the event was successful upon trying.
          */
         boolean successful = false;
 
-        public Event(Automator automator) {
-            super(automator);
+        public Event() {
+            super(Trigger.this.automator);
         }
 
-        public Event(Automator automator, JSONObject eventBuffer) throws JsonDeserializedError {
-            super(automator);
+        public Event(JSONObject eventBuffer) throws JsonDeserializedError {
+            super(Trigger.this.automator);
             jsonDeserialize(eventBuffer);
         }
 
@@ -110,9 +140,11 @@ class Trigger extends Entity {
     }
     */
 
-    private ArrayList<Event> events = new ArrayList<>();
-
     private ArrayList<Action> actions = new ArrayList<>();
+
+    public ArrayList<Action> getActions() {
+        return actions;
+    }
 
     /**
      *
@@ -248,8 +280,8 @@ class Trigger extends Entity {
         objectBuffer = triggerBuffer.get("Events");
         if (objectBuffer instanceof JSONArray) {
             JSONArray eventsBuffer = (JSONArray) objectBuffer;
-            for (int i = 0; i < eventsBuffer.size(); i++) {
-                objectBuffer = eventsBuffer.get(i);
+            for (Object elementBuffer : eventsBuffer) {
+                objectBuffer = elementBuffer;
                 if (objectBuffer instanceof JSONObject) {
                     JSONObject eventBuffer = (JSONObject) objectBuffer;
                     objectBuffer = eventBuffer.get("Type");

@@ -7,12 +7,20 @@ import org.json.simple.*;
 /**
  *
  */
-class Venue extends Entity {
+public class Venue extends Entity {
 
     /**
      * Determines whether this Venue is affected by external factors such as wind, rain, etc.
      */
-    boolean outdoor = false;
+    private boolean outdoor = false;
+
+    public boolean isOutdoor() {
+        return outdoor;
+    }
+
+    public void setOutdoor(boolean outdoor) {
+        this.outdoor = outdoor;
+    }
 
     public Venue(Automator automator) {
         super(automator);
