@@ -1,7 +1,5 @@
 // Author: Yvan Burrie
 
-package SmartHome;
-
 import javafx.application.Platform;
 
 /**
