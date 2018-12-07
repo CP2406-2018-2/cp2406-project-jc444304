@@ -47,11 +47,39 @@ abstract class Entity extends Asset {
 
     String id;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     String description;
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     ArrayList<Point> dimensions;
+
+    public ArrayList<Point> getDimensions() {
+        return dimensions;
+    }
 
     public Entity(Automator automator) {
         super(automator);

@@ -59,4 +59,9 @@ public class Clock extends GregorianCalendar implements JsonDeserializable {
 
         return clockBuffer;
     }
+
+    @Override
+    public String getJsonType() {
+        return null;
+    }
 }
