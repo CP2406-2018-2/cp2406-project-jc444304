@@ -1,5 +1,6 @@
 // Author: Yvan Burrie
 
+import java.util.HashMap;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +25,7 @@ class MainFrame extends JFrame implements ActionListener {
     private JMenuItem menuNew = new JMenuItem("New");
     private JMenuItem menuLoad = new JMenuItem("Load");
     private JMenuItem menuSave = new JMenuItem("Save");
+    private JMenuItem menuSaveAs = new JMenuItem("Save As");
     private JMenuItem menuClose = new JMenuItem("Close");
     private JMenuItem menuExit = new JMenuItem("Exit");
     private JMenu menuSimulation = new JMenu("Simulation");
@@ -42,6 +44,10 @@ class MainFrame extends JFrame implements ActionListener {
     private String configurationsFileName;
 
     private JSONObject configurationsObject;
+
+    private AboutFrame aboutFrame;
+
+    private GuideFrame guideFrame;
 
     private String projectName;
 
@@ -85,6 +91,8 @@ class MainFrame extends JFrame implements ActionListener {
         menuLoad.addActionListener(this);
         menuFile.add(menuSave);
         menuSave.addActionListener(this);
+        menuFile.add(menuSaveAs);
+        menuSaveAs.addActionListener(this);
         menuFile.add(menuClose);
         menuClose.addActionListener(this);
         menuFile.add(menuExit);
@@ -268,7 +276,7 @@ class MainFrame extends JFrame implements ActionListener {
                 handleSaveForced();
                 return true;
             default:
-                /* Cancel choosing file name. */
+                /* Cancel choosing file name: */
                 return false;
         }
     }
@@ -382,8 +390,6 @@ class MainFrame extends JFrame implements ActionListener {
         return true;
     }
 
-    AboutFrame aboutFrame;
-
     private void handleAbout() {
 
         if (aboutFrame == null) {
@@ -391,8 +397,6 @@ class MainFrame extends JFrame implements ActionListener {
         }
         aboutFrame.setVisible(true);
     }
-
-    GuideFrame guideFrame;
 
     private void handleGuide() {
 
