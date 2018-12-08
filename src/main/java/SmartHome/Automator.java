@@ -64,6 +64,10 @@ public class Automator implements JsonDeserializable, Synchronizable {
         return syncSpeed;
     }
 
+    public void setSyncSpeed(long syncSpeed) {
+        this.syncSpeed = syncSpeed;
+    }
+
     /**
      * Specifies the synchronization limit according to the configurations.
      * @see Synchronizer::limit
@@ -78,6 +82,10 @@ public class Automator implements JsonDeserializable, Synchronizable {
 
     public long getSyncLoopsPerSec() {
         return syncLoopsPerSec;
+    }
+
+    public void setSyncLoopsPerSec(long syncLoopsPerSec) {
+        this.syncLoopsPerSec = syncLoopsPerSec;
     }
 
     /**

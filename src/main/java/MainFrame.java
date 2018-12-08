@@ -47,6 +47,8 @@ class MainFrame extends JFrame implements ActionListener {
 
     private JLabel statusLabel = new JLabel("Welcome to " + APPLICATION_NAME + "!!!");
 
+    private OptionsFrame optionsFrame;
+
     private AboutFrame aboutFrame;
 
     private GuideFrame guideFrame;
@@ -445,6 +447,10 @@ class MainFrame extends JFrame implements ActionListener {
 
     private void handleSimulationOptions() {
 
+        if (optionsFrame == null) {
+            optionsFrame = new OptionsFrame(simulator);
+        }
+        optionsFrame.setVisible(true);
     }
 
     private void handleSimulationDetails() {
