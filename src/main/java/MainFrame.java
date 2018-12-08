@@ -28,7 +28,7 @@ class MainFrame extends JFrame implements ActionListener {
     private JMenuItem menuExit = new JMenuItem("Exit");
     private JMenu menuSimulation = new JMenu("Simulation");
     private JMenuItem menuDetails = new JMenuItem("Details");
-    private JMenuItem menuRun = new JMenuItem("Run");
+    private JMenuItem menuStart = new JMenuItem("Start");
     private JMenuItem menuPause = new JMenuItem("Pause");
     private JMenuItem menuStop = new JMenuItem("Stop");
     private JMenu menuHelp = new JMenu("Help");
@@ -75,8 +75,8 @@ class MainFrame extends JFrame implements ActionListener {
         menuBar.add(menuSimulation);
         menuSimulation.add(menuDetails);
         menuDetails.addActionListener(this);
-        menuSimulation.add(menuRun);
-        menuRun.addActionListener(this);
+        menuSimulation.add(menuStart);
+        menuStart.addActionListener(this);
         menuSimulation.add(menuPause);
         menuPause.addActionListener(this);
         menuSimulation.add(menuStop);
@@ -107,51 +107,51 @@ class MainFrame extends JFrame implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent event) {
+    public void actionPerformed(ActionEvent actionEvent) {
 
-        Object eventSource = event.getSource();
+        Object actionEventSource = actionEvent.getSource();
 
-        if (eventSource == menuNew) {
+        if (actionEventSource == menuNew) {
             handleNew();
             return;
         }
-        if (eventSource == menuLoad) {
+        if (actionEventSource == menuLoad) {
             handleLoad();
             return;
         }
-        if (eventSource == menuSave) {
+        if (actionEventSource == menuSave) {
             handleSave();
             return;
         }
-        if (eventSource == menuExit) {
+        if (actionEventSource == menuExit) {
             handleExit();
             return;
         }
-        if (eventSource == menuClose) {
+        if (actionEventSource == menuClose) {
             handleClose();
             return;
         }
-        if (eventSource == menuDetails) {
+        if (actionEventSource == menuDetails) {
             handleSimulationDetails();
             return;
         }
-        if (eventSource == menuRun) {
+        if (actionEventSource == menuStart) {
             handleSimulationRun();
             return;
         }
-        if (eventSource == menuPause) {
+        if (actionEventSource == menuPause) {
             handleSimulationPause();
             return;
         }
-        if (eventSource == menuStop) {
+        if (actionEventSource == menuStop) {
             handleSimulationStop();
             return;
         }
-        if (eventSource == menuAbout) {
+        if (actionEventSource == menuAbout) {
             handleAbout();
             return;
         }
-        if (eventSource == menuGuide) {
+        if (actionEventSource == menuGuide) {
             handleGuide();
             return;
         }
@@ -339,25 +339,47 @@ class MainFrame extends JFrame implements ActionListener {
         // TODO
     }
 
-    private void handleSimulationRun() {
-        if (simulator != null) {
-            simulator.launch();
+    private boolean handleSimulationRun() {
+
+        if (simulator == null) {
+            return false;
+        }
+        if (simulator.isStarted()) {
+            simulator.restart();
+            setStatusText("Simulation restarted...");
+        } else {
+            simulator.start();
+            setStatusText("Simulation started...");
         }
         update();
+        return true;
     }
 
-    private void handleSimulationPause() {
-        if (simulator != null) {
+    private boolean handleSimulationPause() {
+
+        if (simulator == null) {
+            return false;
+        }
+        if (simulator.isPaused()) {
+            simulator.resume();
+            setStatusText("Simulation resumed...");
+        } else {
             simulator.pause();
+            setStatusText("Simulation paused...");
         }
         update();
+        return true;
     }
 
-    private void handleSimulationStop() {
-        if (simulator != null) {
-            simulator.halt();
+    private boolean handleSimulationStop() {
+
+        if (simulator == null) {
+            return false;
         }
+        simulator.stop();
+        setStatusText("Simulation stopped...");
         update();
+        return true;
     }
 
     AboutFrame aboutFrame;

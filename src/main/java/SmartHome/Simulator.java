@@ -43,8 +43,16 @@ public class Simulator extends Automator {
     public Simulator(JSONObject simulatorBuffer) throws JsonDeserializedError {
 
         super();
-        setupDuration();
         jsonDeserialize(simulatorBuffer);
+        setupDuration();
+    }
+
+    @Override
+    protected void setupSynchronizer() {
+
+        super.setupSynchronizer();
+
+        synchronizer.setTime(periodStart.getTimeInMillis());
     }
 
     /**
@@ -57,7 +65,6 @@ public class Simulator extends Automator {
             periodStart = periodEnd;
             periodEnd = periodStart;
         }
-        synchronizer.setTime(periodStart.getTimeInMillis());
     }
 
     @Override

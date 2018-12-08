@@ -95,7 +95,7 @@ public class Synchronizer extends Thread {
     private long pauseNanoSeconds;
 
     /**
-     * Behaves like a clock but in milli-seconds.
+     * Specifies the current fake time in milli-seconds.
      */
     private long time = 0;
 
@@ -114,6 +114,7 @@ public class Synchronizer extends Thread {
     }
 
     public Synchronizer(Synchronizable target, long speed, long limit, long loopsPerSecond) {
+
         this.target = target;
         this.speed = speed;
         this.limit = limit;
@@ -130,7 +131,7 @@ public class Synchronizer extends Thread {
         loopsSucceeded = 0;
         pauseNanoSeconds = NANO_SECS_PER_SEC / speed / loopsPerSecond;
 
-        while (true) {
+        while (!isInterrupted()) {
 
             if (paused) {
                 nextNanoTime = System.nanoTime();

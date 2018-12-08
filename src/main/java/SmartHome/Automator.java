@@ -188,7 +188,6 @@ public class Automator implements JsonDeserializable, Synchronizable {
      */
     public Automator() {
 
-        setupSynchronizer();
     }
 
     /**
@@ -196,7 +195,6 @@ public class Automator implements JsonDeserializable, Synchronizable {
      */
     public Automator(JSONObject automatorBuffer) throws JsonDeserializedError {
 
-        setupSynchronizer();
         jsonDeserialize(automatorBuffer);
     }
 
@@ -205,27 +203,36 @@ public class Automator implements JsonDeserializable, Synchronizable {
      */
     protected void setupSynchronizer() {
 
-        if (synchronizer != null && synchronizer.isAlive()) {
-            halt();
-        }
+        stop();
+        synchronizer = new Synchronizer(
+                this,
+                syncSpeed,
+                syncDuration * Synchronizer.NANO_SECS_PER_SEC,
+                syncLoopsPerSec);
+    }
 
-        launched = false;
-        synchronizer = new Synchronizer(this);
-        synchronizer.setSpeed(syncSpeed);
-        synchronizer.setLimit(syncDuration * Synchronizer.NANO_SECS_PER_SEC);
-        synchronizer.setLoopsPerSecond(syncLoopsPerSec);
+    public boolean isStarted() {
+
+        return synchronizer != null && synchronizer.isAlive();
     }
 
     /**
      * Starts a synchronization session.
      */
-    public void launch() {
+    public void start() {
 
-        if (this.launched) {
-            this.setupSynchronizer();
+        if (synchronizer == null) {
+            setupSynchronizer();
         }
-        this.synchronizer.start();
-        this.launched = true;
+        synchronizer.start();
+    }
+
+    public void restart() {
+
+        if (isStarted()) {
+            stop();
+            start();
+        }
     }
 
     public boolean isPaused() {
@@ -245,12 +252,11 @@ public class Automator implements JsonDeserializable, Synchronizable {
     /**
      * Stops the synchronization session if existent.
      */
-    public void halt() {
+    public void stop() {
 
-        if (this.synchronizer != null) {
-            this.synchronizer.interrupt();
-            this.synchronizer = null;
-            this.launched = false;
+        if (synchronizer != null) {
+            synchronizer.interrupt();
+            synchronizer = null;
         }
     }
 
