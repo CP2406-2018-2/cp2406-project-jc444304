@@ -46,6 +46,19 @@ class MainFrame extends JFrame implements ActionListener {
     private String projectName;
 
     private boolean changesMade = false;
+    final private static HashMap<String, String> READABLE_ENTITY_TYPES = new HashMap<>();
+
+    final public static String getReadableEntityType(Entity entity) {
+
+        if (READABLE_ENTITY_TYPES.isEmpty()) {
+            READABLE_ENTITY_TYPES.put(Entity.class.toString(), "Entity");
+            READABLE_ENTITY_TYPES.put(Venue.class.toString(), "Venue");
+            READABLE_ENTITY_TYPES.put(Device.class.toString(), "Device");
+            READABLE_ENTITY_TYPES.put(Fixture.class.toString(), "Fixture");
+            READABLE_ENTITY_TYPES.put(Trigger.class.toString(), "Trigger");
+        }
+        return READABLE_ENTITY_TYPES.get(entity.getClass().toString());
+    }
 
     /**
      * Contains the current automator or automator instance.
