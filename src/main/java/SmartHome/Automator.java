@@ -39,6 +39,16 @@ public class Automator implements JsonDeserializable, Synchronizable {
         this.sizeY = sizeY;
     }
 
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     /**
      * Points to the synchronization thread.
      */
@@ -102,6 +112,15 @@ public class Automator implements JsonDeserializable, Synchronizable {
     }
 
     /**
+     * @return Returns the total number of Venues.
+     */
+    public long getVenuesCount() {
+        return venues.size();
+    }
+
+    public Venue getVenue(int index) {
+        return venues.get(index);
+    }
 
     /**
      * Deletes a Venue by its ID.
@@ -249,6 +268,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
     }
 
     public boolean isPaused() {
+
         return synchronizer != null && synchronizer.paused;
     }
 
