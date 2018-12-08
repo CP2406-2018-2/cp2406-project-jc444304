@@ -12,7 +12,13 @@ import com.sun.istack.internal.NotNull;
  */
 class OptionsFrame extends JFrame implements ActionListener {
 
+    private MainFrame mainFrame;
+
     private Simulator simulator;
+
+    private JTextField nameField = new JTextField(1);
+
+    private JTextArea descriptionField = new JTextArea();
 
     private ClockPanel startClockPanel;
 
@@ -24,9 +30,12 @@ class OptionsFrame extends JFrame implements ActionListener {
 
     private JButton applyButton = new JButton("Apply");
 
-    OptionsFrame(@NotNull Simulator simulator) {
+    OptionsFrame(@NotNull MainFrame mainFrame) {
 
-        this.simulator = simulator;
+        this.mainFrame = mainFrame;
+        this.simulator = mainFrame.simulator;
+
+        setTitle(MainFrame.APPLICATION_NAME + " - Options");
 
         Container container = getContentPane();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
@@ -36,14 +45,27 @@ class OptionsFrame extends JFrame implements ActionListener {
 
         applyButton.addActionListener(this);
 
+        updateNameField();
+        updateDescriptionField();
         updateSpeedField();
         updateLoopsPerSecField();
 
         setupComponents();
 
-        setBounds(100, 100, 300, 700);
+        setSize(300, 700);
+        setLocationByPlatform(true);
         pack();
         setResizable(false);
+    }
+
+    private void updateNameField() {
+
+        nameField.setText(simulator.getName());
+    }
+
+    private void updateDescriptionField() {
+
+        descriptionField.setText(simulator.getDescription());
     }
 
     private void updateSpeedField() {
@@ -61,7 +83,13 @@ class OptionsFrame extends JFrame implements ActionListener {
         JPanel panel;
 
         panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 2));
+        panel.setLayout(new GridLayout(6, 2));
+
+        panel.add(new JLabel("Name:"));
+        panel.add(nameField);
+
+        panel.add(new JLabel("Description:"));
+        panel.add(descriptionField);
 
         panel.add(new JLabel("Period Start:"));
         panel.add(startClockPanel);
@@ -79,7 +107,9 @@ class OptionsFrame extends JFrame implements ActionListener {
 
         panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
         panel.add(applyButton);
+
         add(panel);
     }
 
@@ -96,6 +126,12 @@ class OptionsFrame extends JFrame implements ActionListener {
 
     boolean handleApply() {
 
+        simulator.setName(nameField.getText());
+        updateNameField();
+
+        simulator.setDescription(descriptionField.getText());
+        updateDescriptionField();
+
         startClockPanel.handleApply();
 
         endClockPanel.handleApply();
@@ -105,6 +141,8 @@ class OptionsFrame extends JFrame implements ActionListener {
 
         simulator.setSyncLoopsPerSec(new Long(loopsPerSecField.getText()));
         updateSpeedField();
+
+        mainFrame.projectChanged();
 
         return true;
     }

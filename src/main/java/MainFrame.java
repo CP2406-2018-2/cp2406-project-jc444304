@@ -61,24 +61,32 @@ class MainFrame extends JFrame implements ActionListener {
 
     private boolean projectChanged = false;
 
-    final private static HashMap<String, String> READABLE_ENTITY_TYPES = new HashMap<>();
+    public void projectChanged() {
 
-    final public static String getReadableEntityType(Entity entity) {
+        projectChanged = true;
+        update();
+    }
 
-        if (READABLE_ENTITY_TYPES.isEmpty()) {
-            READABLE_ENTITY_TYPES.put(Entity.class.toString(), "Entity");
-            READABLE_ENTITY_TYPES.put(Venue.class.toString(), "Venue");
-            READABLE_ENTITY_TYPES.put(Device.class.toString(), "Device");
-            READABLE_ENTITY_TYPES.put(Fixture.class.toString(), "Fixture");
-            READABLE_ENTITY_TYPES.put(Trigger.class.toString(), "Trigger");
+    final private static HashMap<String, String> READABLE_TYPES = new HashMap<>();
+
+    final public static String getReadableType(Entity entity) {
+
+        if (READABLE_TYPES.isEmpty()) {
+            READABLE_TYPES.put(Entity.class.toString(), "Entity");
+            READABLE_TYPES.put(Venue.class.toString(), "Venue");
+            READABLE_TYPES.put(Device.class.toString(), "Device");
+            READABLE_TYPES.put(Fixture.class.toString(), "Fixture");
+            READABLE_TYPES.put(WallFixture.class.toString(), "Wall");
+            READABLE_TYPES.put(BenchFixture.class.toString(), "Bench");
+            READABLE_TYPES.put(Trigger.class.toString(), "Trigger");
         }
-        return READABLE_ENTITY_TYPES.get(entity.getClass().toString());
+        return READABLE_TYPES.get(entity.getClass().toString());
     }
 
     /**
      * Contains the current automator or automator instance.
      */
-    private Simulator simulator;
+    Simulator simulator;
 
     public static void main(String[] args) {
 
@@ -448,7 +456,7 @@ class MainFrame extends JFrame implements ActionListener {
     private void handleSimulationOptions() {
 
         if (optionsFrame == null) {
-            optionsFrame = new OptionsFrame(simulator);
+            optionsFrame = new OptionsFrame(this);
         }
         optionsFrame.setVisible(true);
     }
