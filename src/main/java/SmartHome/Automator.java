@@ -50,6 +50,10 @@ public class Automator implements JsonDeserializable, Synchronizable {
      */
     long syncSpeed = 1;
 
+    public long getSyncSpeed() {
+        return syncSpeed;
+    }
+
     /**
      * Specifies the synchronization limit according to the configurations.
      * @see Synchronizer::limit
@@ -57,10 +61,14 @@ public class Automator implements JsonDeserializable, Synchronizable {
     long syncDuration = 1;
 
     /**
-     * Specifies the synchronization loops-per-second according to the configurations.
+     * Specifies the synchronization refresh rate for every fake second.
      * @see Synchronizer::loopPerSecond
      */
     long syncLoopsPerSec = 1;
+
+    public long getSyncLoopsPerSec() {
+        return syncLoopsPerSec;
+    }
 
     /**
      *
@@ -109,6 +117,8 @@ public class Automator implements JsonDeserializable, Synchronizable {
         }
         return null;
     }
+
+    /**
      * Fetches a Venue by its ID.
      * @return Returns null if the Venue could not be fetched.
      */
@@ -201,7 +211,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
     /**
      * Ensures a new synchronization session is available.
      */
-    protected void setupSynchronizer() {
+    void setupSynchronizer() {
 
         stop();
         synchronizer = new Synchronizer(
@@ -213,51 +223,66 @@ public class Automator implements JsonDeserializable, Synchronizable {
 
     public boolean isStarted() {
 
-        return synchronizer != null && synchronizer.isAlive();
+        return synchronizer != null && !synchronizer.isInterrupted();
     }
 
     /**
      * Starts a synchronization session.
      */
-    public void start() {
+    public boolean start() {
 
         if (synchronizer == null) {
             setupSynchronizer();
         }
         synchronizer.start();
+        return true;
     }
 
-    public void restart() {
+    public boolean restart() {
 
-        if (isStarted()) {
-            stop();
-            start();
+        if (!isStarted()) {
+            return false;
         }
+        stop();
+        start();
+        return true;
     }
 
     public boolean isPaused() {
         return synchronizer != null && synchronizer.paused;
     }
 
-    public void pause() {
+    public boolean pause() {
 
+        if (synchronizer == null) {
+            return false;
+        }
+        boolean wasPaused = synchronizer.paused;
         synchronizer.paused = true;
+        return !wasPaused;
     }
 
-    public void resume() {
+    public boolean resume() {
 
+        if (synchronizer == null) {
+            return false;
+        }
+        boolean wasPaused = synchronizer.paused;
         synchronizer.paused = false;
+        return wasPaused;
     }
 
     /**
      * Stops the synchronization session if existent.
      */
-    public void stop() {
+    public boolean stop() {
 
-        if (synchronizer != null) {
-            synchronizer.interrupt();
-            synchronizer = null;
+        if (synchronizer == null) {
+            return false;
         }
+        synchronizer.interrupt();
+        synchronizer = null;
+        return true;
     }
 
     /**

@@ -353,10 +353,14 @@ class MainFrame extends JFrame implements ActionListener {
             return false;
         }
         if (simulator.isStarted()) {
-            simulator.restart();
+            if (!simulator.restart()) {
+                return false;
+            }
             setStatusText("Simulation restarted...");
         } else {
-            simulator.start();
+            if (!simulator.start()) {
+                return false;
+            }
             setStatusText("Simulation started...");
         }
         update();
@@ -369,10 +373,14 @@ class MainFrame extends JFrame implements ActionListener {
             return false;
         }
         if (simulator.isPaused()) {
-            simulator.resume();
+            if (!simulator.resume()) {
+                return false;
+            }
             setStatusText("Simulation resumed...");
         } else {
-            simulator.pause();
+            if (!simulator.pause()) {
+                return false;
+            }
             setStatusText("Simulation paused...");
         }
         update();
@@ -384,7 +392,9 @@ class MainFrame extends JFrame implements ActionListener {
         if (simulator == null) {
             return false;
         }
-        simulator.stop();
+        if (!simulator.stop()) {
+            return false;
+        }
         setStatusText("Simulation stopped...");
         update();
         return true;
