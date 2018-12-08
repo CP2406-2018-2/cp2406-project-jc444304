@@ -65,6 +65,11 @@ class MainFrame extends JFrame implements ActionListener {
      */
     private Simulator simulator;
 
+    public static void main(String[] args) {
+
+        new MainFrame();
+    }
+
     MainFrame() {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
