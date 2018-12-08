@@ -238,24 +238,6 @@ class MainFrame extends JFrame implements ActionListener {
 
         int openDialogResult = fileChooser.showOpenDialog(this);
         if (openDialogResult == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            try{
-                String fileContent = openFile(file.getName());
-                configurationsObject = parseJsonString(fileContent);
-            } catch (IOException exception) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "JSON configuration file could not be opened.",
-                        "Project Loading Error",
-                        JOptionPane.ERROR_MESSAGE);
-            } catch (ParseException exception) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "JSON parser could not convert raw data.",
-                        "Project Loading Error",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-            setupSimulator();
         }
     }
 
@@ -420,20 +402,25 @@ class MainFrame extends JFrame implements ActionListener {
         guideFrame.setVisible(true);
     }
 
-    private static String openFile(String fileName) throws IOException {
+    public static String loadFile(String fileName) throws IOException {
 
         File file = new File(fileName);
         long fileSize = file.length();
-        InputStream inputStream = new FileInputStream(fileName);
-        byte[] fileBytes = new byte[(int) fileSize];
-        long numBytesRead = inputStream.read(fileBytes);
-        if (numBytesRead != fileSize) {
-            //throw new HomeError("");
-        }
-        return new String(fileBytes);
+        return readFile(file, fileSize);
     }
 
-    private static void saveFile(String fileName, String fileContent) throws IOException {
+    public static String readFile(File file, long length) throws IOException {
+
+        InputStream inputStream = new FileInputStream(file.getAbsolutePath());
+        byte[] fileBytes = new byte[(int) length];
+        long numBytesRead = inputStream.read(fileBytes);
+        if (numBytesRead == length) {
+            return new String(fileBytes);
+        }
+        return null;
+    }
+
+    static void saveFile(String fileName, String fileContent) throws IOException {
 
         FileWriter file = new FileWriter(fileName);
         file.write(fileContent);
@@ -441,14 +428,19 @@ class MainFrame extends JFrame implements ActionListener {
         file.close();
     }
 
-    private static JSONObject parseJsonString(String jsonString) throws ParseException {
+    static JSONObject parseJsonString(String jsonString) throws ParseException {
 
         JSONParser jsonParser = new JSONParser();
         Object jsonObject = jsonParser.parse(jsonString);
         return (JSONObject) jsonObject;
     }
 
-    private void setStatusText(String message) {
+    static JSONObject openJsonFile(String fileName) throws IOException, ParseException {
+
+        return parseJsonString(loadFile(fileName));
+    }
+
+    void setStatusText(String message) {
 
         statusBar.setText(message);
     }
