@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -16,7 +17,7 @@ import SmartHome.*;
  */
 class MainFrame extends JFrame implements ActionListener {
 
-    final public static String APPLICATION_NAME = "Home Auto";
+    final static String APPLICATION_NAME = "Home Auto";
 
     private JFileChooser fileChooser = new JFileChooser();
 
@@ -29,6 +30,7 @@ class MainFrame extends JFrame implements ActionListener {
     private JMenuItem menuClose = new JMenuItem("Close");
     private JMenuItem menuExit = new JMenuItem("Exit");
     private JMenu menuSimulation = new JMenu("Simulation");
+    private JMenuItem menuOptions = new JMenuItem("Options");
     private JMenuItem menuDetails = new JMenuItem("Details");
     private JMenuItem menuStart = new JMenuItem("Start");
     private JMenuItem menuPause = new JMenuItem("Pause");
@@ -37,21 +39,26 @@ class MainFrame extends JFrame implements ActionListener {
     private JMenuItem menuAbout = new JMenuItem("About");
     private JMenuItem menuGuide = new JMenuItem("Guide");
 
-    private JPanel infoFrame = new JPanel();
+    private NavigationPanel navigationPanel = new NavigationPanel(this);
 
-    private JLabel statusBar = new JLabel();
+    private AutomationPanel automationPanel = new AutomationPanel();
 
-    private String configurationsFileName;
+    private JPanel statusPanel = new JPanel();
 
-    private JSONObject configurationsObject;
+    private JLabel statusLabel = new JLabel("Welcome to " + APPLICATION_NAME + "!!!");
 
     private AboutFrame aboutFrame;
 
     private GuideFrame guideFrame;
 
+    private String projectFileName;
+
+    private JSONObject projectBuffer;
+
     private String projectName;
 
-    private boolean changesMade = false;
+    private boolean projectChanged = false;
+
     final private static HashMap<String, String> READABLE_ENTITY_TYPES = new HashMap<>();
 
     final public static String getReadableEntityType(Entity entity) {
@@ -82,7 +89,21 @@ class MainFrame extends JFrame implements ActionListener {
         setSize(800, 600);
         setLayout(new BorderLayout());
 
+        setupMenuBar();
         setJMenuBar(menuBar);
+
+        add(navigationPanel, BorderLayout.LINE_START);
+        add(automationPanel, BorderLayout.CENTER);
+
+        setupStatusBar();
+        add(statusPanel, BorderLayout.SOUTH);
+
+        update();
+
+        setVisible(true);
+    }
+
+    private void setupMenuBar() {
 
         menuBar.add(menuFile);
         menuFile.add(menuNew);
@@ -99,6 +120,8 @@ class MainFrame extends JFrame implements ActionListener {
         menuExit.addActionListener(this);
 
         menuBar.add(menuSimulation);
+        menuSimulation.add(menuOptions);
+        menuOptions.addActionListener(this);
         menuSimulation.add(menuDetails);
         menuDetails.addActionListener(this);
         menuSimulation.add(menuStart);
@@ -113,23 +136,53 @@ class MainFrame extends JFrame implements ActionListener {
         menuAbout.addActionListener(this);
         menuHelp.add(menuGuide);
         menuGuide.addActionListener(this);
+    }
 
-        add(infoFrame);
+    private void setupStatusBar() {
 
-        add(statusBar);
-
-        update();
-
-        setVisible(true);
+        statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
+        statusPanel.add(statusLabel);
+        statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
     }
 
     private void setupSimulator() {
 
-        if (configurationsObject == null) {
+        if (projectBuffer == null) {
             simulator = new Simulator();
         } else {
-            simulator = new Simulator(configurationsObject);
+            try {
+                simulator = new Simulator(projectBuffer);
+            } catch (JsonDeserializedError exception) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Failed to JSON-deserialize the simulator: " + exception.getMessage() + ".",
+                        "Error while creating simulator from JSON",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
+        navigationPanel.initialize(simulator);
+        automationPanel.initialize(simulator);
+        setStatusText("Simulator setup...");
+    }
+
+    void update() {
+
+        /* Update application title: */
+        setTitle(APPLICATION_NAME + (simulator != null ? " - " + (simulator.getName() != null ? simulator.getName() : "Untitled Project") + (projectChanged ? "*" : "") : ""));
+
+        /* Update menu bar: */
+        menuSave.setEnabled(simulator != null && projectChanged);
+        menuSaveAs.setEnabled(simulator != null);
+        menuClose.setEnabled(simulator != null);
+        menuSimulation.setEnabled(simulator != null);
+        menuPause.setEnabled(simulator != null && simulator.isStarted());
+        menuStop.setEnabled(simulator != null && simulator.isStarted());
+        menuStart.setText(simulator != null && simulator.isStarted() ? "Restart" : "Start");
+        menuPause.setText(simulator != null && simulator.isPaused() ? "Resume" : "Pause");
+
+        /* Update panels: */
+        navigationPanel.setEnabled(simulator != null);
     }
 
     @Override
@@ -149,12 +202,20 @@ class MainFrame extends JFrame implements ActionListener {
             handleSave();
             return;
         }
+        if (actionEventSource == menuSaveAs) {
+            handleSaveAs();
+            return;
+        }
         if (actionEventSource == menuExit) {
             handleExit();
             return;
         }
         if (actionEventSource == menuClose) {
             handleClose();
+            return;
+        }
+        if (actionEventSource == menuOptions) {
+            handleSimulationOptions();
             return;
         }
         if (actionEventSource == menuDetails) {
@@ -183,85 +244,96 @@ class MainFrame extends JFrame implements ActionListener {
         }
     }
 
-    private void update() {
-
-        /* Update application title: */
-        if (projectName != null) {
-            setTitle(String.format("%s - %s", APPLICATION_NAME, projectName));
-        } else {
-            setTitle(String.format("%s", APPLICATION_NAME));
-        }
-
-        /* Update menu visibility based on automator existence: */
-        if (simulator == null) {
-            menuSave.setEnabled(false);
-            menuClose.setEnabled(false);
-            menuSimulation.setEnabled(false);
-        } else {
-            menuSave.setEnabled(true);
-            menuClose.setEnabled(true);
-            menuSimulation.setEnabled(true);
-        }
-        if (changesMade) {
-            menuSave.setEnabled(true);
-        } else {
-            menuSave.setEnabled(false);
-        }
-    }
-
-    private void handleNew() {
+    private boolean handleNew() {
 
         if (!handleClose()) {
-            return;
+            return false;
         }
 
         /* Request new project name: */
         while (true) {
-            String projectNewName = JOptionPane.showInputDialog(this, "Name of new project:");
+            String inputtedProjectName = JOptionPane.showInputDialog(this, "Name of new project:");
 
             /* Cancel: */
-            if (projectNewName == null) {
-                return;
+            if (inputtedProjectName == null) {
+                return false;
             }
 
             /* Check project name: */
-            if (projectNewName.length() <= 3) {
+            if (inputtedProjectName.length() <= 3) {
                 JOptionPane.showMessageDialog(
                         this,
                         "The name of the project must have a minimum of 3 characters.",
                         "Project Name Error",
                         JOptionPane.ERROR_MESSAGE);
+                /* Continue asking... */
                 continue;
             }
 
-            projectName = projectNewName;
+            projectName = inputtedProjectName;
             setupSimulator();
             break;
         }
-        changesMade = true;
+        projectChanged = true;
         update();
+        return true;
     }
 
-    private void handleLoad() {
+    private boolean handleLoad() {
+
+        if (!handleClose()) {
+            return false;
+        }
 
         int openDialogResult = fileChooser.showOpenDialog(this);
-        if (openDialogResult == JFileChooser.APPROVE_OPTION) {
+        switch (openDialogResult) {
+            case JFileChooser.APPROVE_OPTION:
+                /* Click ok: */
+                try {
+                    File file = fileChooser.getSelectedFile();
+                    projectFileName = file.getAbsolutePath();
+                    if (!file.canRead()) {
+                        JOptionPane.showMessageDialog(
+                                this,
+                                "JSON configuration file is not readable.",
+                                "Project Loading Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        return false;
+                    }
+                    projectBuffer = openJsonFile(projectFileName);
+                } catch (IOException exception) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "JSON configuration file could not be opened.",
+                            "Project Loading Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return false;
+                } catch (ParseException exception) {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "JSON parser could not convert raw data.",
+                            "Project Loading Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+                setupSimulator();
+                return true;
+            default:
+                /* Click cancel: */
+                return false;
         }
     }
 
-    private void handleSave() {
+    private boolean handleSave() {
 
         if (simulator == null) {
-            return;
+            return false;
         }
-        if (configurationsFileName == null) {
-            /* Maybe the project was newly created and does not exist as a file: */
-            if (!handleSaveAs()) {
-                return;
-            }
-        } else {
-            handleSaveForced();
+        if (projectFileName == null) {
+            /* Maybe the project was newly created and does not exist as a file yet: */
+            return handleSaveAs();
         }
+        return handleSaveForced();
     }
 
     private boolean handleSaveAs() {
@@ -272,38 +344,49 @@ class MainFrame extends JFrame implements ActionListener {
         switch (saveDialogResult) {
             case JFileChooser.APPROVE_OPTION:
                 File file = fileChooser.getSelectedFile();
-                configurationsFileName = file.getAbsolutePath();
-                handleSaveForced();
-                return true;
+                projectFileName = file.getAbsolutePath();
+                return handleSaveForced();
             default:
                 /* Cancel choosing file name: */
                 return false;
         }
     }
 
-    private void handleSaveForced() {
+    private boolean handleSaveForced() {
 
-        if (configurationsObject == null) {
-            return;
+        if (projectFileName == null || simulator == null) {
+            return false;
+        }
+        try {
+            projectBuffer = simulator.jsonSerialize();
+        } catch (JsonSerializedError exception) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Failed to serialize simulator.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
         }
         try{
-            saveFile(configurationsFileName, configurationsObject.toJSONString());
+            saveFile(projectFileName, projectBuffer.toString());
         } catch (IOException exception) {
             JOptionPane.showMessageDialog(
                     this,
                     "Failed to save project.",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
+            return false;
         }
-        changesMade = false;
+        projectChanged = false;
+        update();
+        setStatusText("Project saved...");
+        return true;
     }
 
     private boolean handleClose() {
 
-        if (simulator == null) {
-            return true;
-        }
-        if (!changesMade) {
+        if (simulator == null || !projectChanged) {
+            handleCloseForced();
             return true;
         }
         /* Ask the user to save or discard project: */
@@ -314,14 +397,16 @@ class MainFrame extends JFrame implements ActionListener {
                 JOptionPane.YES_NO_CANCEL_OPTION);
         switch (confirmDialogResult) {
             case JOptionPane.YES_OPTION:
-                if (configurationsFileName == null) {
+                if (projectFileName == null) {
                     /* Maybe the project was newly created and does not exist as a file: */
                     if (!handleSaveAs()) {
-                        return true;
+                        return false;
                     }
-                    handleSaveForced();
+                } else {
+                    if (!handleSaveForced()) {
+                        return false;
+                    }
                 }
-                return true;
             case JOptionPane.NO_OPTION:
                 handleCloseForced();
                 return true;
@@ -332,19 +417,38 @@ class MainFrame extends JFrame implements ActionListener {
     }
 
     private void handleCloseForced() {
-        projectName = null;
-        configurationsFileName = null;
-        configurationsObject = null;
+
+        projectChanged = false;
+        projectFileName = null;
+        projectBuffer = null;
         simulator = null;
+        update();
+        setStatusText("Project closed...");
     }
 
-    private void handleExit() {
-        handleClose();
-        dispose();
+    private boolean handleExit() {
+
+        if (handleClose()) {
+            int confirmDialogResult = JOptionPane.showConfirmDialog(
+                    this,
+                    "Are you sure you want to exit?",
+                    "Exit",
+                    JOptionPane.YES_NO_OPTION);
+            switch (confirmDialogResult) {
+                case JOptionPane.YES_OPTION:
+                    dispose();
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private void handleSimulationOptions() {
+
     }
 
     private void handleSimulationDetails() {
-        // TODO
+
     }
 
     private boolean handleSimulationRun() {
@@ -456,6 +560,6 @@ class MainFrame extends JFrame implements ActionListener {
 
     void setStatusText(String message) {
 
-        statusBar.setText(message);
+        statusLabel.setText(message);
     }
 }
