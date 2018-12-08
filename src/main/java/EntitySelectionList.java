@@ -7,15 +7,15 @@ import SmartHome.*;
 /**
  *
  */
-public class EntitySelectionList<T extends Entity> extends JList<String> {
+class EntitySelectionList<T extends Entity> extends JList<String> {
 
     private ArrayList<T> entities = new ArrayList<>();
 
-    public T getSelectedEntity() {
+    T getSelectedEntity() {
         return entities.get(getSelectedIndex());
     }
 
-    public ArrayList<T> getSelectedEntities() {
+    ArrayList<T> getSelectedEntities() {
         ArrayList<T> selectedEntities = new ArrayList<>();
         for (int index : getSelectedIndices()) {
             selectedEntities.add(entities.get(index));
@@ -25,17 +25,17 @@ public class EntitySelectionList<T extends Entity> extends JList<String> {
 
     private DefaultListModel<String> listModel = new DefaultListModel<>();
 
-    public EntitySelectionList() {
+    EntitySelectionList() {
 
         super();
         setup();
     }
 
-    public EntitySelectionList(ArrayList<T> entities) {
+    EntitySelectionList(ArrayList<T> entities) {
 
         super();
         setup();
-        enlist(entities);
+        initialize(entities);
     }
 
     private void setup() {
@@ -43,7 +43,7 @@ public class EntitySelectionList<T extends Entity> extends JList<String> {
         setModel(listModel);
     }
 
-    void enlist(ArrayList<T> entities) {
+    void initialize(ArrayList<T> entities) {
 
         this.entities = entities;
 
