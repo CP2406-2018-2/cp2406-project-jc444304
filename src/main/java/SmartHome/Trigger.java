@@ -58,7 +58,7 @@ public class Trigger extends Entity {
     /**
      * Events in each trigger are tried for checking whether the trigger can fire actions.
      */
-    abstract class Event extends Entity {
+    public abstract class Event extends Entity {
 
         /**
          * All events within a trigger can be AND'ED or OR'ED.
@@ -149,7 +149,7 @@ public class Trigger extends Entity {
     /**
      *
      */
-    abstract class Action extends Entity {
+    public abstract class Action extends Entity {
 
         public Action(Automator automator) {
             super(automator);
