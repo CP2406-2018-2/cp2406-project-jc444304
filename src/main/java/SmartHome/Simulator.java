@@ -21,19 +21,19 @@ public class Simulator extends Automator {
     /**
      * Specifies the starting-date.
      */
-    Clock periodStart = new Clock();
+    Clock startClock = new Clock();
 
-    public Clock getPeriodStart() {
-        return periodStart;
+    public Clock getStartClock() {
+        return startClock;
     }
 
     /**
      * Specifies the ending-date.
      */
-    Clock periodEnd = new Clock();
+    Clock endClock = new Clock();
 
-    public Clock getPeriodEnd() {
-        return periodEnd;
+    public Clock getEndClock() {
+        return endClock;
     }
 
     /**
@@ -44,34 +44,19 @@ public class Simulator extends Automator {
     public Simulator() {
 
         super();
-        setupDuration();
     }
 
     public Simulator(@NotNull JSONObject simulatorBuffer) throws JsonDeserializedError {
 
         super();
         jsonDeserialize(simulatorBuffer);
-        setupDuration();
     }
 
-    @Override
     void setupSynchronizer() {
 
         super.setupSynchronizer();
 
-        synchronizer.setTime(periodStart.getTimeInMillis());
-    }
-
-    /**
-     * Checks if the start and end dates are correct and differs them.
-     */
-    private void setupDuration() {
-
-        syncDuration = periodEnd.compareTo(periodStart);
-        if (syncDuration < 0) {
-            periodStart = periodEnd;
-            periodEnd = periodStart;
-        }
+        synchronizer.setDuration(startClock, endClock);
     }
 
     @Override
@@ -81,18 +66,17 @@ public class Simulator extends Automator {
 
         Object objectBuffer;
 
-        /* Deserialize periods: */
+        /* Deserialize Clocks: */
         objectBuffer = simulatorBuffer.get("PeriodStart");
         if (objectBuffer instanceof JSONObject) {
             JSONObject clockBuffer = (JSONObject) objectBuffer;
-            periodStart.jsonDeserialize(clockBuffer);
+            startClock.jsonDeserialize(clockBuffer);
         }
         objectBuffer = simulatorBuffer.get("PeriodEnd");
         if (objectBuffer instanceof JSONObject) {
             JSONObject clockBuffer = (JSONObject) objectBuffer;
-            periodEnd.jsonDeserialize(clockBuffer);
+            endClock.jsonDeserialize(clockBuffer);
         }
-        setupDuration();
 
         /* Deserialize Scenarios: */
         objectBuffer = simulatorBuffer.get("Scenarios");
@@ -136,11 +120,11 @@ public class Simulator extends Automator {
         JSONObject simulatorBuffer = super.jsonSerialize();
 
         /* Serialize Periods: */
-        if (periodStart != null) {
-            simulatorBuffer.put("PeriodStart", periodStart.jsonSerialize());
+        if (startClock != null) {
+            simulatorBuffer.put("PeriodStart", startClock.jsonSerialize());
         }
-        if (periodEnd != null) {
-            simulatorBuffer.put("PeriodEnd", periodEnd.jsonSerialize());
+        if (endClock != null) {
+            simulatorBuffer.put("PeriodEnd", endClock.jsonSerialize());
         }
 
         /* Serialize Scenarios: */

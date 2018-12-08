@@ -1,5 +1,6 @@
 // Author: Yvan Burrie
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
@@ -13,9 +14,9 @@ class OptionsFrame extends JFrame implements ActionListener {
 
     private Simulator simulator;
 
-    private ClockPanel periodStartPanel;
+    private ClockPanel startClockPanel;
 
-    private ClockPanel periodEndPanel;
+    private ClockPanel endClockPanel;
 
     private JTextField speedField = new JTextField(1);
 
@@ -27,17 +28,21 @@ class OptionsFrame extends JFrame implements ActionListener {
 
         this.simulator = simulator;
 
-        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+        Container container = getContentPane();
+        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
 
-        periodStartPanel = new ClockPanel(simulator.getPeriodStart());
-        periodEndPanel = new ClockPanel(simulator.getPeriodEnd());
+        startClockPanel = new ClockPanel(this, simulator.getStartClock());
+        endClockPanel = new ClockPanel(this, simulator.getEndClock());
+
+        applyButton.addActionListener(this);
 
         updateSpeedField();
         updateLoopsPerSecField();
 
         setupComponents();
 
-        setSize(300, 400);
+        setBounds(100, 100, 300, 700);
+        pack();
         setResizable(false);
     }
 
@@ -53,19 +58,29 @@ class OptionsFrame extends JFrame implements ActionListener {
 
     private void setupComponents() {
 
-        add(new JLabel("Period Start:"));
-        add(periodStartPanel);
+        JPanel panel;
 
-        add(new JLabel("Period End:"));
-        add(periodEndPanel);
+        panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 2));
 
-        add(new JLabel("Speed:"));
-        add(speedField);
+        panel.add(new JLabel("Period Start:"));
+        panel.add(startClockPanel);
 
-        add(new JLabel("Loops per second:"));
-        add(loopsPerSecField);
+        panel.add(new JLabel("Period End:"));
+        panel.add(endClockPanel);
 
-        add(applyButton);
+        panel.add(new JLabel("Speed:"));
+        panel.add(speedField);
+
+        panel.add(new JLabel("Loops per second:"));
+        panel.add(loopsPerSecField);
+
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(applyButton);
+        add(panel);
     }
 
     @Override
@@ -79,7 +94,11 @@ class OptionsFrame extends JFrame implements ActionListener {
         }
     }
 
-    private boolean handleApply() {
+    boolean handleApply() {
+
+        startClockPanel.handleApply();
+
+        endClockPanel.handleApply();
 
         simulator.setSyncSpeed(new Long(speedField.getText()));
         updateSpeedField();

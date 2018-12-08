@@ -1,16 +1,23 @@
 // Author: Yvan Burrie
 
 package SmartHome;
+
 import java.util.GregorianCalendar;
+import com.sun.istack.internal.NotNull;
 import org.json.simple.JSONObject;
 
 public class Clock extends GregorianCalendar implements JsonDeserializable {
+
+    @Override
+    public String getJsonType() {
+        return null;
+    }
 
     public Clock() {
 
     }
 
-    public Clock(JSONObject clockBuffer) {
+    public Clock(@NotNull JSONObject clockBuffer) {
         jsonDeserialize(clockBuffer);
     }
 
@@ -58,10 +65,5 @@ public class Clock extends GregorianCalendar implements JsonDeserializable {
         clockBuffer.put("Second", get(SECOND));
 
         return clockBuffer;
-    }
-
-    @Override
-    public String getJsonType() {
-        return null;
     }
 }
