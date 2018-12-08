@@ -132,7 +132,10 @@ public class Synchronizer extends Thread {
 
         while (true) {
 
-            if (paused) continue;
+            if (paused) {
+                nextNanoTime = System.nanoTime();
+                continue;
+            }
 
             loopsAttempted++;
 

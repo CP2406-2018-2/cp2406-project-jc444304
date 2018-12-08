@@ -228,8 +228,18 @@ public class Automator implements JsonDeserializable, Synchronizable {
         this.launched = true;
     }
 
+    public boolean isPaused() {
+        return synchronizer != null && synchronizer.paused;
+    }
+
     public void pause() {
-        synchronizer.paused = !synchronizer.paused;
+
+        synchronizer.paused = true;
+    }
+
+    public void resume() {
+
+        synchronizer.paused = false;
     }
 
     /**
