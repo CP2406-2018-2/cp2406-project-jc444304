@@ -3,8 +3,7 @@
 package SmartHome;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
-
+import com.sun.istack.internal.NotNull;
 import org.json.simple.*;
 
 /**
@@ -24,10 +23,18 @@ public class Simulator extends Automator {
      */
     Clock periodStart = new Clock();
 
+    public Clock getPeriodStart() {
+        return periodStart;
+    }
+
     /**
      * Specifies the ending-date.
      */
     Clock periodEnd = new Clock();
+
+    public Clock getPeriodEnd() {
+        return periodEnd;
+    }
 
     /**
      *
@@ -40,7 +47,7 @@ public class Simulator extends Automator {
         setupDuration();
     }
 
-    public Simulator(JSONObject simulatorBuffer) throws JsonDeserializedError {
+    public Simulator(@NotNull JSONObject simulatorBuffer) throws JsonDeserializedError {
 
         super();
         jsonDeserialize(simulatorBuffer);
@@ -48,7 +55,7 @@ public class Simulator extends Automator {
     }
 
     @Override
-    protected void setupSynchronizer() {
+    void setupSynchronizer() {
 
         super.setupSynchronizer();
 
@@ -68,7 +75,7 @@ public class Simulator extends Automator {
     }
 
     @Override
-    public void jsonDeserialize(JSONObject simulatorBuffer) throws JsonDeserializedError {
+    public void jsonDeserialize(@NotNull JSONObject simulatorBuffer) throws JsonDeserializedError {
 
         super.jsonDeserialize(simulatorBuffer);
 
@@ -78,12 +85,12 @@ public class Simulator extends Automator {
         objectBuffer = simulatorBuffer.get("PeriodStart");
         if (objectBuffer instanceof JSONObject) {
             JSONObject clockBuffer = (JSONObject) objectBuffer;
-            periodStart = new Clock(clockBuffer);
+            periodStart.jsonDeserialize(clockBuffer);
         }
         objectBuffer = simulatorBuffer.get("PeriodEnd");
         if (objectBuffer instanceof JSONObject) {
             JSONObject clockBuffer = (JSONObject) objectBuffer;
-            periodEnd = new Clock(clockBuffer);
+            periodEnd.jsonDeserialize(clockBuffer);
         }
         setupDuration();
 
@@ -93,7 +100,7 @@ public class Simulator extends Automator {
             JSONArray scenariosBuffer = (JSONArray) objectBuffer;
             for (Object elementBuffer : scenariosBuffer) {
                 if (elementBuffer instanceof JSONObject) {
-                    JSONObject scenarioBuffer = (JSONObject) objectBuffer;
+                    JSONObject scenarioBuffer = (JSONObject) elementBuffer;
                     objectBuffer = scenarioBuffer.get("Type");
                     if (objectBuffer == null) {
                         throw new JsonDeserializedError("Unspecified Scenario-Type!", this);
