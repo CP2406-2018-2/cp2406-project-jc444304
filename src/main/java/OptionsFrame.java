@@ -142,7 +142,7 @@ class OptionsFrame extends JFrame implements ActionListener {
         simulator.setSyncLoopsPerSec(new Long(loopsPerSecField.getText()));
         updateSpeedField();
 
-        mainFrame.projectChanged();
+        mainFrame.handleProjectChanged();
 
         return true;
     }

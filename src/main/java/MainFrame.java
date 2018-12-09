@@ -59,11 +59,9 @@ class MainFrame extends JFrame implements ActionListener {
 
     private JSONObject projectBuffer;
 
-    private String projectName;
-
     private boolean projectChanged = false;
 
-    public void projectChanged() {
+    void handleProjectChanged() {
 
         projectChanged = true;
         update();
@@ -71,7 +69,7 @@ class MainFrame extends JFrame implements ActionListener {
 
     final private static HashMap<String, String> READABLE_TYPES = new HashMap<>();
 
-    final public static String getReadableType(Entity entity) {
+    static String getReadableType(Entity entity) {
 
         if (READABLE_TYPES.isEmpty()) {
             READABLE_TYPES.put(Entity.class.toString(), "Entity");
@@ -98,20 +96,21 @@ class MainFrame extends JFrame implements ActionListener {
     MainFrame() {
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(800, 600);
+        setSize(700, 500);
         setLayout(new BorderLayout());
 
         setupMenuBar();
         setJMenuBar(menuBar);
 
-        add(navigationPanel, BorderLayout.LINE_START);
-        add(automationPanel, BorderLayout.CENTER);
+        add(new JScrollPane(navigationPanel), BorderLayout.LINE_START);
+        add(new JScrollPane(automationPanel), BorderLayout.CENTER);
 
         setupStatusBar();
         add(statusPanel, BorderLayout.SOUTH);
 
         update();
 
+        setLocationByPlatform(true);
         setVisible(true);
     }
 
@@ -182,7 +181,7 @@ class MainFrame extends JFrame implements ActionListener {
         setStatusText("Simulator setup...");
     }
 
-    void update() {
+    private void update() {
 
         /* Update application title: */
         setTitle(APPLICATION_NAME + (simulator != null ? " - " + (simulator.getName() != null ? simulator.getName() : "Untitled Project") + (projectChanged ? "*" : "") : ""));
@@ -256,7 +255,7 @@ class MainFrame extends JFrame implements ActionListener {
             }
             return;
         }
-        if (actionEventSource == menuIncrease) {
+        if (actionEventSource == menuDecrease) {
             if (simulator != null) {
                 simulator.setSyncSpeed(simulator.getSyncSpeed() - 1);
             }
@@ -298,7 +297,7 @@ class MainFrame extends JFrame implements ActionListener {
                 continue;
             }
 
-            projectName = inputtedProjectName;
+            simulator.setName(inputtedProjectName);
             setupSimulator();
             break;
         }
@@ -312,7 +311,6 @@ class MainFrame extends JFrame implements ActionListener {
         if (!handleClose()) {
             return false;
         }
-
         int openDialogResult = fileChooser.showOpenDialog(this);
         switch (openDialogResult) {
             case JFileChooser.APPROVE_OPTION:
@@ -345,6 +343,7 @@ class MainFrame extends JFrame implements ActionListener {
                     return false;
                 }
                 setupSimulator();
+                update();
                 return true;
             default:
                 /* Click cancel: */
@@ -552,14 +551,14 @@ class MainFrame extends JFrame implements ActionListener {
         guideFrame.setVisible(true);
     }
 
-    public static String loadFile(String fileName) throws IOException {
+    static String loadFile(String fileName) throws IOException {
 
         File file = new File(fileName);
         long fileSize = file.length();
         return readFile(file, fileSize);
     }
 
-    public static String readFile(File file, long length) throws IOException {
+    static String readFile(File file, long length) throws IOException {
 
         InputStream inputStream = new FileInputStream(file.getAbsolutePath());
         byte[] fileBytes = new byte[(int) length];
