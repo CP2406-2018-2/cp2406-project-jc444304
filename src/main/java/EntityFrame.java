@@ -1,5 +1,6 @@
 // Author: Yvan Burrie
 
+import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import SmartHome.*;
@@ -21,10 +22,10 @@ public abstract class EntityFrame<T extends Entity> extends JFrame implements Ac
 
         this.entity = entity;
 
+        pack();
         setAlwaysOnTop(true);
+        setLocationByPlatform(true);
         setResizable(false);
-
-        getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     }
 
     public void initialize() {
@@ -33,14 +34,14 @@ public abstract class EntityFrame<T extends Entity> extends JFrame implements Ac
         update();
     }
 
-    abstract void setupComponents();
-
     void update() {
 
         updateId();
         updateName();
         updateDescription();
     }
+
+    abstract void setupComponents();
 
     private void updateId() {
 

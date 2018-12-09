@@ -297,8 +297,8 @@ class MainFrame extends JFrame implements ActionListener {
                 continue;
             }
 
-            simulator.setName(inputtedProjectName);
             setupSimulator();
+            simulator.setName(inputtedProjectName);
             break;
         }
         projectChanged = true;

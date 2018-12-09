@@ -2,6 +2,7 @@
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import javax.swing.*;
 import SmartHome.*;
 
@@ -133,6 +134,7 @@ public class NavigationPanel extends JPanel implements ActionListener {
         panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel.add(new JScrollPane(venuesSelector));
+        venuesSelector.setPreferredSize(new Dimension(150, 200));
         add(panel);
 
         panel = new JPanel();
@@ -150,6 +152,7 @@ public class NavigationPanel extends JPanel implements ActionListener {
         panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel.add(new JScrollPane(deviceSelector));
+        deviceSelector.setPreferredSize(new Dimension(150, 200));
         add(panel);
 
         panel = new JPanel();
@@ -172,6 +175,7 @@ public class NavigationPanel extends JPanel implements ActionListener {
         panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel.add(new JScrollPane(triggersSelector));
+        triggersSelector.setPreferredSize(new Dimension(150, 200));
         add(panel);
 
         panel = new JPanel();
@@ -189,6 +193,7 @@ public class NavigationPanel extends JPanel implements ActionListener {
         panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel.add(new JScrollPane(fixturesSelector));
+        fixturesSelector.setPreferredSize(new Dimension(150, 200));
         add(panel);
 
         panel = new JPanel();
@@ -204,7 +209,7 @@ public class NavigationPanel extends JPanel implements ActionListener {
         add(panel);
     }
 
-    public void initialize(Automator automator) {
+    void initialize(Automator automator) {
 
         this.automator = automator;
 
@@ -380,13 +385,23 @@ public class NavigationPanel extends JPanel implements ActionListener {
         if (automator == null) {
             return false;
         }
-
-        for (Fixture fixture : fixturesSelector.getSelectedEntities()) {
-            automator.getFixtures().remove(fixture);
+        ArrayList<Fixture> selectedFixtures = fixturesSelector.getSelectedEntities();
+        if (selectedFixtures.size() > 0) {
+            int dialogResult = JOptionPane.showConfirmDialog(
+                    this,
+                    "Are you sure you want to remove (" + selectedFixtures.size() + ") Fixture(s).",
+                    "Remove Points",
+                    JOptionPane.YES_NO_OPTION);
+            switch (dialogResult) {
+                case JOptionPane.YES_OPTION:
+                    for (Fixture fixture : fixturesSelector.getSelectedEntities()) {
+                        automator.getFixtures().remove(fixture);
+                    }
+                    updateFixturesSelector();
+                    return true;
+            }
         }
-        updateFixturesSelector();
-
-        return true;
+        return false;
     }
 
     boolean handleCreateTrigger() {
@@ -436,12 +451,22 @@ public class NavigationPanel extends JPanel implements ActionListener {
         if (automator == null) {
             return false;
         }
-
-        for (Trigger trigger : triggersSelector.getSelectedEntities()) {
-            automator.getTriggers().remove(trigger);
+        ArrayList<Trigger> selectedTriggers = triggersSelector.getSelectedEntities();
+        if (selectedTriggers.size() > 0) {
+            int dialogResult = JOptionPane.showConfirmDialog(
+                    this,
+                    "Are you sure you want to remove (" + selectedTriggers.size() + ") Trigger(s).",
+                    "Remove Points",
+                    JOptionPane.YES_NO_OPTION);
+            switch (dialogResult) {
+                case JOptionPane.YES_OPTION:
+                    for (Trigger trigger : triggersSelector.getSelectedEntities()) {
+                        automator.getTriggers().remove(trigger);
+                    }
+                    updateTriggersSelector();
+                    return true;
+            }
         }
-        updateTriggersSelector();
-
-        return true;
+        return false;
     }
 }
