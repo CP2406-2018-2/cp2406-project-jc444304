@@ -17,7 +17,15 @@ public class OverviewPanel extends JComponent {
         entities.add(entity);
     }
 
+    void clearEntities() {
+        entities.clear();
+    }
+
+    @Override
     public void paint(Graphics g) {
 
+        Graphics2D graphics = (Graphics2D) g;
+
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     }
 }
