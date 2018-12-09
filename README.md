@@ -1,5 +1,5 @@
 # Smart Home Automation Simulator
-A prototype for a centralized control over a domestic environment.
+A centralized control over an IoT domestic environment.
 
 ![Smart Home Automation Simulator](res/Logo.png)
 
@@ -22,6 +22,15 @@ The refrigerator compressor rests when the refrigeration temperature is below th
 
 ## Inspirations
  - [Garadget](https://www.garadget.com/) Garage door wireless control.
+ - [Hunter Douglas](https://www.hunterdouglas.com/) Motorized window covers.
+ - [Heatmiser](https://www.heatmiser.com/) Thermostats for radiators and floor heating.
+ - [Philips Hue](https://www2.meethue.com/) Dimmable and color ambient light bulbs.
+ - [Miele Developer](https://www.miele.com/developer/) General home connected appliances.
+ - [Nest](https://nest.com/) Thermostats, cameras, doorbells, alarms, and other smart devices.
+ - [Open Energy Monitor](https://openenergymonitor.org/) Energy efficiency monitoring systems.
+https://developer.samsung.com/smart-home
+ - [Sony Developer](https://developer.sony.com/develop/audio-control-api/) Audio controller interface.
+ - https://www.apple.com/au/shop/accessories/all-accessories/homekit
 
 ## References
  - [Fireworks Export Extension](http://fireworks.abeall.com/extensions/commands/Export/): used for exporting PNG to SVG.
