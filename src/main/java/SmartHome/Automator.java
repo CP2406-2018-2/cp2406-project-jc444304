@@ -58,14 +58,17 @@ public class Automator implements JsonDeserializable, Synchronizable {
      * Specifies the synchronization speed according to the configurations.
      * @see Synchronizer::speed
      */
-    long syncSpeed = 1;
+    private long syncSpeed = 1;
 
     public long getSyncSpeed() {
         return syncSpeed;
     }
 
     public void setSyncSpeed(long syncSpeed) {
-        this.syncSpeed = syncSpeed;
+        this.syncSpeed = syncSpeed > 0 ? syncSpeed : 1;
+        if (synchronizer != null) {
+            synchronizer.setSpeed(this.syncSpeed);
+        }
     }
 
     /**

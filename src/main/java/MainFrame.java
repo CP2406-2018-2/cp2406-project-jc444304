@@ -35,6 +35,8 @@ class MainFrame extends JFrame implements ActionListener {
     private JMenuItem menuStart = new JMenuItem("Start");
     private JMenuItem menuPause = new JMenuItem("Pause");
     private JMenuItem menuStop = new JMenuItem("Stop");
+    private JMenuItem menuIncrease = new JMenuItem("Increase Speed");
+    private JMenuItem menuDecrease = new JMenuItem("Decrease Speed");
     private JMenu menuHelp = new JMenu("Help");
     private JMenuItem menuAbout = new JMenuItem("About");
     private JMenuItem menuGuide = new JMenuItem("Guide");
@@ -140,6 +142,10 @@ class MainFrame extends JFrame implements ActionListener {
         menuPause.addActionListener(this);
         menuSimulation.add(menuStop);
         menuStop.addActionListener(this);
+        menuSimulation.add(menuIncrease);
+        menuIncrease.addActionListener(this);
+        menuSimulation.add(menuDecrease);
+        menuDecrease.addActionListener(this);
 
         menuBar.add(menuHelp);
         menuHelp.add(menuAbout);
@@ -242,6 +248,18 @@ class MainFrame extends JFrame implements ActionListener {
         }
         if (actionEventSource == menuStop) {
             handleSimulationStop();
+            return;
+        }
+        if (actionEventSource == menuIncrease) {
+            if (simulator != null) {
+                simulator.setSyncSpeed(simulator.getSyncSpeed() + 1);
+            }
+            return;
+        }
+        if (actionEventSource == menuIncrease) {
+            if (simulator != null) {
+                simulator.setSyncSpeed(simulator.getSyncSpeed() - 1);
+            }
             return;
         }
         if (actionEventSource == menuAbout) {
