@@ -1,5 +1,6 @@
 // Author: Yvan Burrie
 
+import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import SmartHome.*;
@@ -27,16 +28,24 @@ public abstract class EntityEditorFrame<T extends Entity> extends EntityFrame {
 
     void setupComponents() {
 
-        add(new JLabel("Type: " + MainFrame.getReadableEntityType(entity)));
+        JPanel panel;
 
-        add(new JLabel("Id:"));
-        add(idField);
+        panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 2));
 
-        add(new JLabel("Name:"));
-        add(nameField);
+        panel.add(new JLabel("Type: "));
+        panel.add(new JLabel(MainFrame.getReadableType(entity)));
 
-        add(new JLabel("Description:"));
-        add(descriptionField);
+        panel.add(new JLabel("Id:"));
+        panel.add(idField);
+
+        panel.add(new JLabel("Name:"));
+        panel.add(nameField);
+
+        panel.add(new JLabel("Description:"));
+        panel.add(descriptionField);
+
+        add(panel);
     }
 
     @Override
