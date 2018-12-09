@@ -1,5 +1,6 @@
 // Author: Yvan Burrie
 
+import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import SmartHome.*;
@@ -21,11 +22,15 @@ public class NavigationPanel extends JPanel implements ActionListener {
 
     private EntitySelectionList<Device> deviceSelector = new EntitySelectionList<>();
 
+    private ComboBoxWrapper<String> deviceTypesSelector = new ComboBoxWrapper<>();
+
     private JButton deviceCreateButton = new JButton("+");
     private JButton deviceEditButton = new JButton(">");
     private JButton deviceRemoveButton = new JButton("X");
 
     private EntitySelectionList<Fixture> fixturesSelector = new EntitySelectionList<>();
+
+    private ComboBoxWrapper<String> fixtureTypesSelector = new ComboBoxWrapper<>();
 
     private JButton fixtureCreateButton = new JButton("+");
     private JButton fixtureEditButton = new JButton(">");
@@ -37,11 +42,11 @@ public class NavigationPanel extends JPanel implements ActionListener {
     private JButton triggerEditButton = new JButton(">");
     private JButton triggerRemoveButton = new JButton("X");
 
-    public NavigationPanel(MainFrame mainFrame) {
+    NavigationPanel(MainFrame mainFrame) {
 
         this.mainFrame = mainFrame;
 
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        deviceTypesSelector.setToolTipText("Choose the type of Device to create.");
 
         venueCreateButton.setToolTipText("Create a new Venue.");
         venueCreateButton.addActionListener(this);
@@ -60,6 +65,10 @@ public class NavigationPanel extends JPanel implements ActionListener {
 
         deviceRemoveButton.setToolTipText("Remove any selected Device(s).");
         deviceRemoveButton.addActionListener(this);
+
+        fixtureTypesSelector.setToolTipText("Choose the type of Fixture to create.");
+        fixtureTypesSelector.addItem("Wall", WallFixture.class.getName());
+        fixtureTypesSelector.addItem("Bench", BenchFixture.class.getName());
 
         fixtureCreateButton.setToolTipText("Create a new Fixture.");
         fixtureCreateButton.addActionListener(this);
@@ -93,6 +102,7 @@ public class NavigationPanel extends JPanel implements ActionListener {
         venueRemoveButton.setEnabled(enabled);
 
         deviceSelector.setEnabled(enabled);
+        deviceTypesSelector.setEnabled(enabled);
         deviceCreateButton.setEnabled(enabled);
         deviceEditButton.setEnabled(enabled);
         deviceRemoveButton.setEnabled(enabled);
@@ -103,6 +113,7 @@ public class NavigationPanel extends JPanel implements ActionListener {
         triggerRemoveButton.setEnabled(enabled);
 
         fixturesSelector.setEnabled(enabled);
+        fixtureTypesSelector.setEnabled(enabled);
         fixtureCreateButton.setEnabled(enabled);
         fixtureEditButton.setEnabled(enabled);
         fixtureRemoveButton.setEnabled(enabled);
@@ -110,29 +121,87 @@ public class NavigationPanel extends JPanel implements ActionListener {
 
     void setupComponents() {
 
-        add(new JLabel("Venues:"));
-        add(venuesSelector);
-        add(venueCreateButton);
-        add(venueEditButton);
-        add(venueRemoveButton);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        add(new JLabel("Devices:"));
-        add(deviceSelector);
-        add(deviceCreateButton);
-        add(deviceEditButton);
-        add(deviceRemoveButton);
+        JPanel panel;
 
-        add(new JLabel("Triggers:"));
-        add(triggersSelector);
-        add(triggerCreateButton);
-        add(triggerEditButton);
-        add(triggerRemoveButton);
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(new JLabel("Venues:"));
+        add(panel);
 
-        add(new JLabel("Fixtures:"));
-        add(fixturesSelector);
-        add(fixtureCreateButton);
-        add(fixtureEditButton);
-        add(fixtureRemoveButton);
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(new JScrollPane(venuesSelector));
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(venueCreateButton);
+        panel.add(venueEditButton);
+        panel.add(venueRemoveButton);
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(new JLabel("Devices:"));
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(new JScrollPane(deviceSelector));
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(deviceTypesSelector);
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(deviceCreateButton);
+        panel.add(deviceEditButton);
+        panel.add(deviceRemoveButton);
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(new JLabel("Triggers:"));
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(new JScrollPane(triggersSelector));
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(triggerCreateButton);
+        panel.add(triggerEditButton);
+        panel.add(triggerRemoveButton);
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(new JLabel("Fixtures:"));
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(new JScrollPane(fixturesSelector));
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(fixtureTypesSelector);
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(fixtureCreateButton);
+        panel.add(fixtureEditButton);
+        panel.add(fixtureRemoveButton);
+        add(panel);
     }
 
     public void initialize(Automator automator) {
@@ -260,40 +329,118 @@ public class NavigationPanel extends JPanel implements ActionListener {
 
     boolean handleCreateFixture() {
 
+        if (automator == null) {
+            return false;
+        }
+
+        String selectedFixtureType = fixtureTypesSelector.getSelectedKey();
+
+        if (selectedFixtureType.equals(WallFixture.class.getName())) {
+            return handleCreateFixture(new WallFixture(automator));
+        }
+
+        if (selectedFixtureType.equals(BenchFixture.class.getName())) {
+            return handleCreateFixture(new BenchFixture(automator));
+        }
+
+        return false;
+    }
+
+    boolean handleCreateFixture(Fixture fixture) {
+
+        fixture.setId("FIXTURE_" + automator.getFixtures().size());
+        fixture.setName("New Fixture");
+        automator.getFixtures().add(fixturesSelector.getSelectedIndex() + 1, fixture);
+        updateFixturesSelector();
+        handleShowFixtureEditor(fixture);
+
         return true;
     }
 
     boolean handleEditFixture() {
+
+        Fixture fixture = fixturesSelector.getSelectedEntity();
+        handleShowFixtureEditor(fixture);
+
+        return true;
+    }
+
+    boolean handleShowFixtureEditor(Fixture fixture) {
+
+        FixtureEditorFrame fixtureEditor = new FixtureEditorFrame(this, fixture);
+        fixtureEditor.initialize();
+        fixtureEditor.setAlwaysOnTop(true);
+        fixtureEditor.setVisible(true);
 
         return true;
     }
 
     boolean handleRemoveFixture() {
 
+        if (automator == null) {
+            return false;
+        }
+
+        for (Fixture fixture : fixturesSelector.getSelectedEntities()) {
+            automator.getFixtures().remove(fixture);
+        }
+        updateFixturesSelector();
+
         return true;
     }
 
     boolean handleCreateTrigger() {
+
+        if (automator == null) {
+            return false;
+        }
+
+        Trigger trigger = new Trigger(automator);
+        trigger.setId("TRIGGER_" + automator.getTriggers().size());
+        trigger.setName("New Trigger");
+        automator.getTriggers().add(triggersSelector.getSelectedIndex() + 1, trigger);
+        updateTriggersSelector();
+        handleShowTriggerEditor(trigger);
 
         return true;
     }
 
     boolean handleEditTrigger() {
 
+        Trigger trigger = triggersSelector.getSelectedEntity();
+        handleShowTriggerEditor(trigger);
+
         return true;
     }
 
     boolean handleShowTriggerEditor(Trigger trigger) {
+
+        TriggerEditorFrame triggerEditor = new TriggerEditorFrame(this, trigger);
+        triggerEditor.initialize();
+        triggerEditor.setAlwaysOnTop(true);
+        triggerEditor.setVisible(true);
 
         return true;
     }
 
     boolean handleAppliedTriggerEditor() {
 
+        updateTriggersSelector();
+        mainFrame.setStatusText("Trigger edited...");
+
         return true;
     }
 
     boolean handleRemoveTrigger() {
+
+        if (automator == null) {
+            return false;
+        }
+
+        for (Trigger trigger : triggersSelector.getSelectedEntities()) {
+            automator.getTriggers().remove(trigger);
+        }
+        updateTriggersSelector();
 
         return true;
     }
