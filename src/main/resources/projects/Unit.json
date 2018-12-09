@@ -1,6 +1,17 @@
 {
+  "Type": "AUTOMATOR",
+  "Name": "My Unit",
+  "Description": "This dwelling is ideal for a single or couple.",
   "Width": "300",
   "Height": "250",
+  "ShineStart": [
+    62,
+    0
+  ],
+  "ShineEnd": [
+    238,
+    250
+  ],
   "Venues": [
     {
       "Id": "KITCHEN",
