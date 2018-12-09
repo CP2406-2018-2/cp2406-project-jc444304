@@ -251,7 +251,7 @@ class MainFrame extends JFrame implements ActionListener {
         }
         if (actionEventSource == menuIncrease) {
             if (simulator != null) {
-                simulator.setSyncSpeed(simulator.getSyncSpeed() + 1);
+                simulator.setSyncSpeed(simulator.getSyncSpeed() * 2);
             }
             return;
         }

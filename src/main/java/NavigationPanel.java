@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import SmartHome.*;
+import com.sun.istack.internal.NotNull;
 
 /**
  *
@@ -21,7 +22,7 @@ public class NavigationPanel extends JPanel implements ActionListener {
     private JButton venueEditButton = new JButton(">");
     private JButton venueRemoveButton = new JButton("X");
 
-    private EntitySelectionList<Device> deviceSelector = new EntitySelectionList<>();
+    private EntitySelectionList<Device> devicesSelector = new EntitySelectionList<>();
 
     private ComboBoxWrapper<String> deviceTypesSelector = new ComboBoxWrapper<>();
 
@@ -102,7 +103,7 @@ public class NavigationPanel extends JPanel implements ActionListener {
         venueEditButton.setEnabled(enabled);
         venueRemoveButton.setEnabled(enabled);
 
-        deviceSelector.setEnabled(enabled);
+        devicesSelector.setEnabled(enabled);
         deviceTypesSelector.setEnabled(enabled);
         deviceCreateButton.setEnabled(enabled);
         deviceEditButton.setEnabled(enabled);
@@ -151,8 +152,8 @@ public class NavigationPanel extends JPanel implements ActionListener {
 
         panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        panel.add(new JScrollPane(deviceSelector));
-        deviceSelector.setPreferredSize(new Dimension(150, 200));
+        panel.add(new JScrollPane(devicesSelector));
+        devicesSelector.setPreferredSize(new Dimension(150, 200));
         add(panel);
 
         panel = new JPanel();
@@ -214,7 +215,7 @@ public class NavigationPanel extends JPanel implements ActionListener {
         this.automator = automator;
 
         updateVenuesSelector();
-        updateDeviceSelector();
+        updateDevicesSelector();
         updateFixturesSelector();
         updateTriggersSelector();
     }
@@ -226,10 +227,10 @@ public class NavigationPanel extends JPanel implements ActionListener {
         }
     }
 
-    private void updateDeviceSelector() {
+    private void updateDevicesSelector() {
 
         if (automator != null) {
-            deviceSelector.initialize(automator.getDevices());
+            devicesSelector.initialize(automator.getDevices());
         }
     }
 
@@ -302,56 +303,105 @@ public class NavigationPanel extends JPanel implements ActionListener {
         }
     }
 
-    boolean handleCreateVenue() {
+    private boolean handleCreateVenue() {
 
         return true;
     }
 
-    boolean handleEditVenue() {
+    private boolean handleEditVenue() {
 
         return true;
     }
 
-    boolean handleRemoveVenue() {
+    private boolean handleRemoveVenue() {
 
         return true;
     }
 
-    boolean handleCreateDevice() {
-
-        return true;
-    }
-
-    boolean handleEditDevice() {
-
-        return true;
-    }
-
-    boolean handleRemoveDevice() {
-
-        return true;
-    }
-
-    boolean handleCreateFixture() {
+    private boolean handleCreateDevice() {
 
         if (automator == null) {
             return false;
         }
+        String selectedDeviceType = deviceTypesSelector.getSelectedKey();
+        return false;
+    }
 
+    private boolean handleCreateDevice(Device device) {
+
+        device.setId("DEVICE_" + automator.getFixtures().size());
+        device.setName("New Device");
+        automator.getDevices().add(devicesSelector.getSelectedIndex() + 1, device);
+        updateDevicesSelector();
+        handleShowDeviceEditor(device);
+
+        return true;
+    }
+
+    private boolean handleEditDevice() {
+
+        handleShowDeviceEditor(devicesSelector.getSelectedEntity());
+
+        return true;
+    }
+
+    private boolean handleShowDeviceEditor(Device device) {
+
+        DeviceEditorFrame deviceEditor = new DeviceEditorFrame(this, device);
+        deviceEditor.initialize();
+        deviceEditor.setVisible(true);
+
+        return true;
+    }
+
+    void handleAppliedDeviceEditor() {
+
+        updateDevicesSelector();
+        mainFrame.handleProjectChanged();
+        mainFrame.setStatusText("Device changed...");
+    }
+
+    private boolean handleRemoveDevice() {
+
+        if (automator == null) {
+            return false;
+        }
+        ArrayList<Device> selectedDevices = devicesSelector.getSelectedEntities();
+        if (selectedDevices.size() > 0) {
+            int dialogResult = JOptionPane.showConfirmDialog(
+                    this,
+                    "Are you sure you want to remove (" + selectedDevices.size() + ") Device(s).",
+                    "Remove Points",
+                    JOptionPane.YES_NO_OPTION);
+            switch (dialogResult) {
+                case JOptionPane.YES_OPTION:
+                    for (Device device : devicesSelector.getSelectedEntities()) {
+                        automator.getDevices().remove(device);
+                    }
+                    updateDevicesSelector();
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean handleCreateFixture() {
+
+        if (automator == null) {
+            return false;
+        }
         String selectedFixtureType = fixtureTypesSelector.getSelectedKey();
 
         if (selectedFixtureType.equals(WallFixture.class.getName())) {
             return handleCreateFixture(new WallFixture(automator));
         }
-
         if (selectedFixtureType.equals(BenchFixture.class.getName())) {
             return handleCreateFixture(new BenchFixture(automator));
         }
-
         return false;
     }
 
-    boolean handleCreateFixture(Fixture fixture) {
+    private boolean handleCreateFixture(@NotNull Fixture fixture) {
 
         fixture.setId("FIXTURE_" + automator.getFixtures().size());
         fixture.setName("New Fixture");
@@ -362,54 +412,55 @@ public class NavigationPanel extends JPanel implements ActionListener {
         return true;
     }
 
-    boolean handleEditFixture() {
+    private boolean handleEditFixture() {
 
-        Fixture fixture = fixturesSelector.getSelectedEntity();
-        handleShowFixtureEditor(fixture);
+        handleShowFixtureEditor(fixturesSelector.getSelectedEntity());
 
         return true;
     }
 
-    boolean handleShowFixtureEditor(Fixture fixture) {
+    private boolean handleShowFixtureEditor(Fixture fixture) {
 
+        if (fixture == null) {
+            return false;
+        }
         FixtureEditorFrame fixtureEditor = new FixtureEditorFrame(this, fixture);
         fixtureEditor.initialize();
-        fixtureEditor.setAlwaysOnTop(true);
         fixtureEditor.setVisible(true);
-
         return true;
     }
 
-    boolean handleRemoveFixture() {
+    private boolean handleRemoveFixture() {
 
         if (automator == null) {
             return false;
         }
         ArrayList<Fixture> selectedFixtures = fixturesSelector.getSelectedEntities();
-        if (selectedFixtures.size() > 0) {
-            int dialogResult = JOptionPane.showConfirmDialog(
-                    this,
-                    "Are you sure you want to remove (" + selectedFixtures.size() + ") Fixture(s).",
-                    "Remove Points",
-                    JOptionPane.YES_NO_OPTION);
-            switch (dialogResult) {
-                case JOptionPane.YES_OPTION:
-                    for (Fixture fixture : fixturesSelector.getSelectedEntities()) {
-                        automator.getFixtures().remove(fixture);
-                    }
-                    updateFixturesSelector();
-                    return true;
-            }
+        if (selectedFixtures.size() <= 0) {
+            return false;
         }
-        return false;
+        int dialogResult = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to remove (" + selectedFixtures.size() + ") Fixture(s).",
+                "Remove Points",
+                JOptionPane.YES_NO_OPTION);
+        switch (dialogResult) {
+            case JOptionPane.YES_OPTION:
+                for (Fixture fixture : fixturesSelector.getSelectedEntities()) {
+                    automator.getFixtures().remove(fixture);
+                }
+                updateFixturesSelector();
+                return true;
+            default:
+                return false;
+        }
     }
 
-    boolean handleCreateTrigger() {
+    private boolean handleCreateTrigger() {
 
         if (automator == null) {
             return false;
         }
-
         Trigger trigger = new Trigger(automator);
         trigger.setId("TRIGGER_" + automator.getTriggers().size());
         trigger.setName("New Trigger");
@@ -420,53 +471,53 @@ public class NavigationPanel extends JPanel implements ActionListener {
         return true;
     }
 
-    boolean handleEditTrigger() {
+    private boolean handleEditTrigger() {
 
-        Trigger trigger = triggersSelector.getSelectedEntity();
-        handleShowTriggerEditor(trigger);
-
-        return true;
-    }
-
-    boolean handleShowTriggerEditor(Trigger trigger) {
-
-        TriggerEditorFrame triggerEditor = new TriggerEditorFrame(this, trigger);
-        triggerEditor.initialize();
-        triggerEditor.setAlwaysOnTop(true);
-        triggerEditor.setVisible(true);
+        handleShowTriggerEditor(triggersSelector.getSelectedEntity());
 
         return true;
     }
 
-    boolean handleAppliedTriggerEditor() {
+    private boolean handleShowTriggerEditor(Trigger trigger) {
+
+        if (trigger != null) {
+            TriggerEditorFrame triggerEditor = new TriggerEditorFrame(this, trigger);
+            triggerEditor.initialize();
+            triggerEditor.setVisible(true);
+        }
+        return true;
+    }
+
+    void handleAppliedTriggerEditor() {
 
         updateTriggersSelector();
+        mainFrame.handleProjectChanged();
         mainFrame.setStatusText("Trigger edited...");
-
-        return true;
     }
 
-    boolean handleRemoveTrigger() {
+    private boolean handleRemoveTrigger() {
 
         if (automator == null) {
             return false;
         }
         ArrayList<Trigger> selectedTriggers = triggersSelector.getSelectedEntities();
-        if (selectedTriggers.size() > 0) {
-            int dialogResult = JOptionPane.showConfirmDialog(
-                    this,
-                    "Are you sure you want to remove (" + selectedTriggers.size() + ") Trigger(s).",
-                    "Remove Points",
-                    JOptionPane.YES_NO_OPTION);
-            switch (dialogResult) {
-                case JOptionPane.YES_OPTION:
-                    for (Trigger trigger : triggersSelector.getSelectedEntities()) {
-                        automator.getTriggers().remove(trigger);
-                    }
-                    updateTriggersSelector();
-                    return true;
-            }
+        if (selectedTriggers.size() <= 0) {
+            return false;
         }
-        return false;
+        int dialogResult = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to remove (" + selectedTriggers.size() + ") Trigger(s).",
+                "Remove Points",
+                JOptionPane.YES_NO_OPTION);
+        switch (dialogResult) {
+            case JOptionPane.YES_OPTION:
+                for (Trigger trigger : triggersSelector.getSelectedEntities()) {
+                    automator.getTriggers().remove(trigger);
+                }
+                updateTriggersSelector();
+                return true;
+            default:
+                return false;
+        }
     }
 }
