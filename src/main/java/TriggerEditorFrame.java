@@ -3,6 +3,7 @@
 import java.awt.event.ActionEvent;
 import javax.swing.*;
 import SmartHome.*;
+import com.sun.istack.internal.NotNull;
 
 /**
  *
@@ -28,7 +29,7 @@ public class TriggerEditorFrame extends EntityEditorFrame<Trigger> {
     private JButton eventEditButton = new JButton(">");
     private JButton eventRemoveButton = new JButton("X");
 
-    public TriggerEditorFrame(NavigationPanel navigationPanel, Trigger trigger) {
+    public TriggerEditorFrame(@NotNull NavigationPanel navigationPanel, @NotNull Trigger trigger) {
 
         super(trigger);
 
