@@ -6,15 +6,21 @@ import javax.swing.*;
 /**
  *
  */
-public class AutomationPanel extends JPanel {
+class AutomationPanel extends JPanel {
 
-    Automator automator;
+    private MainFrame mainFrame;
 
-    public AutomationPanel() {
+    private Automator automator;
+
+    private OverviewPanel overviewPanel = new OverviewPanel();
+
+    AutomationPanel(MainFrame mainFrame) {
+
+        this.mainFrame = mainFrame;
 
     }
 
-    public void initialize(Automator automator) {
+    void initialize(Automator automator) {
 
         this.automator = automator;
     }

@@ -43,7 +43,7 @@ class MainFrame extends JFrame implements ActionListener {
 
     private NavigationPanel navigationPanel = new NavigationPanel(this);
 
-    private AutomationPanel automationPanel = new AutomationPanel();
+    private AutomationPanel automationPanel = new AutomationPanel(this);
 
     private JPanel statusPanel = new JPanel();
 
