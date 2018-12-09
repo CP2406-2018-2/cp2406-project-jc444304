@@ -1,5 +1,6 @@
 // Author: Yvan Burrie
 
+import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.awt.*;
 import java.awt.event.*;
@@ -9,7 +10,7 @@ import SmartHome.*;
 /**
  *
  */
-public class PathEditorPanel extends JPanel implements ActionListener {
+class PathEditorPanel extends JPanel implements ActionListener {
 
     private Entity entity;
 
@@ -21,20 +22,9 @@ public class PathEditorPanel extends JPanel implements ActionListener {
 
     private JButton removeButton = new JButton("X");
 
-    private JComponent sample = new JComponent() {
-        @Override
-        public void paint(Graphics g) {
-            Graphics2D graphics = (Graphics2D) g;
-            graphics.setPaint(Color.BLACK);
-            graphics.fill(entity.toPath());
-        }
-    };
-
-    public PathEditorPanel(Entity entity) {
+    PathEditorPanel(Entity entity) {
 
         this.entity = entity;
-
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         setupListModel();
         pointsSelector.setModel(listModel);
@@ -44,8 +34,6 @@ public class PathEditorPanel extends JPanel implements ActionListener {
 
         removeButton.setToolTipText("Remove selected point(s).");
         removeButton.addActionListener(this);
-
-        sample.setMinimumSize(new Dimension(300, 300));
 
         setupComponents();
     }
@@ -60,10 +48,20 @@ public class PathEditorPanel extends JPanel implements ActionListener {
 
     void setupComponents() {
 
-        add(pointsSelector);
-        add(createButton);
-        add(removeButton);
-        add(sample);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        JPanel panel;
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout());
+        panel.add(pointsSelector);
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout());
+        panel.add(createButton);
+        panel.add(removeButton);
+        add(panel);
     }
 
     @Override
@@ -72,14 +70,14 @@ public class PathEditorPanel extends JPanel implements ActionListener {
         Object eventSource = event.getSource();
 
         if (eventSource == createButton) {
-            handleCreatePoints();
+            handleCreatePoint();
         }
         if (eventSource == removeButton) {
             handleRemovePoints();
         }
     }
 
-    private boolean handleCreatePoints() {
+    private boolean handleCreatePoint() {
 
         String coordinateInput = "0,0";
         while (true) {
@@ -110,7 +108,11 @@ public class PathEditorPanel extends JPanel implements ActionListener {
     private boolean handleRemovePoints() {
 
         int[] selectedIndices = pointsSelector.getSelectedIndices();
-        int dialogResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to remove (" + selectedIndices.length + ") point(s).");
+        int dialogResult = JOptionPane.showConfirmDialog(
+                this,
+                "Are you sure you want to remove (" + selectedIndices.length + ") point(s).",
+                "Remove Points",
+                JOptionPane.YES_NO_OPTION);
         switch (dialogResult) {
             case JOptionPane.YES_OPTION:
                 ArrayList<Point> points = new ArrayList<>();

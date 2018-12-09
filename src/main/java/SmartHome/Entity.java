@@ -42,7 +42,7 @@ public abstract class Entity extends Asset {
         this.description = description;
     }
 
-    ArrayList<Point> dimensions;
+    ArrayList<Point> dimensions = new ArrayList<>();
 
     public ArrayList<Point> getDimensions() {
         return dimensions;
