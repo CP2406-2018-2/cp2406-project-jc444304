@@ -12,7 +12,8 @@ class EntitySelectionList<T extends Entity> extends JList<String> {
     private ArrayList<T> entities = new ArrayList<>();
 
     T getSelectedEntity() {
-        return entities.get(getSelectedIndex());
+        int selectedIndex = getSelectedIndex();
+        return selectedIndex >= 0 ? entities.get(selectedIndex) : null;
     }
 
     ArrayList<T> getSelectedEntities() {
