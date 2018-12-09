@@ -51,7 +51,7 @@ public abstract class Test {
         Synchronizer thread;
 
         /* run the thread at normal speed for 5 seconds with 100 executions per second: */
-        thread = new Synchronizer(null, 1, 5, 100);
+        thread = new Synchronizer(null, 1, 100);
         thread.start();
         while (thread.isAlive()) continue;
         System.out.println("Total thread loops attempted: " + thread.getLoopsAttempted());
@@ -59,7 +59,7 @@ public abstract class Test {
         System.out.println("Total thread time in seconds: " + ((System.nanoTime() - thread.getFirstNanoTime()) / 1000000000));
 
         /* run each minute as a second for 10 minutes with 1 execution per second: */
-        thread = new Synchronizer(null, 60, 60 * 10, 1);
+        thread = new Synchronizer(null, 60, 1);
         thread.start();
         while (thread.isAlive()) continue;
         System.out.println("Total thread loops attempted: " + thread.getLoopsAttempted());

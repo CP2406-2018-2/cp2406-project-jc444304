@@ -2,6 +2,8 @@
 
 package SmartHome;
 
+import com.sun.istack.internal.NotNull;
+
 /**
  *
  */
@@ -10,7 +12,7 @@ public class Synchronizer extends Thread {
     /**
      * Points to the whatever class is dependent of the Synchronizable interface.
      */
-    protected Synchronizable target;
+    private Synchronizable target;
 
     /**
      * Specifies the number of nano-seconds in each second.
@@ -21,7 +23,7 @@ public class Synchronizer extends Thread {
      * Specifies the number of fake seconds per real second of the thread.
      * For example, set to 60 so that 1 minute is accelerated to 1 second in real-time.
      */
-    protected long speed = 1;
+    private long speed = 1;
 
     public long getSpeed() {
         return this.speed;
@@ -29,19 +31,20 @@ public class Synchronizer extends Thread {
 
     public void setSpeed(long speed) {
         this.speed = speed;
+        update();
     }
 
     /**
      * Specifies the expiration of the thread in number of fake seconds.
      */
-    protected long limit = 60 * 60 * 24 * 365;
+    private long maximumTime = 60 * 60 * 24 * 365;
 
-    public long getLimit() {
-        return this.limit;
+    public long getMaximumTime() {
+        return this.maximumTime;
     }
 
-    public void setLimit(long limit) {
-        this.limit = limit;
+    public void setMaximumTime(long maximumTime) {
+        this.maximumTime = maximumTime;
     }
 
     /**
@@ -55,6 +58,7 @@ public class Synchronizer extends Thread {
 
     public void setLoopsPerSecond(long loopsPerSecond) {
         this.loopsPerSecond = loopsPerSecond;
+        update();
     }
 
     /**
@@ -97,28 +101,42 @@ public class Synchronizer extends Thread {
     /**
      * Specifies the current fake time in milli-seconds.
      */
-    private long time = 0;
+    private long currentTime = 0;
 
-    public long getTime() {
-        return time;
+    public long getCurrentTime() {
+        return currentTime;
     }
 
-    public void setTime(long time) {
-        this.time = time;
+    public void setCurrentTime(long currentTime) {
+        this.currentTime = currentTime;
     }
 
     boolean paused = false;
 
-    public Synchronizer(Synchronizable target) {
+    public Synchronizer(@NotNull Synchronizable target) {
+
         this.target = target;
     }
 
-    public Synchronizer(Synchronizable target, long speed, long limit, long loopsPerSecond) {
+    public Synchronizer(@NotNull Synchronizable target, long speed, long loopsPerSecond) {
 
         this.target = target;
         this.speed = speed;
-        this.limit = limit;
         this.loopsPerSecond = loopsPerSecond;
+    }
+
+    void setDuration(Clock startClock, Clock endClock) {
+
+        maximumTime = endClock.compareTo(startClock);
+        if (maximumTime < 0) {
+            maximumTime *= -1;
+        }
+        maximumTime = endClock.getTimeInMillis();
+    }
+
+    private void update() {
+
+        pauseNanoSeconds = NANO_SECS_PER_SEC / speed / loopsPerSecond;
     }
 
     /**
@@ -129,7 +147,7 @@ public class Synchronizer extends Thread {
         firstNanoTime = nextNanoTime = System.nanoTime();
         loopsAttempted = 0;
         loopsSucceeded = 0;
-        pauseNanoSeconds = NANO_SECS_PER_SEC / speed / loopsPerSecond;
+        update();
 
         while (!isInterrupted()) {
 
@@ -140,17 +158,23 @@ public class Synchronizer extends Thread {
 
             loopsAttempted++;
 
-            if (System.nanoTime() - nextNanoTime < pauseNanoSeconds) continue;
+            if (System.nanoTime() - nextNanoTime < pauseNanoSeconds){
+                continue;
+            }
 
             loopsSucceeded++;
 
             nextNanoTime += pauseNanoSeconds;
 
-            time += 1000 / loopsPerSecond;
+            currentTime += 1000 / loopsPerSecond;
 
             target.synchronize(loopsPerSecond);
 
-            if (loopsSucceeded >= limit * loopsPerSecond) break;
+            System.out.println(currentTime + ": " + pauseNanoSeconds);
+
+            if (currentTime >= maximumTime){
+                break;
+            }
         }
     }
 }

@@ -72,16 +72,10 @@ public class Automator implements JsonDeserializable, Synchronizable {
     }
 
     /**
-     * Specifies the synchronization limit according to the configurations.
-     * @see Synchronizer::limit
-     */
-    long syncDuration = 1;
-
-    /**
      * Specifies the synchronization refresh rate for every fake second.
      * @see Synchronizer::loopPerSecond
      */
-    long syncLoopsPerSec = 1;
+    private long syncLoopsPerSec = 1;
 
     public long getSyncLoopsPerSec() {
         return syncLoopsPerSec;
@@ -89,6 +83,9 @@ public class Automator implements JsonDeserializable, Synchronizable {
 
     public void setSyncLoopsPerSec(long syncLoopsPerSec) {
         this.syncLoopsPerSec = syncLoopsPerSec;
+        if (synchronizer != null) {
+            synchronizer.setLoopsPerSecond(syncLoopsPerSec);
+        }
     }
 
     /**
@@ -219,11 +216,6 @@ public class Automator implements JsonDeserializable, Synchronizable {
     }
 
     /**
-     * Determines whether the automation already launched.
-     */
-    private boolean launched = false;
-
-    /**
      *
      */
     public Automator() {
@@ -247,7 +239,6 @@ public class Automator implements JsonDeserializable, Synchronizable {
         synchronizer = new Synchronizer(
                 this,
                 syncSpeed,
-                syncDuration * Synchronizer.NANO_SECS_PER_SEC,
                 syncLoopsPerSec);
     }
 
