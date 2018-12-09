@@ -4,6 +4,7 @@ package SmartHome;
 
 import java.util.ArrayList;
 
+import com.sun.istack.internal.NotNull;
 import org.json.simple.*;
 
 /**
@@ -47,6 +48,16 @@ public class Automator implements JsonDeserializable, Synchronizable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
@@ -225,7 +236,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
     /**
      *
      */
-    public Automator(JSONObject automatorBuffer) throws JsonDeserializedError {
+    public Automator(@NotNull JSONObject automatorBuffer) throws JsonDeserializedError {
 
         jsonDeserialize(automatorBuffer);
     }
@@ -315,6 +326,15 @@ public class Automator implements JsonDeserializable, Synchronizable {
 
         Object objectBuffer;
 
+        objectBuffer = automatorBuffer.get("Name");
+        if (objectBuffer instanceof String) {
+            name = (String) objectBuffer;
+        }
+        objectBuffer = automatorBuffer.get("Description");
+        if (objectBuffer instanceof String) {
+            description = (String) objectBuffer;
+        }
+
         /* Deserialize Synchronizer: */
         objectBuffer = automatorBuffer.get("Synchronizer");
         if (objectBuffer instanceof JSONObject) {
@@ -323,15 +343,10 @@ public class Automator implements JsonDeserializable, Synchronizable {
             if (objectBuffer instanceof Long) {
                 syncSpeed = (long) objectBuffer;
             }
-            objectBuffer = synchronizerBuffer.get("Limit");
-            if (objectBuffer instanceof Long) {
-                syncDuration = (long) objectBuffer;
-            }
             objectBuffer = synchronizerBuffer.get("LoopsPerSecond");
             if (objectBuffer instanceof Long) {
                 syncLoopsPerSec = (long) objectBuffer;
             }
-            this.setupSynchronizer();
         }
 
         /* Deserialize Venues: */
@@ -406,7 +421,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
                     }
                     if (objectBuffer instanceof String) {
                         String venueIdBuffer = (String) objectBuffer;
-                        Venue venue = this.getVenueById(venueIdBuffer);
+                        Venue venue = getVenueById(venueIdBuffer);
                         Device device;
                         switch (deviceTypeBuffer.toUpperCase()) {
                             case RefrigeratorDevice.JSON_TYPE:
@@ -473,6 +488,13 @@ public class Automator implements JsonDeserializable, Synchronizable {
     public JSONObject jsonSerialize() throws JsonSerializedError {
 
         JSONObject automatorBuffer = new JSONObject();
+
+        if (name != null) {
+            automatorBuffer.put("Name", name);
+        }
+        if (description != null) {
+            automatorBuffer.put("Description", description);
+        }
 
         /* Serialize Synchronizer: */
         JSONObject synchronizerBuffer = new JSONObject();
