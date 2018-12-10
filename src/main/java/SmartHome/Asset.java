@@ -5,7 +5,7 @@ package SmartHome;
 import com.sun.istack.internal.NotNull;
 import org.json.simple.*;
 
-public abstract class Asset implements JsonDeserializable, Synchronizable {
+public abstract class Asset implements JsonDeserializable, Synchronizer.Synchronizable {
 
     @Override
     public String getJsonType() {

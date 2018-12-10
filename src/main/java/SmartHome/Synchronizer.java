@@ -177,15 +177,15 @@ public class Synchronizer extends Thread {
             }
         }
     }
-}
-
-/**
- *
- */
-interface Synchronizable {
 
     /**
-     * @param loopsPerSecond Specifies the refresh rate of the call to run thread.
+     *
      */
-    void synchronize(long loopsPerSecond);
+    interface Synchronizable {
+
+        /**
+         * @param loopsPerSecond Specifies the refresh rate of the call to run thread.
+         */
+        void synchronize(long loopsPerSecond);
+    }
 }

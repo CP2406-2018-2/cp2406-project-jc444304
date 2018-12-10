@@ -10,7 +10,7 @@ import org.json.simple.*;
 /**
  * The automation system merely reflects the reality of a domestic environment.
  */
-public class Automator implements JsonDeserializable, Synchronizable {
+public class Automator implements JsonDeserializable, Synchronizer.Synchronizable {
 
     final static String JSON_TYPE = "AUTOMATOR";
 
