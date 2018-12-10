@@ -31,10 +31,10 @@ public abstract class Test {
      */
     public static void main(String[] args) {
 
-        Automator automator = new Simulator();
+        Simulator simulator = new Simulator();
 
         System.out.println("Attempting to test Jython...");
-        testJython(automator);
+        testJython(simulator);
 
         //System.out.println("Attempting to test SVG canvas...");
         //testGraphics();
@@ -43,7 +43,7 @@ public abstract class Test {
         testWebBrowser();
 
         System.out.println("Attempting to test synchronizer...");
-        testSynchronizer(automator);
+        testSynchronizer(simulator);
     }
 
     /**
@@ -98,7 +98,8 @@ public abstract class Test {
                         "simulator = Simulator()\n");
 
         PyObject sandboxSimulatorInstance = interpreter.get("simulator");
-        interpreter.exec("print simulator.jsonSerialize()");
+        assert sandboxSimulatorInstance != null;
+        interpreter.exec("print(simulator.jsonSerialize())");
         System.out.println(sandboxSimulatorInstance.getClass());
 
         return true;
