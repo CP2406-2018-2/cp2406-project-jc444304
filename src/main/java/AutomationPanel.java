@@ -1,7 +1,8 @@
 // Author: Yvan Burrie
 
-import SmartHome.*;
+import com.sun.istack.internal.NotNull;
 import javax.swing.*;
+import SmartHome.*;
 
 /**
  *
@@ -14,14 +15,21 @@ class AutomationPanel extends JPanel {
 
     private OverviewPanel overviewPanel = new OverviewPanel();
 
-    AutomationPanel(MainFrame mainFrame) {
+    AutomationPanel(@NotNull MainFrame mainFrame) {
 
         this.mainFrame = mainFrame;
 
     }
 
-    void initialize(Automator automator) {
+    void initialize(@NotNull Automator automator) {
 
         this.automator = automator;
+
+        JFrame frame = new JFrame();
+        for (Venue venue : automator.getVenues()) {
+            overviewPanel.addEntity(venue);
+        }
+        frame.add(overviewPanel);
+        frame.setVisible(true);
     }
 }

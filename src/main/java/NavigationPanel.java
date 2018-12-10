@@ -44,7 +44,7 @@ public class NavigationPanel extends JPanel implements ActionListener {
     private JButton triggerEditButton = new JButton(">");
     private JButton triggerRemoveButton = new JButton("X");
 
-    NavigationPanel(MainFrame mainFrame) {
+    NavigationPanel(@NotNull MainFrame mainFrame) {
 
         this.mainFrame = mainFrame;
 
@@ -212,7 +212,7 @@ public class NavigationPanel extends JPanel implements ActionListener {
         add(panel);
     }
 
-    void initialize(Automator automator) {
+    void initialize(@NotNull Automator automator) {
 
         this.automator = automator;
 

@@ -161,7 +161,7 @@ class MainFrame extends JFrame implements ActionListener {
         statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
     }
 
-    private void setupSimulator() {
+    private boolean setupSimulator() {
 
         if (projectBuffer == null) {
             simulator = new Simulator();
@@ -174,11 +174,13 @@ class MainFrame extends JFrame implements ActionListener {
                         "Failed to JSON-deserialize the simulator: " + exception.getMessage() + ".",
                         "Error while creating simulator from JSON",
                         JOptionPane.ERROR_MESSAGE);
+                return false;
             }
         }
         navigationPanel.initialize(simulator);
         automationPanel.initialize(simulator);
         setStatusText("Simulator setup...");
+        return true;
     }
 
     private void update() {
@@ -298,7 +300,9 @@ class MainFrame extends JFrame implements ActionListener {
                 continue;
             }
 
-            setupSimulator();
+            if (!setupSimulator()) {
+                return false;
+            }
             simulator.setName(inputtedProjectName);
             break;
         }
@@ -343,7 +347,9 @@ class MainFrame extends JFrame implements ActionListener {
                             JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
-                setupSimulator();
+                if (!setupSimulator()) {
+                    return false;
+                }
                 update();
                 return true;
             default:
