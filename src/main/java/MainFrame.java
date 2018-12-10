@@ -325,11 +325,7 @@ class MainFrame extends JFrame implements ActionListener, Automator.OutputCaller
             /* Check project name: */
             long minimumProjectNameLength = 3;
             if (inputtedProjectName.length() < minimumProjectNameLength) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "The name of the project must have a minimum of " + minimumProjectNameLength + " characters.",
-                        "Project Name Error",
-                        JOptionPane.ERROR_MESSAGE);
+                showErrorMessage("The name of the project must have a minimum of " + minimumProjectNameLength + " characters.");
                 /* Continue asking... */
                 continue;
             }
@@ -358,27 +354,15 @@ class MainFrame extends JFrame implements ActionListener, Automator.OutputCaller
                     File file = fileChooser.getSelectedFile();
                     projectFileName = file.getAbsolutePath();
                     if (!file.canRead()) {
-                        JOptionPane.showMessageDialog(
-                                this,
-                                "JSON configuration file is not readable.",
-                                "Project Loading Error",
-                                JOptionPane.ERROR_MESSAGE);
+                        showErrorMessage("JSON configuration file is not readable.");
                         return false;
                     }
                     projectBuffer = openJsonFile(projectFileName);
                 } catch (IOException exception) {
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "JSON configuration file could not be opened.",
-                            "Project Loading Error",
-                            JOptionPane.ERROR_MESSAGE);
+                    showErrorMessage("JSON configuration file could not be opened: " + exception.getMessage() + ".");
                     return false;
                 } catch (ParseException exception) {
-                    JOptionPane.showMessageDialog(
-                            this,
-                            "JSON parser could not convert raw data.",
-                            "Project Loading Error",
-                            JOptionPane.ERROR_MESSAGE);
+                    showErrorMessage("JSON parser could not convert raw data: " + exception.getMessage() + ".");
                     return false;
                 }
                 if (!setupSimulator()) {
@@ -428,21 +412,13 @@ class MainFrame extends JFrame implements ActionListener, Automator.OutputCaller
         try {
             projectBuffer = simulator.jsonSerialize();
         } catch (JsonSerializedError exception) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Failed to serialize simulator.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            showErrorMessage("Failed to serialize simulator: " + exception.getMessage() + ".");
             return false;
         }
         try {
             saveFile(projectFileName, projectBuffer.toString());
         } catch (IOException exception) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Failed to save project.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            showErrorMessage("Failed to save project: " + exception.getMessage() + ".");
             return false;
         }
         projectChanged = false;
@@ -639,5 +615,17 @@ class MainFrame extends JFrame implements ActionListener, Automator.OutputCaller
     public void setOutputText(String message) {
 
         setStatusText(message);
+    }
+
+    static void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(
+                null,
+                message,
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+    }
+
+    void showWarningMessage(String message) {
+
     }
 }
