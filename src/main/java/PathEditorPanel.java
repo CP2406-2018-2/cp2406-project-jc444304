@@ -26,8 +26,8 @@ class PathEditorPanel extends JPanel implements ActionListener {
 
         this.entity = entity;
 
-        setupListModel();
         pointsSelector.setModel(listModel);
+        setupListModel();
 
         createButton.setToolTipText("Create a new point where selected.");
         createButton.addActionListener(this);

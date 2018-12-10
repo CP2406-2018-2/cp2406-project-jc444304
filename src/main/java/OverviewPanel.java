@@ -13,7 +13,7 @@ public class OverviewPanel extends JComponent {
 
     private ArrayList<Entity> entities = new ArrayList<>();
 
-    public void addEntity(Entity entity) {
+    void addEntity(Entity entity) {
         entities.add(entity);
     }
 

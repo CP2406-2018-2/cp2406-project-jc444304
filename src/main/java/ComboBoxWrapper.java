@@ -1,8 +1,6 @@
 // Author: Yvan Burrie
 
 import javax.swing.*;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 class ComboBoxWrapper<K> extends JComboBox<String> {

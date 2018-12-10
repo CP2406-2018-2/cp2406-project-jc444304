@@ -287,10 +287,11 @@ class MainFrame extends JFrame implements ActionListener {
             }
 
             /* Check project name: */
-            if (inputtedProjectName.length() <= 3) {
+            long minimumProjectNameLength = 3;
+            if (inputtedProjectName.length() < minimumProjectNameLength) {
                 JOptionPane.showMessageDialog(
                         this,
-                        "The name of the project must have a minimum of 3 characters.",
+                        "The name of the project must have a minimum of " + minimumProjectNameLength + " characters.",
                         "Project Name Error",
                         JOptionPane.ERROR_MESSAGE);
                 /* Continue asking... */
@@ -394,7 +395,7 @@ class MainFrame extends JFrame implements ActionListener {
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        try{
+        try {
             saveFile(projectFileName, projectBuffer.toString());
         } catch (IOException exception) {
             JOptionPane.showMessageDialog(

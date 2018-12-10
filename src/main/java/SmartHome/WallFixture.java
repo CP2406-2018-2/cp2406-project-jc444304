@@ -2,6 +2,7 @@
 
 package SmartHome;
 
+import com.sun.istack.internal.NotNull;
 import org.json.simple.*;
 
 /**
@@ -16,11 +17,11 @@ public class WallFixture extends Fixture {
         return JSON_TYPE;
     }
 
-    public WallFixture(Automator automator) {
+    public WallFixture(@NotNull Automator automator) {
         super(automator);
     }
 
-    public WallFixture(Automator automator, JSONObject entityBuffer) throws JsonDeserializedError {
+    public WallFixture(@NotNull Automator automator, @NotNull JSONObject entityBuffer) throws JsonDeserializedError {
         super(automator, entityBuffer);
     }
 }

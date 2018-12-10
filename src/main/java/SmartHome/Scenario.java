@@ -4,6 +4,8 @@ package SmartHome;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import com.sun.istack.internal.NotNull;
 import org.json.simple.*;
 
 /**
@@ -13,11 +15,11 @@ public abstract class Scenario extends Entity {
 
     GregorianCalendar calendar = new GregorianCalendar();
 
-    public Scenario(Simulator simulator) {
+    public Scenario(@NotNull Simulator simulator) {
         super(simulator);
     }
 
-    public Scenario(Simulator simulator, JSONObject scenarioBuffer) throws JsonDeserializedError {
+    public Scenario(@NotNull Simulator simulator, @NotNull JSONObject scenarioBuffer) throws JsonDeserializedError {
         super(simulator, scenarioBuffer);
     }
 }
@@ -50,16 +52,16 @@ class TemperatureScenario extends Scenario {
 
     private long shadeHour;
 
-    public TemperatureScenario(Simulator simulator) {
+    public TemperatureScenario(@NotNull Simulator simulator) {
         super(simulator);
     }
 
-    public TemperatureScenario(Simulator simulator, JSONObject scenarioBuffer) throws JsonDeserializedError {
+    public TemperatureScenario(@NotNull Simulator simulator, @NotNull JSONObject scenarioBuffer) throws JsonDeserializedError {
         super(simulator, scenarioBuffer);
     }
 
     @Override
-    public void jsonDeserialize(JSONObject scenarioBuffer) throws JsonDeserializedError {
+    public void jsonDeserialize(@NotNull JSONObject scenarioBuffer) throws JsonDeserializedError {
 
         Object objectBuffer;
 
@@ -217,16 +219,16 @@ class RefrigeratorScenario extends Scenario {
      */
     private double doorOpenWattsIncrease = 0;
 
-    RefrigeratorScenario(Simulator simulator) {
+    RefrigeratorScenario(@NotNull Simulator simulator) {
         super(simulator);
     }
 
-    RefrigeratorScenario(Simulator simulator, JSONObject scenarioBuffer) throws JsonDeserializedError {
+    RefrigeratorScenario(@NotNull Simulator simulator, @NotNull JSONObject scenarioBuffer) throws JsonDeserializedError {
         super(simulator, scenarioBuffer);
     }
 
     @Override
-    public void jsonDeserialize(JSONObject scenarioBuffer) throws JsonDeserializedError {
+    public void jsonDeserialize(@NotNull JSONObject scenarioBuffer) throws JsonDeserializedError {
 
         Object objectBuffer;
 

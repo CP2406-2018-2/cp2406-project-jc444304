@@ -7,7 +7,7 @@ import SmartHome.*;
 /**
  *
  */
-public class VenueEditorFrame extends EntityEditorFrame {
+class VenueEditorFrame extends EntityEditorFrame {
 
     private Venue venue;
 

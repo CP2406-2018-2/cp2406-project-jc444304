@@ -22,7 +22,7 @@ public class Clock extends GregorianCalendar implements JsonDeserializable {
     }
 
     @Override
-    public void jsonDeserialize(JSONObject clockBuffer) {
+    public void jsonDeserialize(@NotNull JSONObject clockBuffer) {
 
         Object objectBuffer;
 

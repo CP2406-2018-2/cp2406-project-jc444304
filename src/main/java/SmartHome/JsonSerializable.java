@@ -2,6 +2,7 @@
 
 package SmartHome;
 
+import com.sun.istack.internal.NotNull;
 import org.json.simple.*;
 
 /**
@@ -19,5 +20,5 @@ interface JsonSerializable {
  */
 interface JsonDeserializable extends JsonSerializable {
 
-    void jsonDeserialize(JSONObject jsonBuffer) throws JsonDeserializedError;
+    void jsonDeserialize(@NotNull JSONObject jsonBuffer) throws JsonDeserializedError;
 }

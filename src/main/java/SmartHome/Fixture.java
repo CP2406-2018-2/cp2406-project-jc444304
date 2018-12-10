@@ -2,6 +2,7 @@
 
 package SmartHome;
 
+import com.sun.istack.internal.NotNull;
 import org.json.simple.*;
 
 /**
@@ -9,11 +10,11 @@ import org.json.simple.*;
  */
 public abstract class Fixture extends Entity {
 
-    public Fixture(Automator automator) {
+    public Fixture(@NotNull Automator automator) {
         super(automator);
     }
 
-    public Fixture(Automator automator, JSONObject entityBuffer) throws JsonDeserializedError {
+    public Fixture(@NotNull Automator automator, @NotNull JSONObject entityBuffer) throws JsonDeserializedError {
         super(automator, entityBuffer);
     }
 

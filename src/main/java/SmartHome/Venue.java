@@ -2,7 +2,10 @@
 
 package SmartHome;
 
+import com.sun.istack.internal.NotNull;
 import org.json.simple.*;
+
+import java.util.ArrayList;
 
 /**
  *
@@ -22,17 +25,17 @@ public class Venue extends Entity {
         this.outdoor = outdoor;
     }
 
-    public Venue(Automator automator) {
+    public Venue(@NotNull Automator automator) {
         super(automator);
     }
 
-    public Venue(Automator automator, JSONObject venueBuffer) throws JsonDeserializedError {
+    public Venue(@NotNull Automator automator, @NotNull JSONObject venueBuffer) throws JsonDeserializedError {
         super(automator);
         jsonDeserialize(venueBuffer);
     }
 
     @Override
-    public void jsonDeserialize(JSONObject venueBuffer) throws JsonDeserializedError {
+    public void jsonDeserialize(@NotNull JSONObject venueBuffer) throws JsonDeserializedError {
 
         super.jsonDeserialize(venueBuffer);
 

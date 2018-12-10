@@ -322,7 +322,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
      * Loads everything that must be initialized with the configuration file.
      */
     @Override
-    public void jsonDeserialize(JSONObject automatorBuffer) throws JsonDeserializedError {
+    public void jsonDeserialize(@NotNull JSONObject automatorBuffer) throws JsonDeserializedError {
 
         Object objectBuffer;
 

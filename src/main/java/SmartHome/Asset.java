@@ -2,6 +2,7 @@
 
 package SmartHome;
 
+import com.sun.istack.internal.NotNull;
 import org.json.simple.*;
 
 public abstract class Asset implements JsonDeserializable, Synchronizable {
@@ -13,11 +14,11 @@ public abstract class Asset implements JsonDeserializable, Synchronizable {
 
     Automator automator;
 
-    public Asset(Automator automator) {
+    public Asset(@NotNull Automator automator) {
         this.automator = automator;
     }
 
-    public Asset(Automator automator, JSONObject assetBuffer) throws JsonDeserializedError {
+    public Asset(@NotNull Automator automator, @NotNull JSONObject assetBuffer) throws JsonDeserializedError {
         this.automator = automator;
         jsonDeserialize(assetBuffer);
     }

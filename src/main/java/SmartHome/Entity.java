@@ -5,6 +5,8 @@ package SmartHome;
 import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
+
+import com.sun.istack.internal.NotNull;
 import org.json.simple.*;
 
 /**
@@ -42,23 +44,23 @@ public abstract class Entity extends Asset {
         this.description = description;
     }
 
-    ArrayList<Point> dimensions = new ArrayList<>();
+    private ArrayList<Point> dimensions = new ArrayList<>();
 
     public ArrayList<Point> getDimensions() {
         return dimensions;
     }
 
-    public Entity(Automator automator) {
+    public Entity(@NotNull Automator automator) {
         super(automator);
     }
 
-    public Entity(Automator automator, JSONObject entityBuffer) throws JsonDeserializedError {
+    public Entity(@NotNull Automator automator, @NotNull JSONObject entityBuffer) throws JsonDeserializedError {
         super(automator);
         jsonDeserialize(entityBuffer);
     }
 
     @Override
-    public void jsonDeserialize(JSONObject entityBuffer) throws JsonDeserializedError {
+    public void jsonDeserialize(@NotNull JSONObject entityBuffer) throws JsonDeserializedError {
 
         Object objectBuffer;
 
