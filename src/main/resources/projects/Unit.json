@@ -34,6 +34,7 @@
     {
       "Id": "KITCHEN",
       "Name": "Kitchen",
+      "PyCallback": "print(\"test!!\")",
       "Dimensions": [
         [
           38,

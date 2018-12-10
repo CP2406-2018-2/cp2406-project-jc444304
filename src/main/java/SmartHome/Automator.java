@@ -6,6 +6,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import com.sun.istack.internal.NotNull;
 import org.json.simple.*;
+import org.python.core.PyObject;
+import org.python.util.PythonInterpreter;
 
 /**
  * The automation system merely reflects the reality of a domestic environment.
@@ -238,6 +240,7 @@ public class Automator implements JsonDeserializable, Synchronizer.Synchronizabl
      */
     public Automator() {
 
+        setupJython();
     }
 
     /**
@@ -246,6 +249,16 @@ public class Automator implements JsonDeserializable, Synchronizer.Synchronizabl
     public Automator(@NotNull JSONObject automatorBuffer) throws JsonDeserializedError {
 
         jsonDeserialize(automatorBuffer);
+        setupJython();
+    }
+
+    PythonInterpreter pyInterpreter = new PythonInterpreter();
+
+    void setupJython() {
+
+        pyInterpreter.exec(
+                "from SmartHome import Automator\n" +
+                        "automator = Automator()\n");
     }
 
     /**

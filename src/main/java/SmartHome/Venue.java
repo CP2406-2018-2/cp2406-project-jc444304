@@ -25,6 +25,10 @@ public class Venue extends Entity {
         this.outdoor = outdoor;
     }
 
+    String pyCallback;
+
+    String pyCallbackName;
+
     public Venue(@NotNull Automator automator) {
         super(automator);
     }
@@ -45,6 +49,15 @@ public class Venue extends Entity {
         if (objectBuffer instanceof Boolean) {
             outdoor = (boolean) objectBuffer;
         }
+
+        objectBuffer = venueBuffer.get("PyCallback");
+        if (objectBuffer instanceof String) {
+            pyCallback = "\n" + objectBuffer;
+            pyCallbackName = "venue_" + (id + "_" + name).replace(" ", "_");
+            String pyExec = "def " + pyCallbackName + "():\n" + pyCallback.replace("\t", "\t\t");
+            System.out.println(pyExec);
+            automator.pyInterpreter.exec(pyExec);
+        }
     }
 
     @Override
@@ -56,13 +69,19 @@ public class Venue extends Entity {
             venueBuffer.put("Outdoor", true);
         }
 
+        if (pyCallback != null) {
+            venueBuffer.put("PyCallback", pyCallback);
+        }
+
         return venueBuffer;
     }
 
     @Override
     public void synchronize(long loopsPerSecond) {
 
-        // TODO
+        if (pyCallback != null) {
+            automator.pyInterpreter.exec(pyCallbackName + "()");
+        }
     }
 
     /**
