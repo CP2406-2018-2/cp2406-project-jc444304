@@ -1643,8 +1643,11 @@
           190
         ]
       ]
-    },
+    }
+  ],
+  "Fixtures": [
     {
+      "Type": "DOOR",
       "Id": "TERRACE_SLIDING_DOOR_2",
       "Dimension": [
         [
@@ -1670,6 +1673,7 @@
       ]
     },
     {
+      "Type": "DOOR",
       "Id": "GUEST_BEDROOM_3_SLIDING_DOOR",
       "Dimension": [
         [
@@ -1695,6 +1699,7 @@
       ]
     },
     {
+      "Type": "DOOR",
       "Id": "TERRACE_SLIDING_DOOR_1",
       "Dimension": [
         [
@@ -1720,6 +1725,7 @@
       ]
     },
     {
+      "Type": "DOOR",
       "Id": "DINING_SLIDING_DOOR",
       "Dimension": [
         [
@@ -1745,6 +1751,7 @@
       ]
     },
     {
+      "Type": "DOOR",
       "Id": "MASTER_SLIDING_DOOR",
       "Dimension": [
         [
@@ -1770,7 +1777,8 @@
       ]
     },
     {
-      "Id": "",
+      "Type": "WALL",
+      "Id": "GARAGE_WALL_2",
       "Dimension": [
         [
           308,
@@ -1817,9 +1825,7 @@
           87
         ]
       ]
-    }
-  ],
-  "Devices": [
+    },
     {
       "Type": "DOOR",
       "Id": "LAUNDRY_DOOR",
@@ -2365,7 +2371,7 @@
       ]
     },
     {
-      "Type": "ROLLER_DOOR",
+      "Type": "DOOR",
       "Id": "GARAGE_ENTRY",
       "Name": "Garage Entry",
       "VenueId": "GARAGE",
@@ -2674,38 +2680,6 @@
     }
   ],
   "Triggers": [
-  ],
-  "Scenarios": [
-    {
-      "Type": "TEMPERATURE",
-      "Name": "Household Temperature",
-      "Description": "Imitation of the indoor temperature affected by external conditions.",
-      "StartDegrees": 15,
-      "StartHour": 6,
-      "EndDegrees": 20.0,
-      "EndHour": 18,
-      "PeekDegrees": 31.5,
-      "PeekHour": 12,
-      "ShadeDegrees": 10,
-      "ShadeHour": 2
-    },
-    {
-      "Type": "REFRIGERATOR",
-      "Name": "Kitchen Refrigerator",
-      "Description": "Imitation of the kitchen fridge.",
-      "DeviceId": "KTC_REF",
-      "DefrostIntervals": 2,
-      "DefrostHours": 0.5,
-      "DefrostWatts": 28,
-      "CoolingIntervals": 23,
-      "CoolingHours": 13.5,
-      "CoolingWatts": 3.5,
-      "DoorOpenIntervalsMin": 5,
-      "DoorOpenIntervalsMax": 15,
-      "DoorOpenSecondsMin": 15,
-      "DoorOpenSecondsMax": 30,
-      "DoorOpenWattsIncrease": 2
-    }
   ],
   "PeriodStart": {
     "Year": 2018,
