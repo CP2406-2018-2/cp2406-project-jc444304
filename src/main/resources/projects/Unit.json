@@ -12,6 +12,24 @@
     238,
     250
   ],
+  "PeriodStart": {
+    "Year": 2018,
+    "Month": 1,
+    "Day": 15,
+    "Hour": 5
+  },
+  "PeriodEnd": {
+    "Year": 2018,
+    "Month": 1,
+    "Day": 16,
+    "Hour": 4,
+    "Minute": 59,
+    "Second": 59
+  },
+  "Synchronizer": {
+    "Speed": 3600,
+    "LoopsPerSecond": 1
+  },
   "Venues": [
     {
       "Id": "KITCHEN",
@@ -798,6 +816,8 @@
     {
       "Type": "REFRIGERATOR",
       "Id": "FRIDGE",
+      "Name": "Fridge",
+      "VenueId": "KITCHEN",
       "Dimensions": [
         [
           118,
@@ -824,6 +844,8 @@
     {
       "Type": "CLOTHES_WASHER",
       "Id": "CLOTHES_WASHER",
+      "Name": "Clothes Washer",
+      "VenueId": "BATHROOM",
       "Dimensions": [
         [
           180,
@@ -850,6 +872,8 @@
     {
       "Type": "DISH_WASHER",
       "Id": "DISH_WASHER",
+      "Name": "Dish Washer",
+      "VenueId": "KITCHEN",
       "Dimensions": [
         [
           83,
@@ -876,6 +900,8 @@
     {
       "Type": "STOVE",
       "Id": "STOVE",
+      "Name": "Stove",
+      "VenueId": "KITCHEN",
       "Dimensions": [
         [
           95,
@@ -902,6 +928,8 @@
     {
       "Type": "VENTILATOR",
       "Id": "BATH_VENTILATOR",
+      "Name": "Bath Ventilator",
+      "VenueId": "BATHROOM",
       "Dimensions": [
         [
           253,
@@ -928,6 +956,7 @@
     {
       "Type": "LIGHT",
       "Id": "KITCHEN_LIGHT_2",
+      "VenueId": "KITCHEN",
       "Dimensions": [
         [
           56,
@@ -954,6 +983,7 @@
     {
       "Type": "LIGHT",
       "Id": "KITCHEN_LIGHT_1",
+      "VenueId": "KITCHEN",
       "Dimensions": [
         [
           101,
@@ -980,6 +1010,7 @@
     {
       "Type": "LIGHT",
       "Id": "HALLWAY_LIGHT_1",
+      "VenueId": "HALLWAY",
       "Dimensions": [
         [
           154,
@@ -1006,6 +1037,7 @@
     {
       "Type": "LIGHT",
       "Id": "HALLWAY_LIGHT_2",
+      "VenueId": "KITCHEN",
       "Dimensions": [
         [
           187,
@@ -1032,6 +1064,7 @@
     {
       "Type": "LIGHT",
       "Id": "STORAGE_ROOM_LIGHT",
+      "VenueId": "STORAGE_ROOM",
       "Dimensions": [
         [
           237,
@@ -1058,6 +1091,7 @@
     {
       "Type": "LIGHT",
       "Id": "BEDROOM_LIGHT_1",
+      "VenueId": "BEDROOM",
       "Dimensions": [
         [
           217,
@@ -1084,6 +1118,7 @@
     {
       "Type": "LIGHT",
       "Id": "BEDROOM_LIGHT_2",
+      "VenueId": "BEDROOM",
       "Dimensions": [
         [
           218,
@@ -1110,6 +1145,7 @@
     {
       "Type": "LIGHT",
       "Id": "LIVING_ROOM_LIGHT_1",
+      "VenueId": "LIVING_ROOM",
       "Dimensions": [
         [
           104,
@@ -1136,6 +1172,7 @@
     {
       "Type": "LIGHT",
       "Id": "LIVING_ROOM_LIGHT_4",
+      "VenueId": "LIVING_ROOM",
       "Dimensions": [
         [
           147,
@@ -1162,6 +1199,7 @@
     {
       "Type": "LIGHT",
       "Id": "LIVING_ROOM_LIGHT_3",
+      "VenueId": "LIVING_ROOM",
       "Dimensions": [
         [
           147,
@@ -1188,6 +1226,7 @@
     {
       "Type": "LIGHT",
       "Id": "LIVING_ROOM_LIGHT_2",
+      "VenueId": "LIVING_ROOM",
       "Dimensions": [
         [
           52,
@@ -1214,6 +1253,7 @@
     {
       "Type": "LIGHT",
       "Id": "LIVING_ROOM_LIGHT_5",
+      "VenueId": "LIVING_ROOM",
       "Dimensions": [
         [
           52,
@@ -1240,6 +1280,7 @@
     {
       "Type": "LIGHT",
       "Id": "BATHROOM_LIGHT",
+      "VenueId": "BATHROOM",
       "Dimensions": [
         [
           217,
@@ -1266,6 +1307,7 @@
     {
       "Type": "THERMOSTAT",
       "Id": "LIVING_ROOM_TEMPERATURE_SENSOR",
+      "VenueId": "LIVING_ROOM",
       "Dimensions": [
         [
           38,
@@ -1292,6 +1334,7 @@
     {
       "Type": "AIR_CONDITIONER",
       "Id": "BEDROOM_AIRCON",
+      "VenueId": "BEDROOM",
       "Dimensions": [
         [
           180,
@@ -1318,6 +1361,7 @@
     {
       "Type": "AIR_CONDITIONER",
       "Id": "LIVING_ROOM_AIRCON",
+      "VenueId": "LIVING_ROOM",
       "Dimensions": [
         [
           169,
