@@ -1,5 +1,6 @@
 // Author: Yvan Burrie
 
+import com.sun.istack.internal.NotNull;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -14,7 +15,7 @@ public abstract class EntityEditorFrame<T extends Entity> extends EntityFrame {
 
     private JButton applyButton = new JButton("Apply");
 
-    public EntityEditorFrame(T entity) {
+    EntityEditorFrame(@NotNull T entity) {
 
         super(entity);
 
@@ -44,23 +45,48 @@ public abstract class EntityEditorFrame<T extends Entity> extends EntityFrame {
         JPanel panel;
 
         panel = new JPanel();
-        panel.setLayout(new GridLayout(5, 2));
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(new JLabel("Type: " + MainFrame.getReadableType(entity)));
+        add(panel);
 
-        panel.add(new JLabel("Type: "));
-        panel.add(new JLabel(MainFrame.getReadableType(entity)));
-
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel.add(new JLabel("Id:"));
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel.add(idField);
+        add(panel);
 
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel.add(new JLabel("Name:"));
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel.add(nameField);
+        add(panel);
 
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel.add(new JLabel("Description:"));
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel.add(descriptionField);
+        add(panel);
 
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         panel.add(new JLabel("Dimensions:"));
-        panel.add(pathEditor);
+        add(panel);
 
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(pathEditor);
         add(panel);
     }
 

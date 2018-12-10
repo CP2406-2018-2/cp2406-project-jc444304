@@ -1,9 +1,9 @@
 // Author: Yvan Burrie
 
-import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import SmartHome.*;
+import com.sun.istack.internal.NotNull;
 
 /**
  *
@@ -18,12 +18,10 @@ public abstract class EntityFrame<T extends Entity> extends JFrame implements Ac
 
     JTextArea descriptionField = new JTextArea();
 
-    EntityFrame(T entity) {
+    EntityFrame(@NotNull T entity) {
 
         this.entity = entity;
 
-        pack();
-        setAlwaysOnTop(true);
         setLocationByPlatform(true);
         setResizable(false);
     }
@@ -31,6 +29,7 @@ public abstract class EntityFrame<T extends Entity> extends JFrame implements Ac
     public void initialize() {
 
         setupComponents();
+        pack();
         update();
     }
 
@@ -75,6 +74,7 @@ public abstract class EntityFrame<T extends Entity> extends JFrame implements Ac
             entity.setDescription(descriptionFieldText);
             updateDescription();
         }
+
         return true;
     }
 }
