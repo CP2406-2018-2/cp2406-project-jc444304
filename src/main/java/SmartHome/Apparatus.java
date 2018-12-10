@@ -106,19 +106,25 @@ class CoffeeMachineDevice {
 
 }
 
+class HeaterDevcie {
 
+}
 
 class SmokeDetectorDevice {
 
 }
 
+class GasValveDevice {
 
+}
 
 class MicrowaveDevice {
 
 }
 
+class CookingHoodDevice {
 
+}
 
 class ClothesDryerDevice {
 
@@ -126,11 +132,16 @@ class ClothesDryerDevice {
 
 class RainDetectorDevcie {
 
+}
 
+class SoilMoistureSensorDevice {
 
 }
 
+class CarbonMonoxideSensor {
 
+}
 
+class PowerPlugDevice {
 
 }
