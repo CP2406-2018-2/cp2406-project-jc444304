@@ -48,8 +48,6 @@ public class NavigationPanel extends JPanel implements ActionListener {
 
         this.mainFrame = mainFrame;
 
-        deviceTypesSelector.setToolTipText("Choose the type of Device to create.");
-
         venueCreateButton.setToolTipText("Create a new Venue.");
         venueCreateButton.addActionListener(this);
 
@@ -58,6 +56,22 @@ public class NavigationPanel extends JPanel implements ActionListener {
 
         venueRemoveButton.setToolTipText("Remove any selected Venue(s).");
         venueRemoveButton.addActionListener(this);
+
+        deviceTypesSelector.setToolTipText("Choose the type of Device to create.");
+        deviceTypesSelector.addItem(RefrigeratorDevice.class.toString(), MainFrame.getReadableTypes());
+        deviceTypesSelector.addItem(LightDevice.class.toString(), MainFrame.getReadableTypes());
+        deviceTypesSelector.addItem(VentilatorDevice.class.toString(), MainFrame.getReadableTypes());
+        deviceTypesSelector.addItem(AirConditionerDevice.class.toString(), MainFrame.getReadableTypes());
+        deviceTypesSelector.addItem(SprinklerDevice.class.toString(), MainFrame.getReadableTypes());
+        deviceTypesSelector.addItem(DoorDevice.class.toString(), MainFrame.getReadableTypes());
+        deviceTypesSelector.addItem(RollerDoorDevice.class.toString(), MainFrame.getReadableTypes());
+        deviceTypesSelector.addItem(OvenDevice.class.toString(), MainFrame.getReadableTypes());
+        deviceTypesSelector.addItem(MotionSensorDevice.class.toString(), MainFrame.getReadableTypes());
+        deviceTypesSelector.addItem(WindowDevice.class.toString(), MainFrame.getReadableTypes());
+        deviceTypesSelector.addItem(ClothesWasherDevice.class.toString(), MainFrame.getReadableTypes());
+        deviceTypesSelector.addItem(DishWasherDevice.class.toString(), MainFrame.getReadableTypes());
+        deviceTypesSelector.addItem(StoveDevice.class.toString(), MainFrame.getReadableTypes());
+        deviceTypesSelector.addItem(ThermostatDevice.class.toString(), MainFrame.getReadableTypes());
 
         deviceCreateButton.setToolTipText("Create a new Device.");
         deviceCreateButton.addActionListener(this);
@@ -69,10 +83,10 @@ public class NavigationPanel extends JPanel implements ActionListener {
         deviceRemoveButton.addActionListener(this);
 
         fixtureTypesSelector.setToolTipText("Choose the type of Fixture to create.");
-        fixtureTypesSelector.addItem("Wall", WallFixture.class.getName());
-        fixtureTypesSelector.addItem("Bench", BenchFixture.class.getName());
-        fixtureTypesSelector.addItem("Window", WindowFixture.class.getName());
-        fixtureTypesSelector.addItem("Door", DoorFixture.class.getName());
+        fixtureTypesSelector.addItem(WallFixture.class.toString(), MainFrame.getReadableTypes());
+        fixtureTypesSelector.addItem(BenchFixture.class.toString(), MainFrame.getReadableTypes());
+        fixtureTypesSelector.addItem(WindowFixture.class.toString(), MainFrame.getReadableTypes());
+        fixtureTypesSelector.addItem(DoorFixture.class.toString(), MainFrame.getReadableTypes());
 
         fixtureCreateButton.setToolTipText("Create a new Fixture.");
         fixtureCreateButton.addActionListener(this);

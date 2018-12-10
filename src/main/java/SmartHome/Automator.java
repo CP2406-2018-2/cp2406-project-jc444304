@@ -214,6 +214,13 @@ public class Automator implements JsonDeserializable, Synchronizable {
         return triggers;
     }
 
+    private void setupTriggers() {
+
+        for (Trigger trigger : triggers) {
+            trigger.initialize();
+        }
+    }
+
     /**
      * Fetches a Trigger by its ID.
      * @return Returns null if the Trigger could not be fetched.
@@ -401,7 +408,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
                     Fixture fixture;
                     switch (fixtureTypeBuffer.toUpperCase()) {
                         case WallFixture.JSON_TYPE:
-                            fixture = new WallFixture(this, fixtureBuffer);
+                            fixture = new BenchFixture(this, fixtureBuffer);
                             break;
                         case BenchFixture.JSON_TYPE:
                             fixture = new WallFixture(this, fixtureBuffer);
@@ -459,8 +466,8 @@ public class Automator implements JsonDeserializable, Synchronizable {
                             case AirConditionerDevice.JSON_TYPE:
                                 device = new AirConditionerDevice(this, venue, deviceBuffer);
                                 break;
-                            case IrrigatorDevice.JSON_TYPE:
-                                device = new IrrigatorDevice(this, venue, deviceBuffer);
+                            case SprinklerDevice.JSON_TYPE:
+                                device = new SprinklerDevice(this, venue, deviceBuffer);
                                 break;
                             case DoorDevice.JSON_TYPE:
                                 device = new DoorDevice(this, venue, deviceBuffer);
@@ -474,14 +481,23 @@ public class Automator implements JsonDeserializable, Synchronizable {
                             case MotionSensorDevice.JSON_TYPE:
                                 device = new MotionSensorDevice(this, venue, deviceBuffer);
                                 break;
-                            case VehicleDevice.JSON_TYPE:
-                                device = new VehicleDevice(this, venue, deviceBuffer);
-                                break;
                             case WindowDevice.JSON_TYPE:
                                 device = new WindowDevice(this, venue, deviceBuffer);
                                 break;
+                            case ClothesWasherDevice.JSON_TYPE:
+                                device = new ClothesWasherDevice(this, venue, deviceBuffer);
+                                break;
+                            case DishWasherDevice.JSON_TYPE:
+                                device = new DishWasherDevice(this, venue, deviceBuffer);
+                                break;
+                            case StoveDevice.JSON_TYPE:
+                                device = new StoveDevice(this, venue, deviceBuffer);
+                                break;
+                            case ThermostatDevice.JSON_TYPE:
+                                device = new ThermostatDevice(this, venue, deviceBuffer);
+                                break;
                             default:
-                                throw new JsonDeserializedError("Unknown Device-Type!", this);
+                                throw new JsonDeserializedError("Unknown Device-Type (" + deviceTypeBuffer + ")", this);
                         }
                         devices.add(device);
                     }
@@ -502,7 +518,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
                 }
             }
         }
-        setupTriggers();
+            setupTriggers();
     }
 
     public static void jsonDeserializeCoordinate(JSONArray pointBuffer, Point point) {

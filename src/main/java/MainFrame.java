@@ -67,20 +67,53 @@ class MainFrame extends JFrame implements ActionListener, Automator.OutputCaller
         update();
     }
 
-    final private static HashMap<String, String> READABLE_TYPES = new HashMap<>();
+    private static HashMap<String, String> READABLE_TYPES = new HashMap<>();
 
-    static String getReadableType(Entity entity) {
+    private static void initializeReadableTypes() {
+
+        /* Make sure to add sub-types first and super-types last: */
+        READABLE_TYPES.put(WallFixture.class.toString(), "Wall");
+        READABLE_TYPES.put(BenchFixture.class.toString(), "Bench");
+        READABLE_TYPES.put(Trigger.class.toString(), "Trigger");
+        READABLE_TYPES.put(RefrigeratorDevice.class.toString(), "Refrigerator");
+        READABLE_TYPES.put(LightDevice.class.toString(), "Light");
+        READABLE_TYPES.put(VentilatorDevice.class.toString(), "Ventilator");
+        READABLE_TYPES.put(AirConditionerDevice.class.toString(), "Air Conditioner");
+        READABLE_TYPES.put(SprinklerDevice.class.toString(), "Sprinkler");
+        READABLE_TYPES.put(RollerDoorDevice.class.toString(), "Roller Door");
+        READABLE_TYPES.put(DoorDevice.class.toString(), "Door Detector");
+        READABLE_TYPES.put(LockableDoorDevice.class.toString(), "Lockable Door Detector");
+        READABLE_TYPES.put(OvenDevice.class.toString(), "Oven");
+        READABLE_TYPES.put(MotionSensorDevice.class.toString(), "MotionSensor");
+        READABLE_TYPES.put(WindowDevice.class.toString(), "Window");
+        READABLE_TYPES.put(ClothesWasherDevice.class.toString(), "Clothes Washer");
+        READABLE_TYPES.put(DishWasherDevice.class.toString(), "Dish Washer");
+        READABLE_TYPES.put(StoveDevice.class.toString(), "Stove");
+        READABLE_TYPES.put(ThermostatDevice.class.toString(), "Thermostat");
+        READABLE_TYPES.put(WallFixture.class.toString(), "Wall");
+        READABLE_TYPES.put(BenchFixture.class.toString(), "Bench");
+        READABLE_TYPES.put(WindowFixture.class.toString(), "Window");
+        READABLE_TYPES.put(DoorFixture.class.toString(), "Door");
+        READABLE_TYPES.put(Venue.class.toString(), "Venue");
+        READABLE_TYPES.put(Device.class.toString(), "Device");
+        READABLE_TYPES.put(Fixture.class.toString(), "Fixture");
+        READABLE_TYPES.put(Entity.class.toString(), "Entity");
+    }
+
+    static HashMap<String, String> getReadableTypes() {
 
         if (READABLE_TYPES.isEmpty()) {
-            READABLE_TYPES.put(Entity.class.toString(), "Entity");
-            READABLE_TYPES.put(Venue.class.toString(), "Venue");
-            READABLE_TYPES.put(Device.class.toString(), "Device");
-            READABLE_TYPES.put(Fixture.class.toString(), "Fixture");
-            READABLE_TYPES.put(WallFixture.class.toString(), "Wall");
-            READABLE_TYPES.put(BenchFixture.class.toString(), "Bench");
-            READABLE_TYPES.put(Trigger.class.toString(), "Trigger");
+            initializeReadableTypes();
         }
-        return READABLE_TYPES.get(entity.getClass().toString());
+        return READABLE_TYPES;
+    }
+
+    static String getReadableType(Object object) {
+
+        if (READABLE_TYPES.isEmpty()) {
+            initializeReadableTypes();
+        }
+        return READABLE_TYPES.get(object.getClass().toString());
     }
 
     /**
