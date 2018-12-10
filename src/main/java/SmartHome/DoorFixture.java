@@ -1,8 +1,14 @@
+// Author: Yvan Burrie
+
+package SmartHome;
+
+import com.sun.istack.internal.NotNull;
+import org.json.simple.*;
 
 /**
  *
  */
-class DoorDevice extends Device {
+public class DoorFixture extends Fixture {
 
     final static String JSON_TYPE = "DOOR";
 
@@ -11,12 +17,12 @@ class DoorDevice extends Device {
         return JSON_TYPE;
     }
 
-    public DoorDevice(Automator automator, Venue venue) {
-        super(automator, venue);
+    public DoorFixture(@NotNull Automator automator) {
+        super(automator);
     }
 
-    public DoorDevice(Automator automator, Venue venue, JSONObject deviceBuffer) throws JsonDeserializedError {
-        super(automator, venue);
+    public DoorFixture(@NotNull Automator automator, @NotNull JSONObject deviceBuffer) throws JsonDeserializedError {
+        super(automator);
         jsonDeserialize(deviceBuffer);
     }
 }
