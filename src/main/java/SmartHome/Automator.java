@@ -389,6 +389,12 @@ public class Automator implements JsonDeserializable, Synchronizable {
                         case BenchFixture.JSON_TYPE:
                             fixture = new WallFixture(this, fixtureBuffer);
                             break;
+                        case WindowFixture.JSON_TYPE:
+                            fixture = new WindowFixture(this, fixtureBuffer);
+                            break;
+                        case DoorFixture.JSON_TYPE:
+                            fixture = new DoorFixture(this, fixtureBuffer);
+                            break;
                         default:
                             throw new JsonDeserializedError("Unknown Fixture-Type!", this);
                     }

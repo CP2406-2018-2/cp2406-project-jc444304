@@ -71,6 +71,8 @@ public class NavigationPanel extends JPanel implements ActionListener {
         fixtureTypesSelector.setToolTipText("Choose the type of Fixture to create.");
         fixtureTypesSelector.addItem("Wall", WallFixture.class.getName());
         fixtureTypesSelector.addItem("Bench", BenchFixture.class.getName());
+        fixtureTypesSelector.addItem("Window", WindowFixture.class.getName());
+        fixtureTypesSelector.addItem("Door", DoorFixture.class.getName());
 
         fixtureCreateButton.setToolTipText("Create a new Fixture.");
         fixtureCreateButton.addActionListener(this);
