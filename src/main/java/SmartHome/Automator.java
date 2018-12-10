@@ -4,7 +4,6 @@ package SmartHome;
 
 import java.awt.*;
 import java.util.ArrayList;
-
 import com.sun.istack.internal.NotNull;
 import org.json.simple.*;
 
@@ -408,10 +407,10 @@ public class Automator implements JsonDeserializable, Synchronizable {
                     Fixture fixture;
                     switch (fixtureTypeBuffer.toUpperCase()) {
                         case WallFixture.JSON_TYPE:
-                            fixture = new BenchFixture(this, fixtureBuffer);
+                            fixture = new WallFixture(this, fixtureBuffer);
                             break;
                         case BenchFixture.JSON_TYPE:
-                            fixture = new WallFixture(this, fixtureBuffer);
+                            fixture = new BenchFixture(this, fixtureBuffer);
                             break;
                         case WindowFixture.JSON_TYPE:
                             fixture = new WindowFixture(this, fixtureBuffer);
@@ -517,8 +516,8 @@ public class Automator implements JsonDeserializable, Synchronizable {
                     triggers.add(trigger);
                 }
             }
-        }
             setupTriggers();
+        }
     }
 
     public static void jsonDeserializeCoordinate(JSONArray pointBuffer, Point point) {
@@ -551,6 +550,9 @@ public class Automator implements JsonDeserializable, Synchronizable {
         if (description != null) {
             automatorBuffer.put("Description", description);
         }
+        automatorBuffer.put("Width", size.width);
+        automatorBuffer.put("Height", size.height);
+        // TODO: sun points
 
         /* Serialize Synchronizer: */
         JSONObject synchronizerBuffer = new JSONObject();
@@ -628,6 +630,8 @@ public class Automator implements JsonDeserializable, Synchronizable {
     void output(String message) {
         if (outputCaller != null) {
             outputCaller.setOutputText(message);
+        } else {
+            System.out.println(message);
         }
     }
 }
