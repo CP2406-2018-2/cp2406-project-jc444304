@@ -15,7 +15,7 @@ import SmartHome.*;
 /**
  *
  */
-class MainFrame extends JFrame implements ActionListener {
+class MainFrame extends JFrame implements ActionListener, Automator.OutputCaller {
 
     final static String APPLICATION_NAME = "Home Auto";
 
@@ -177,6 +177,7 @@ class MainFrame extends JFrame implements ActionListener {
                 return false;
             }
         }
+        simulator.registerOutputCaller(this);
         navigationPanel.initialize(simulator);
         automationPanel.initialize(simulator);
         setStatusText("Simulator setup...");
@@ -599,5 +600,11 @@ class MainFrame extends JFrame implements ActionListener {
     void setStatusText(String message) {
 
         statusLabel.setText(message);
+    }
+
+    @Override
+    public void setOutputText(String message) {
+
+        setStatusText(message);
     }
 }

@@ -563,4 +563,21 @@ public class Automator implements JsonDeserializable, Synchronizable {
             trigger.synchronize(loopsPerSecond);
         }
     }
+
+    public interface OutputCaller {
+
+        void setOutputText(String message);
+    }
+
+    private OutputCaller outputCaller;
+
+    public void registerOutputCaller(OutputCaller outputCaller) {
+        this.outputCaller = outputCaller;
+    }
+
+    void output(String message) {
+        if (outputCaller != null) {
+            outputCaller.setOutputText(message);
+        }
+    }
 }
