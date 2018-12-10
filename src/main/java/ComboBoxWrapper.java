@@ -11,6 +11,12 @@ class ComboBoxWrapper<K> extends JComboBox<String> {
 
     }
 
+    void addItem(K key, HashMap<K, String> map) {
+
+        super.addItem(map.get(key));
+        buffers.put(key, map.get(key));
+    }
+
     void addItem(String item, K key) {
 
         super.addItem(item);
