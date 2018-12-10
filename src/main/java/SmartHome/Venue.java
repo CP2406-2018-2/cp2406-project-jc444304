@@ -64,4 +64,24 @@ public class Venue extends Entity {
 
         // TODO
     }
+
+    /**
+     * Calculates the average temperature according to each temperature sensor within the Venue.
+     * @return Returns null if there are no temperature sensors found.
+     */
+    public Double getAverageTemperature() {
+
+        long devicesCount = 0;
+        double temperatureSum = 0.0;
+
+        ArrayList<Device> devices = automator.getDevicesInVenue(this);
+        for (Device device : devices) {
+            if (device instanceof TemperatureSensorApparatus) {
+                TemperatureSensorApparatus temperatureSensor = (TemperatureSensorApparatus) device;
+                devicesCount++;
+                temperatureSum += temperatureSensor.getSensoredTemperature();
+            }
+        }
+        return devicesCount > 0 ? temperatureSum / devicesCount : null;
+    }
 }
