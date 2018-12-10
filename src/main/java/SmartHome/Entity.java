@@ -136,16 +136,18 @@ public abstract class Entity extends Asset {
 
         if (dimensions != null) {
             int pointsSize = dimensions.size();
-            path = new GeneralPath(GeneralPath.WIND_EVEN_ODD, pointsSize);
-            for (int i = 0; i < pointsSize; i++) {
-                Point point = dimensions.get(i);
-                if (i == 0) {
-                    path.moveTo(point.x, point.y);
-                } else {
-                    path.lineTo(point.x, point.y);
+            if (pointsSize > 0) {
+                path = new GeneralPath(GeneralPath.WIND_EVEN_ODD, pointsSize);
+                for (int i = 0; i < pointsSize; i++) {
+                    Point point = dimensions.get(i);
+                    if (i == 0) {
+                        path.moveTo(point.x, point.y);
+                    } else {
+                        path.lineTo(point.x, point.y);
+                    }
                 }
+                path.closePath();
             }
-            path.closePath();
         }
 
         return path;
