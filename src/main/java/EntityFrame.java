@@ -23,7 +23,7 @@ public abstract class EntityFrame<T extends Entity> extends JFrame implements Ac
         this.entity = entity;
 
         setLocationByPlatform(true);
-        setResizable(false);
+        setResizable(true);
     }
 
     public void initialize() {

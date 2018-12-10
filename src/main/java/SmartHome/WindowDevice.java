@@ -55,7 +55,7 @@ public class WindowDevice extends Device implements DetectableApparatus {
     }
 
     @Override
-    public void jsonDeserialize(JSONObject deviceBuffer) throws JsonDeserializedError {
+    public void jsonDeserialize(@NotNull JSONObject deviceBuffer) throws JsonDeserializedError {
 
         super.jsonDeserialize(deviceBuffer);
 

@@ -84,7 +84,6 @@ public abstract class Entity implements JsonDeserializable, Synchronizer.Synchro
         }
         objectBuffer = entityBuffer.get("Dimensions");
         if (objectBuffer instanceof JSONArray) {
-            dimensions = new ArrayList<>();
             JSONArray dimensionBuffer = (JSONArray) objectBuffer;
             for (Object elementBuffer : dimensionBuffer) {
                 if (elementBuffer instanceof JSONArray) {

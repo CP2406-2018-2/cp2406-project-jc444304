@@ -1390,5 +1390,41 @@
       "Id": "ENTRANCE_DOOR",
       "VenueId": "HALLWAY"
     }
+  ],
+  "Triggers": [
+    {
+      "Id": "LIVING_ROOM_AIRCON_WARNING",
+      "Name": "Living Room Air-conditioner Warning",
+      "Description": "If the air-con in the living is running and doors or windows are left opened, a message will be shown.",
+      "Message": "Please ensure all windows and doors are closed when the air conditioner is running.",
+      "Looping": true,
+      "Starting": true,
+      "Events": [
+        {
+          "Type": "APPARATUS_OPAQUE",
+          "Description": "Check if the air-con is turned on.",
+          "TargetDeviceId": "LIVING_ROOM_AIRCON",
+          "TargetDeviceState": true
+        },
+        {
+          "Type": "APPARATUS_DETECTION",
+          "Description": "The door should not be opened when the air-con is on.",
+          "TargetDeviceId": "ENTRANCE_DOOR",
+          "TargetDeviceDetected": true
+        },
+        {
+          "Type": "APPARATUS_DETECTION",
+          "OrPrevious": true,
+          "TargetDeviceId": "LIVING_ROOM_WINDOW_1",
+          "TargetDeviceDetected": true
+        },
+        {
+          "Type": "APPARATUS_DETECTION",
+          "OrPrevious": true,
+          "TargetDeviceId": "LIVING_ROOM_WINDOW_2",
+          "TargetDeviceDetected": true
+        }
+      ]
+    }
   ]
 }

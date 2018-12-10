@@ -148,7 +148,8 @@ public class Trigger extends Entity {
 
     public Trigger(@NotNull Automator automator, @NotNull JSONObject triggerBuffer) throws JsonDeserializedError {
 
-        super(automator, triggerBuffer);
+        super(automator);
+        jsonDeserialize(triggerBuffer);
     }
 
     @Override
@@ -181,7 +182,7 @@ public class Trigger extends Entity {
                     JSONObject eventBuffer = (JSONObject) objectBuffer;
                     objectBuffer = eventBuffer.get("Type");
                     if (objectBuffer == null) {
-                        throw new JsonDeserializedError("Undefined Trigger Event type", this);
+                        throw new JsonDeserializedError("Undefined Trigger-Event type", this);
                     }
                     if (objectBuffer instanceof String) {
                         String eventTypeBuffer = (String) objectBuffer;
@@ -190,13 +191,16 @@ public class Trigger extends Entity {
                             case ApparatusDetectionEvent.JSON_TYPE:
                                 event = new ApparatusDetectionEvent(eventBuffer);
                                 break;
+                            case ApparatusOpaqueEvent.JSON_TYPE:
+                                event = new ApparatusOpaqueEvent(eventBuffer);
+                                break;
                             // TODO: more events
                             default:
-                                throw new JsonDeserializedError("", this);
+                                throw new JsonDeserializedError("Unknown Trigger-Event type (" + eventTypeBuffer + ")", this);
                         }
                         events.add(event);
                     } else {
-                        throw new JsonDeserializedError("", this);
+                        throw new JsonDeserializedError("Invalid Trigger-Event type", this);
                     }
                 }
             }
@@ -324,7 +328,7 @@ public class Trigger extends Entity {
     }
 
     /**
-     * Event is successful when its apparatus is detecting something.
+     * Event is successful when its apparatus is detecting something or idle.
      */
     public class ApparatusDetectionEvent extends Event {
 
@@ -335,17 +339,22 @@ public class Trigger extends Entity {
             return JSON_TYPE;
         }
 
-        private DetectableApparatus detectableDevice;
+        private DetectableApparatus targetDevice;
+
+        /**
+         * Specifies the detection value.
+         */
+        boolean targetDeviceDetected = true;
 
         public ApparatusDetectionEvent() {
 
             super();
         }
 
-        public ApparatusDetectionEvent(@NotNull DetectableApparatus detectableDevice) {
+        public ApparatusDetectionEvent(@NotNull DetectableApparatus targetDevice) {
 
             super();
-            this.detectableDevice = detectableDevice;
+            this.targetDevice = targetDevice;
         }
 
         public ApparatusDetectionEvent(@NotNull JSONObject eventBuffer) throws JsonDeserializedError {
@@ -354,23 +363,97 @@ public class Trigger extends Entity {
 
             Object objectBuffer;
 
-            objectBuffer = eventBuffer.get("DeviceId");
+            objectBuffer = eventBuffer.get("TargetDeviceId");
             if (objectBuffer instanceof String) {
                 String deviceId = (String) objectBuffer;
                 Device device = Trigger.this.automator.getDeviceById(deviceId);
                 if (device instanceof DetectableApparatus) {
-                    this.detectableDevice = (DetectableApparatus) device;
+                    this.targetDevice = (DetectableApparatus) device;
                 } else {
-                    throw new JsonDeserializedError("", this);
+                    throw new JsonDeserializedError("Target Device is not detectable", this);
                 }
+            }
+
+            objectBuffer = eventBuffer.get("TargetDeviceDetected");
+            if (objectBuffer instanceof Boolean) {
+                targetDeviceDetected = (boolean) objectBuffer;
             }
         }
 
         @Override
         public void synchronize(long loopsPerSecond) {
 
-            if (detectableDevice != null) {
-                successful = detectableDevice.isDetected();
+            if (targetDevice != null) {
+                successful = targetDevice.isDetected() == targetDeviceDetected;
+            }
+        }
+    }
+
+    /**
+     * Event is successful if the apparatus is either on or off.
+     */
+    public class ApparatusOpaqueEvent extends Event {
+
+        final static String JSON_TYPE = "APPARATUS_OPAQUE";
+
+        @Override
+        public String getJsonType() {
+            return JSON_TYPE;
+        }
+
+        OpaqueApparatus targetDevice;
+
+        /**
+         * Specifies the opaque value.
+         */
+        boolean targetDeviceState = true;
+
+        public ApparatusOpaqueEvent() {
+
+            super();
+        }
+
+        public ApparatusOpaqueEvent(@NotNull OpaqueApparatus targetDevice) {
+
+            super();
+            this.targetDevice = targetDevice;
+        }
+
+        public ApparatusOpaqueEvent(@NotNull JSONObject eventBuffer) throws JsonDeserializedError {
+
+            super();
+            jsonDeserialize(eventBuffer);
+        }
+
+        @Override
+        public void jsonDeserialize(@NotNull JSONObject eventBuffer) throws JsonDeserializedError {
+
+            super.jsonDeserialize(eventBuffer);
+
+            Object objectBuffer;
+
+            objectBuffer = eventBuffer.get("TargetDeviceId");
+            if (objectBuffer instanceof String) {
+                String deviceIdBuffer = (String) objectBuffer;
+                Device device = Trigger.this.automator.getDeviceById(deviceIdBuffer);
+                if (device instanceof OpaqueApparatus) {
+                    this.targetDevice = (OpaqueApparatus) device;
+                } else {
+                    throw new JsonDeserializedError("Target Device is not Opaque", this);
+                }
+            }
+
+            objectBuffer = eventBuffer.get("TargetDeviceState");
+            if (objectBuffer instanceof Boolean) {
+                targetDeviceState = (boolean) objectBuffer;
+            }
+        }
+
+        @Override
+        public void synchronize(long loopsPerSecond) {
+
+            if (targetDevice != null) {
+                successful = targetDevice.getState() == targetDeviceState;
             }
         }
     }
@@ -444,42 +527,4 @@ public class Trigger extends Entity {
             targetTrigger = Trigger.this.automator.getTriggerById(targetTriggerId);
         }
     }
-
-    /**
-     * This action will force a trigger to be either READY or ASLEEP.
-    class OpaqueApparatusAction extends Action {
-
-        final static String TYPE = "OPAQUE_APPARATUS";
-
-        String deviceTag = "TRG";
-
-        boolean state = false;
-
-        OpaqueApparatusAction() {
-
-            super();
-        }
-
-        @Override
-        public void jsonDeserialize(@NotNull JSONObject jsonObject) {
-
-        }
-
-        @Override
-        public JSONObject jsonSerialize() {
-            return null;
-        }
-
-        @Override
-        public void synchronize(long loopsPerSec) {
-
-            Device targetDevice = Trigger.this.automator.getDeviceById(this.deviceTag);
-
-            if (targetDevice instanceof OpaqueApparatus) {
-                OpaqueApparatus opaqueApparatus = (OpaqueApparatus) targetDevice;
-                //opaqueApparatus.setState(this.);
-            }
-        }
-    }
-     */
 }

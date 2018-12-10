@@ -72,8 +72,9 @@ class MainFrame extends JFrame implements ActionListener, Automator.OutputCaller
     private static void initializeReadableTypes() {
 
         /* Make sure to add sub-types first and super-types last: */
-        READABLE_TYPES.put(WallFixture.class.toString(), "Wall");
-        READABLE_TYPES.put(BenchFixture.class.toString(), "Bench");
+        READABLE_TYPES.put(Trigger.ApparatusDetectionEvent.class.toString(), "Apparatus Detection Event");
+        READABLE_TYPES.put(Trigger.ApparatusOpaqueEvent.class.toString(), "Apparatus Opaque Event");
+        READABLE_TYPES.put(Trigger.ChangeTriggerStartingAction.class.toString(), "Change Trigger Starting Action");
         READABLE_TYPES.put(Trigger.class.toString(), "Trigger");
         READABLE_TYPES.put(RefrigeratorDevice.class.toString(), "Refrigerator");
         READABLE_TYPES.put(LightDevice.class.toString(), "Light");

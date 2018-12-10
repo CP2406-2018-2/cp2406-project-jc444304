@@ -43,6 +43,8 @@ class TriggerEditorFrame extends EntityEditorFrame<Trigger> {
 
         eventTypesSelector.setToolTipText("Choose Event type to create.");
         eventTypesSelector.addItem(Trigger.ApparatusDetectionEvent.class.toString(), MainFrame.getReadableTypes());
+        eventTypesSelector.addItem(Trigger.ApparatusOpaqueEvent.class.toString(), MainFrame.getReadableTypes());
+        // TODO: more events
 
         eventCreateButton.setToolTipText("Create a new Event.");
         eventCreateButton.addActionListener(this);
@@ -55,6 +57,7 @@ class TriggerEditorFrame extends EntityEditorFrame<Trigger> {
 
         actionTypesSelector.setToolTipText("Choose Action type to create.");
         eventTypesSelector.addItem(Trigger.ChangeTriggerStartingAction.class.toString(), MainFrame.getReadableTypes());
+        // TODO: more actions
 
         actionCreateButton.setToolTipText("Create a new Action.");
         actionCreateButton.addActionListener(this);
@@ -205,10 +208,12 @@ class TriggerEditorFrame extends EntityEditorFrame<Trigger> {
 
     private void handleCreateEvent() {
 
-        Trigger.Event triggerEvent;
-
-        if (eventTypesSelector.equals(Trigger.ChangeTriggerStartingAction.class.toString())) {
+        if (eventTypesSelector.equals(Trigger.ApparatusDetectionEvent.class.toString())) {
             handleCreateEvent(trigger.new ApparatusDetectionEvent());
+            return;
+        }
+        if (eventTypesSelector.equals(Trigger.ApparatusOpaqueEvent.class.toString())) {
+            handleCreateEvent(trigger.new ApparatusOpaqueEvent());
             return;
         }
         // TODO: more events
