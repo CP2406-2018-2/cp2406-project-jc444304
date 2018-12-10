@@ -29,6 +29,12 @@ class AutomationPanel extends JPanel {
         for (Venue venue : automator.getVenues()) {
             overviewPanel.addEntity(venue);
         }
+        for (Fixture fixture : automator.getFixtures()) {
+            overviewPanel.addEntity(fixture);
+        }
+        for (Device device : automator.getDevices()) {
+            overviewPanel.addEntity(device);
+        }
         frame.add(overviewPanel);
         frame.setVisible(true);
     }
