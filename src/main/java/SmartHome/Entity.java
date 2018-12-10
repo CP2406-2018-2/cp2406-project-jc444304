@@ -2,17 +2,23 @@
 
 package SmartHome;
 
+import com.sun.istack.internal.NotNull;
+import java.util.ArrayList;
 import java.awt.*;
 import java.awt.geom.GeneralPath;
-import java.util.ArrayList;
-
-import com.sun.istack.internal.NotNull;
 import org.json.simple.*;
 
 /**
  * An entity is anything that is drawn, saved, and part of the automation system.
  */
-public abstract class Entity extends Asset {
+public abstract class Entity implements JsonDeserializable, Synchronizer.Synchronizable {
+
+    @Override
+    public String getJsonType() {
+        return null;
+    }
+
+    Automator automator;
 
     String id;
 
@@ -51,11 +57,11 @@ public abstract class Entity extends Asset {
     }
 
     public Entity(@NotNull Automator automator) {
-        super(automator);
+        this.automator = automator;
     }
 
     public Entity(@NotNull Automator automator, @NotNull JSONObject entityBuffer) throws JsonDeserializedError {
-        super(automator);
+        this.automator = automator;
         jsonDeserialize(entityBuffer);
     }
 
@@ -101,8 +107,12 @@ public abstract class Entity extends Asset {
     @Override
     public JSONObject jsonSerialize() throws JsonSerializedError {
 
-        JSONObject entityBuffer = super.jsonSerialize();
+        JSONObject entityBuffer = new JSONObject();
 
+        String jsonType = getJsonType();
+        if (jsonType != null) {
+            entityBuffer.put("Type", jsonType);
+        }
         if (id != null) {
             entityBuffer.put("Id", id);
         }

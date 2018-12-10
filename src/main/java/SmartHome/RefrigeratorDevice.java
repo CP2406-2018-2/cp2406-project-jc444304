@@ -3,9 +3,8 @@
 package SmartHome;
 
 import com.sun.istack.internal.NotNull;
-import org.json.simple.*;
-
 import java.util.ArrayList;
+import org.json.simple.*;
 
 /**
  *
@@ -40,7 +39,7 @@ public class RefrigeratorDevice extends Device implements FunctionalApparatus<Re
     /**
      * A storage section of the refrigerator such as the freezer.
      */
-    class Compartment extends Asset {
+    class Compartment extends Entity {
 
         /**
          * Specifies the number of cubic litres this refrigerator holds.
