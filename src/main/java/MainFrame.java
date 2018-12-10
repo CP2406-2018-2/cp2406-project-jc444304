@@ -80,8 +80,8 @@ class MainFrame extends JFrame implements ActionListener, Automator.OutputCaller
         READABLE_TYPES.put(VentilatorDevice.class.toString(), "Ventilator");
         READABLE_TYPES.put(AirConditionerDevice.class.toString(), "Air Conditioner");
         READABLE_TYPES.put(SprinklerDevice.class.toString(), "Sprinkler");
-        READABLE_TYPES.put(RollerDoorDevice.class.toString(), "Roller Door");
         READABLE_TYPES.put(DoorDevice.class.toString(), "Door Detector");
+        READABLE_TYPES.put(RollerDoorDevice.class.toString(), "Roller Door");
         READABLE_TYPES.put(LockableDoorDevice.class.toString(), "Lockable Door Detector");
         READABLE_TYPES.put(OvenDevice.class.toString(), "Oven");
         READABLE_TYPES.put(MotionSensorDevice.class.toString(), "MotionSensor");

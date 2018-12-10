@@ -1384,6 +1384,11 @@
           93
         ]
       ]
+    },
+    {
+      "Type": "LOCKABLE_DOOR",
+      "Id": "ENTRANCE_DOOR",
+      "VenueId": "HALLWAY"
     }
   ]
 }

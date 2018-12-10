@@ -471,6 +471,9 @@ public class Automator implements JsonDeserializable, Synchronizable {
                             case DoorDevice.JSON_TYPE:
                                 device = new DoorDevice(this, venue, deviceBuffer);
                                 break;
+                            case LockableDoorDevice.JSON_TYPE:
+                                device = new LockableDoorDevice(this, venue, deviceBuffer);
+                                break;
                             case RollerDoorDevice.JSON_TYPE:
                                 device = new RollerDoorDevice(this, venue, deviceBuffer);
                                 break;
