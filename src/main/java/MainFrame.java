@@ -203,11 +203,7 @@ class MainFrame extends JFrame implements ActionListener, Automator.OutputCaller
             try {
                 simulator = new Simulator(projectBuffer);
             } catch (JsonDeserializedError exception) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Failed to JSON-deserialize the simulator: " + exception.getMessage() + ".",
-                        "Error while creating simulator from JSON",
-                        JOptionPane.ERROR_MESSAGE);
+                showErrorMessage("Failed to JSON-deserialize the simulator: " + exception.getMessage() + ".");
                 return false;
             }
         }

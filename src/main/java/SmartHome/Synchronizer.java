@@ -170,7 +170,7 @@ public class Synchronizer extends Thread {
 
             target.synchronize(loopsPerSecond);
 
-            System.out.println(currentTime + ": " + pauseNanoSeconds);
+            System.out.println(currentTime);
 
             if (currentTime >= maximumTime){
                 break;
