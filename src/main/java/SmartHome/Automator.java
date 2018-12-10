@@ -2,6 +2,7 @@
 
 package SmartHome;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 import com.sun.istack.internal.NotNull;
@@ -22,22 +23,22 @@ public class Automator implements JsonDeserializable, Synchronizable {
     /**
      * Specifies the width and height of the overview.
      */
-    long sizeX, sizeY;
+    Dimension size = new Dimension();
 
-    public int getSizeX() {
-        return (int) sizeX;
+    public Dimension getSize() {
+        return size;
     }
 
-    void setSizeX(long sizeX) {
-        this.sizeX = sizeX;
+    Point sunStart = new Point();
+
+    public Point getSunStart() {
+        return sunStart;
     }
 
-    public int getSizeY() {
-        return (int) sizeY;
-    }
+    Point sunEnd = new Point();
 
-    void setSizeY(long sizeY) {
-        this.sizeY = sizeY;
+    public Point getSunEnd() {
+        return sunEnd;
     }
 
     private String name;
@@ -334,6 +335,22 @@ public class Automator implements JsonDeserializable, Synchronizable {
         if (objectBuffer instanceof String) {
             description = (String) objectBuffer;
         }
+        objectBuffer = automatorBuffer.get("Width");
+        if (objectBuffer instanceof Integer) {
+            size.width = (int) objectBuffer;
+        }
+        objectBuffer = automatorBuffer.get("Height");
+        if (objectBuffer instanceof Integer) {
+            size.height = (int) objectBuffer;
+        }
+        objectBuffer = automatorBuffer.get("SunStart");
+        if (objectBuffer instanceof JSONArray) {
+            jsonDeserializeCoordinate((JSONArray) objectBuffer, sunStart);
+        }
+        objectBuffer = automatorBuffer.get("SunEnd");
+        if (objectBuffer instanceof JSONArray) {
+            jsonDeserializeCoordinate((JSONArray) objectBuffer, sunEnd);
+        }
 
         /* Deserialize Synchronizer: */
         objectBuffer = automatorBuffer.get("Synchronizer");
@@ -396,7 +413,7 @@ public class Automator implements JsonDeserializable, Synchronizable {
                             fixture = new DoorFixture(this, fixtureBuffer);
                             break;
                         default:
-                            throw new JsonDeserializedError("Unknown Fixture-Type!", this);
+                            throw new JsonDeserializedError("Unknown Fixture-Type (" + fixtureTypeBuffer + ")", this);
                     }
                     fixtures.add(fixture);
                 }
@@ -483,6 +500,23 @@ public class Automator implements JsonDeserializable, Synchronizable {
                     Trigger trigger = new Trigger(this, triggerBuffer);
                     triggers.add(trigger);
                 }
+            }
+        }
+        setupTriggers();
+    }
+
+    public static void jsonDeserializeCoordinate(JSONArray pointBuffer, Point point) {
+
+        Object ordinateBuffer;
+
+        if (pointBuffer.size() == 2) {
+            ordinateBuffer = pointBuffer.get(0);
+            if (ordinateBuffer instanceof Integer) {
+                point.x = (int) ordinateBuffer;
+            }
+            ordinateBuffer = pointBuffer.get(1);
+            if (ordinateBuffer instanceof Integer) {
+                point.y = (int) ordinateBuffer;
             }
         }
     }
