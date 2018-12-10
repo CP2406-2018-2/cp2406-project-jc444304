@@ -1,15 +1,16 @@
 // Author: Yvan Burrie
 
+import com.sun.istack.internal.NotNull;
 import SmartHome.*;
 
 /**
  *
  */
-public class TriggerActionEditorFrame extends EntityEditorFrame<Trigger.Action> {
+class TriggerActionEditorFrame extends EntityEditorFrame<Trigger.Action> {
 
     private Trigger.Action triggerAction;
 
-    public TriggerActionEditorFrame(Trigger.Action triggerAction) {
+    TriggerActionEditorFrame(@NotNull Trigger.Action triggerAction) {
 
         super(triggerAction);
 

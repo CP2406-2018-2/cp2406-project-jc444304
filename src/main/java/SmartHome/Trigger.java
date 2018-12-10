@@ -2,6 +2,7 @@
 
 package SmartHome;
 
+import com.sun.istack.internal.NotNull;
 import java.util.ArrayList;
 import org.json.simple.*;
 
@@ -36,18 +37,15 @@ public class Trigger extends Entity {
         this.looping = looping;
     }
 
-    enum Status {
-        ASLEEP,
-        READY,
-        RUNNING,
-        TRIED,
-        DONE,
+    private String message;
+
+    public String getMessage() {
+        return message;
     }
 
-    /**
-     * When each trigger is tried by the thread, it should have a change in status.
-     */
-    private Status status = Status.ASLEEP;
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     private ArrayList<Event> events = new ArrayList<>();
 
@@ -79,10 +77,12 @@ public class Trigger extends Entity {
         boolean successful = false;
 
         public Event() {
+
             super(Trigger.this.automator);
         }
 
-        public Event(JSONObject eventBuffer) throws JsonDeserializedError {
+        public Event(@NotNull JSONObject eventBuffer) throws JsonDeserializedError {
+
             super(Trigger.this.automator);
             jsonDeserialize(eventBuffer);
         }
@@ -109,36 +109,11 @@ public class Trigger extends Entity {
 
             return eventBuffer;
         }
-    }
 
-    /*
-    protected class ApparatusDetectionEvent extends Event {
+        void initialize() {
 
-        final public static String JSON_MACRO = "APPARATUS_DETECTION";
-
-        private Apparatus apparatus;
-
-        private boolean detected = false;
-
-        public boolean isDetected() { return this.detected; }
-
-        public void setDetected(boolean detected) { this.detected = detected; }
-
-        public void ApparatusDetectionEvent(Trigger trigger, Apparatus apparatus) {
-
-            //super::Event(trigger);
-
-            this.apparatus = apparatus;
-        }
-
-        public void ApparatusDetectionEvent(Trigger trigger, long apparatusId) {
-
-            Apparatus apparatus = this.trigger.getAutomator().getApparatus(apparatusId);
-
-            this.ApparatusDetectionEvent(trigger, apparatus);
         }
     }
-    */
 
     private ArrayList<Action> actions = new ArrayList<>();
 
@@ -151,117 +126,33 @@ public class Trigger extends Entity {
      */
     public abstract class Action extends Entity {
 
-        public Action(Automator automator) {
-            super(automator);
-        }
-    }
+        public Action() {
 
-    /**
-     * This action will force a trigger to be either READY or ASLEEP.
-     */
-    class ChangeTriggerStatusAction extends Action {
-
-        final static String TYPE = "CHANGE_TRIGGER_STATUS";
-
-        String targetTriggerId;
-
-        boolean targetTriggerState = false;
-
-        public ChangeTriggerStatusAction() {
             super(Trigger.this.automator);
         }
 
-        public ChangeTriggerStatusAction(JSONObject actionBuffer) throws JsonDeserializedError {
-            super(Trigger.this.automator);
-            jsonDeserialize(actionBuffer);
+        public Action(@NotNull JSONObject actionBuffer) throws JsonDeserializedError {
+
+            super(Trigger.this.automator, actionBuffer);
         }
 
-        @Override
-        public void jsonDeserialize(JSONObject actionBuffer) throws JsonDeserializedError {
+        void initialize() {
 
-            super.jsonDeserialize(actionBuffer);
-
-            Object bufferObject;
-
-            bufferObject = actionBuffer.get("TargetTriggerId");
-            if (bufferObject instanceof String) {
-                targetTriggerId = (String) bufferObject;
-            }
-            bufferObject = actionBuffer.get("TargetTriggerState");
-            if (bufferObject instanceof Boolean) {
-                targetTriggerState = (boolean) bufferObject;
-            }
-        }
-
-        @Override
-        public JSONObject jsonSerialize() throws JsonSerializedError {
-
-            JSONObject actionBuffer = super.jsonSerialize();
-
-            actionBuffer.put("TargetTriggerId", targetTriggerId);
-            actionBuffer.put("TargetTriggerState", targetTriggerState);
-
-            return actionBuffer;
-        }
-
-        @Override
-        public void synchronize(long loopsPerSec) {
-
-            Trigger targetTrigger = automator.getTriggerById(targetTriggerId);
-
-            if (targetTrigger != null) {
-                targetTrigger.status = targetTriggerState ? Status.READY : Status.ASLEEP;
-            }
         }
     }
 
-    /**
-     * This action will force a trigger to be either READY or ASLEEP.
-     */
-    class OpaqueApparatusAction extends Action {
+    public Trigger(@NotNull Automator automator) {
 
-        final static String TYPE = "OPAQUE_APPARATUS";
-
-        String deviceTag = "TRG";
-
-        boolean state = false;
-
-        OpaqueApparatusAction() {
-            super(Trigger.this.automator);
-        }
-
-        @Override
-        public void jsonDeserialize(JSONObject jsonObject) {
-
-        }
-
-        @Override
-        public JSONObject jsonSerialize() {
-            return null;
-        }
-
-        @Override
-        public void synchronize(long loopsPerSec) {
-
-            Device targetDevice = automator.getDeviceById(this.deviceTag);
-
-            if (targetDevice instanceof OpaqueStateApparatus) {
-                OpaqueStateApparatus opaqueApparatus = (OpaqueStateApparatus) targetDevice;
-                //opaqueApparatus.setState(this.);
-            }
-        }
-    }
-
-    public Trigger(Automator automator) {
         super(automator);
     }
 
-    public Trigger(Automator automator, JSONObject triggerBuffer) throws JsonDeserializedError {
+    public Trigger(@NotNull Automator automator, @NotNull JSONObject triggerBuffer) throws JsonDeserializedError {
+
         super(automator, triggerBuffer);
     }
 
     @Override
-    public void jsonDeserialize(JSONObject triggerBuffer) throws JsonDeserializedError {
+    public void jsonDeserialize(@NotNull JSONObject triggerBuffer) throws JsonDeserializedError {
 
         super.jsonDeserialize(triggerBuffer);
 
@@ -275,6 +166,10 @@ public class Trigger extends Entity {
         if (objectBuffer instanceof Boolean) {
             looping = (boolean) objectBuffer;
         }
+        objectBuffer = triggerBuffer.get("Message");
+        if (objectBuffer instanceof String) {
+            message = (String) objectBuffer;
+        }
 
         /* Deserialize Events: */
         objectBuffer = triggerBuffer.get("Events");
@@ -286,15 +181,16 @@ public class Trigger extends Entity {
                     JSONObject eventBuffer = (JSONObject) objectBuffer;
                     objectBuffer = eventBuffer.get("Type");
                     if (objectBuffer == null) {
-                        throw new JsonDeserializedError("", this);
+                        throw new JsonDeserializedError("Undefined Trigger Event type", this);
                     }
                     if (objectBuffer instanceof String) {
                         String eventTypeBuffer = (String) objectBuffer;
                         Event event;
                         switch (eventTypeBuffer.toUpperCase()) {
-                            case Event.JSON_TYPE:
-                                event = null;// TODO
+                            case ApparatusDetectionEvent.JSON_TYPE:
+                                event = new ApparatusDetectionEvent(eventBuffer);
                                 break;
+                            // TODO: more events
                             default:
                                 throw new JsonDeserializedError("", this);
                         }
@@ -310,8 +206,8 @@ public class Trigger extends Entity {
         objectBuffer = triggerBuffer.get("Actions");
         if (objectBuffer instanceof JSONArray) {
             JSONArray actionsBuffer = (JSONArray) objectBuffer;
-            for (int i = 0; i < actionsBuffer.size(); i++) {
-                objectBuffer = actionsBuffer.get(i);
+            for (Object elementBuffer : actionsBuffer) {
+                objectBuffer = elementBuffer;
                 if (objectBuffer instanceof JSONObject) {
                     JSONObject actionBuffer = (JSONObject) objectBuffer;
                     objectBuffer = actionBuffer.get("Type");
@@ -322,9 +218,10 @@ public class Trigger extends Entity {
                         String actionTypeBuffer = (String) objectBuffer;
                         Action action;
                         switch (actionTypeBuffer.toUpperCase()) {
-                            case ChangeTriggerStatusAction.TYPE:
-                                action = new ChangeTriggerStatusAction(actionBuffer);
+                            case ChangeTriggerStartingAction.JSON_TYPE:
+                                action = new ChangeTriggerStartingAction(actionBuffer);
                                 break;
+                            // TODO: more actions
                             default:
                                 throw new JsonDeserializedError("", this);
                         }
@@ -344,12 +241,19 @@ public class Trigger extends Entity {
 
         triggerBuffer.put("Starting", starting);
         triggerBuffer.put("Looping", looping);
+        if (message != null) {
+            triggerBuffer.put("Message", message);
+        }
+
+        /* Serialize Events: */
         JSONArray eventsBuffer = new JSONArray();
         for (Event event : events) {
             JSONObject eventBuffer = event.jsonSerialize();
             eventsBuffer.add(eventBuffer);
         }
         triggerBuffer.put("Events", eventsBuffer);
+
+        /* Serialize Actions: */
         JSONArray actionsBuffer = new JSONArray();
         for (Action action : actions) {
             JSONObject actionBuffer = action.jsonSerialize();
@@ -363,17 +267,15 @@ public class Trigger extends Entity {
     @Override
     public void synchronize(long loopsPerSecond) {
 
-        /* Check if this trigger is eligible to run: */
-        if (this.status != Status.READY) return;
-
-        /* This trigger is now considered running: */
-        this.status = Status.RUNNING;
+        /* Check if this trigger should run: */
+        if (!starting) return;
 
         /* If the trigger does not have events, the actions will be fired immediately: */
-        if (!events.isEmpty()) {
+        boolean fireActions = events.isEmpty();
+        if (!fireActions) {
 
             /* If the first event is AND'ED with its previous, then the initial result must be TRUE, vice versa: */
-            boolean eventsResult = events.get(0).orPrevious;
+            boolean eventsSuccessful = events.get(0).orPrevious;
 
             /* Try out each event: */
             for (Event event : events) {
@@ -381,24 +283,203 @@ public class Trigger extends Entity {
 
                 /* Either AND or OR the result with the previous event: */
                 if (event.orPrevious) {
-                    eventsResult |= event.successful;
+                    eventsSuccessful |= event.successful;
                 } else {
-                    eventsResult &= event.successful;
+                    eventsSuccessful &= event.successful;
                 }
 
-                /* As soon as the result fails, prevent actions from firing: */
-                if (!eventsResult) {
-                    status = Status.TRIED;
-                    return;
+                /* Make sure event success is always false for next thread cycle: */
+                event.successful = false;
+
+                /* As soon as the result succeeds, let actions fire: */
+                if (eventsSuccessful) {
+                    fireActions = true;
+                    break;
                 }
             }
         }
 
         /* Fire all actions: */
-        for (Action action : actions) {
-            action.synchronize(loopsPerSecond);
+        if (fireActions){
+            for (Action action : actions) {
+                action.synchronize(loopsPerSecond);
+            }
         }
 
-        this.status = Status.DONE;
+        /* If the trigger is looping, then it must start again on next thread cycle. */
+        starting = looping;
+
+        /* Send message now that trigger has succeeded: */
+        automator.output(message);
     }
+
+    void initialize() {
+
+        for (Event event : events) {
+            event.initialize();
+        }
+        for (Action action : actions) {
+            action.initialize();
+        }
+    }
+
+    /**
+     * Event is successful when its apparatus is detecting something.
+     */
+    public class ApparatusDetectionEvent extends Event {
+
+        final static String JSON_TYPE = "APPARATUS_DETECTION";
+
+        @Override
+        public String getJsonType() {
+            return JSON_TYPE;
+        }
+
+        private DetectableApparatus detectableDevice;
+
+        public ApparatusDetectionEvent() {
+
+            super();
+        }
+
+        public ApparatusDetectionEvent(@NotNull DetectableApparatus detectableDevice) {
+
+            super();
+            this.detectableDevice = detectableDevice;
+        }
+
+        public ApparatusDetectionEvent(@NotNull JSONObject eventBuffer) throws JsonDeserializedError {
+
+            super.jsonDeserialize(eventBuffer);
+
+            Object objectBuffer;
+
+            objectBuffer = eventBuffer.get("DeviceId");
+            if (objectBuffer instanceof String) {
+                String deviceId = (String) objectBuffer;
+                Device device = Trigger.this.automator.getDeviceById(deviceId);
+                if (device instanceof DetectableApparatus) {
+                    this.detectableDevice = (DetectableApparatus) device;
+                } else {
+                    throw new JsonDeserializedError("", this);
+                }
+            }
+        }
+
+        @Override
+        public void synchronize(long loopsPerSecond) {
+
+            if (detectableDevice != null) {
+                successful = detectableDevice.isDetected();
+            }
+        }
+    }
+
+    /**
+     * This action will force a trigger to either start or not start.
+     */
+    public class ChangeTriggerStartingAction extends Action {
+
+        final static String JSON_TYPE = "CHANGE_TRIGGER_STATUS";
+
+        @Override
+        public String getJsonType() {
+            return JSON_TYPE;
+        }
+
+        Trigger targetTrigger;
+
+        String targetTriggerId;
+
+        boolean targetTriggerStarting = false;
+
+        public ChangeTriggerStartingAction() {
+
+        }
+
+        public ChangeTriggerStartingAction(@NotNull JSONObject actionBuffer) throws JsonDeserializedError {
+
+            jsonDeserialize(actionBuffer);
+        }
+
+        @Override
+        public void jsonDeserialize(@NotNull JSONObject actionBuffer) throws JsonDeserializedError {
+
+            super.jsonDeserialize(actionBuffer);
+
+            Object bufferObject;
+
+            bufferObject = actionBuffer.get("TargetTriggerId");
+            if (bufferObject instanceof String) {
+                targetTriggerId = (String) bufferObject;
+            }
+            bufferObject = actionBuffer.get("TargetTriggerState");
+            if (bufferObject instanceof Boolean) {
+                targetTriggerStarting = (boolean) bufferObject;
+            }
+        }
+
+        @Override
+        public JSONObject jsonSerialize() throws JsonSerializedError {
+
+            JSONObject actionBuffer = super.jsonSerialize();
+
+            actionBuffer.put("TargetTriggerId", targetTriggerId);
+            actionBuffer.put("TargetTriggerState", targetTriggerStarting);
+
+            return actionBuffer;
+        }
+
+        @Override
+        public void synchronize(long loopsPerSec) {
+
+            if (targetTrigger != null) {
+                targetTrigger.starting = targetTriggerStarting;
+            }
+        }
+
+        @Override
+        void initialize() {
+
+            targetTrigger = Trigger.this.automator.getTriggerById(targetTriggerId);
+        }
+    }
+
+    /**
+     * This action will force a trigger to be either READY or ASLEEP.
+    class OpaqueApparatusAction extends Action {
+
+        final static String TYPE = "OPAQUE_APPARATUS";
+
+        String deviceTag = "TRG";
+
+        boolean state = false;
+
+        OpaqueApparatusAction() {
+
+            super();
+        }
+
+        @Override
+        public void jsonDeserialize(@NotNull JSONObject jsonObject) {
+
+        }
+
+        @Override
+        public JSONObject jsonSerialize() {
+            return null;
+        }
+
+        @Override
+        public void synchronize(long loopsPerSec) {
+
+            Device targetDevice = Trigger.this.automator.getDeviceById(this.deviceTag);
+
+            if (targetDevice instanceof OpaqueApparatus) {
+                OpaqueApparatus opaqueApparatus = (OpaqueApparatus) targetDevice;
+                //opaqueApparatus.setState(this.);
+            }
+        }
+    }
+     */
 }

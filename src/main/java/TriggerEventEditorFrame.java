@@ -1,18 +1,19 @@
 // Author: Yvan Burrie
 
+import com.sun.istack.internal.NotNull;
 import javax.swing.*;
 import SmartHome.*;
 
 /**
  *
  */
-public class TriggerEventEditorFrame extends EntityEditorFrame<Trigger.Event> {
+class TriggerEventEditorFrame extends EntityEditorFrame<Trigger.Event> {
 
     Trigger.Event entity;
 
     JCheckBox orPreviousCheck = new JCheckBox("OR with previous Event.");
 
-    public TriggerEventEditorFrame(Trigger.Event triggerEvent) {
+    TriggerEventEditorFrame(@NotNull Trigger.Event triggerEvent) {
 
         super(triggerEvent);
 
