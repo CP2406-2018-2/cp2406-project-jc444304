@@ -50,7 +50,12 @@ class EntitySelectionList<T extends Entity> extends JList<String> {
 
         listModel.clear();
         for (T entity : entities) {
-            listModel.addElement(entity.getName());
+            String entityName = entity.getName();
+            if (entityName != null) {
+                listModel.addElement(entity.getName());
+            } else {
+                listModel.addElement("Un-Named" + (entity.getId() != null ? " (Id: " + entity.getId() + ")" : null));
+            }
         }
     }
 }
