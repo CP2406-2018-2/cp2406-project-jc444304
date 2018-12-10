@@ -256,9 +256,7 @@ public class Automator implements JsonDeserializable, Synchronizer.Synchronizabl
 
     void setupJython() {
 
-        pyInterpreter.exec(
-                "from SmartHome import Automator\n" +
-                        "automator = Automator()\n");
+        pyInterpreter.exec("from SmartHome import Automator\r\n");
     }
 
     /**

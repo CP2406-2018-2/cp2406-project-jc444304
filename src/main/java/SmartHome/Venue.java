@@ -54,8 +54,7 @@ public class Venue extends Entity {
         if (objectBuffer instanceof String) {
             pyCallback = "\n" + objectBuffer;
             pyCallbackName = "venue_" + (id + "_" + name).replace(" ", "_");
-            String pyExec = "def " + pyCallbackName + "():\n" + pyCallback.replace("\t", "\t\t");
-            System.out.println(pyExec);
+            String pyExec = "def " + pyCallbackName + "():\n" + pyCallback.replace("\n", "\n\t");
             automator.pyInterpreter.exec(pyExec);
         }
     }
@@ -68,9 +67,8 @@ public class Venue extends Entity {
         if (outdoor) {
             venueBuffer.put("Outdoor", true);
         }
-
         if (pyCallback != null) {
-            venueBuffer.put("PyCallback", pyCallback);
+            venueBuffer.put("PyCallback", pyCallback.replace("\n\t", "\n"));
         }
 
         return venueBuffer;
