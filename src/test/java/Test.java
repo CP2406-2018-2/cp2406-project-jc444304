@@ -1,22 +1,20 @@
 // Author: Yvan Burrie
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.web.WebView;
-import org.jfree.graphics2d.svg.SVGGraphics2D;
 
 import SmartHome.*;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.python.util.PythonInterpreter;
 
 import javax.swing.*;
 
@@ -25,8 +23,6 @@ import javax.swing.*;
  */
 public abstract class Test {
 
-    private static Automator automator;
-
     private static Scanner input = new Scanner(System.in);
 
     /**
@@ -34,13 +30,16 @@ public abstract class Test {
      */
     public static void main(String[] args) {
 
-        System.out.println("Attempting to test SVG canvas...");
-        testGraphics();
+
+        //System.out.println("Attempting to test SVG canvas...");
+        //testGraphics();
 
         System.out.println("Attempting to test web browser...");
         testWebBrowser();
 
-        Automator automator = new Automator();
+        System.out.println("Attempting to test synchronizer...");
+        testSynchronizer();
+
     }
 
     /**
@@ -69,27 +68,12 @@ public abstract class Test {
         return true;
     }
 
-    static String canvasEncoded;
-
-    private static boolean testGraphics() {
-
-        SVGGraphics2D canvas = new SVGGraphics2D(300, 300);
-        canvas.setPaint(Color.RED);
-        canvas.draw(new Rectangle(50, 50, 200, 200));
-        canvasEncoded = canvas.getSVGElement();
-
-        /* Print XML code to see if the vector was rendered: */
-        System.out.println(canvasEncoded);
-
-        return true;
-    }
-
     private static boolean testWebBrowser() {
 
         JFXPanel panel = new JFXPanel();
         Platform.runLater(() -> {
             WebView webView = new WebView();
-            webView.getEngine().loadContent(canvasEncoded);
+            webView.getEngine().loadContent("<h1>TEST</h1>");
             panel.setScene(new Scene(webView));
         });
 
