@@ -1,30 +1,27 @@
 // Author: Yvan Burrie
 
+import java.awt.*;
 import javax.swing.*;
 import SmartHome.*;
+import com.sun.istack.internal.NotNull;
 
 /**
  *
  */
-public class DeviceEditorFrame extends EntityEditorFrame<Device> {
+class DeviceEditorFrame extends EntityEditorFrame<Device> {
+
+    private NavigationPanel navigationPanel;
 
     private Device device;
 
     private EntitySelectionList<Venue> venueSelector = new EntitySelectionList<>();
 
-    public DeviceEditorFrame(Device device) {
+    DeviceEditorFrame(@NotNull NavigationPanel navigationPanel, @NotNull Device device) {
 
         super(device);
 
-        setSize(300, 500);
-    }
-
-    @Override
-    void update() {
-
-        super.update();
-
-        device = (Device) entity;
+        this.navigationPanel = navigationPanel;
+        this.device = device;
     }
 
     @Override
@@ -32,8 +29,17 @@ public class DeviceEditorFrame extends EntityEditorFrame<Device> {
 
         super.setupComponents();
 
-        add(new JLabel("Venue:"));
-        add(venueSelector);
+        JPanel panel;
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(new JLabel("Venue:"));
+        add(panel);
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(venueSelector);
+        add(panel);
     }
 
     @Override
@@ -42,7 +48,10 @@ public class DeviceEditorFrame extends EntityEditorFrame<Device> {
         Venue selectedVenue = venueSelector.getSelectedEntity();
         if (selectedVenue != null && selectedVenue != device.getVenue()) {
             device.setVenue(selectedVenue);
+            navigationPanel.mainFrame.handleProjectChanged();
         }
+
+        navigationPanel.handleAppliedDeviceEditor();
 
         return super.handleApply();
     }

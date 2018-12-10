@@ -18,7 +18,5 @@ class FixtureEditorFrame extends EntityEditorFrame<Fixture> {
 
         this.navigationPanel = navigationPanel;
         this.fixture = fixture;
-
-        setSize(300, 500);
     }
 }

@@ -1,7 +1,8 @@
 // Author: Yvan Burrie
 
+import com.sun.istack.internal.NotNull;
+import java.awt.*;
 import javax.swing.*;
-
 import SmartHome.*;
 
 /**
@@ -9,14 +10,17 @@ import SmartHome.*;
  */
 class VenueEditorFrame extends EntityEditorFrame {
 
+    private NavigationPanel navigationPanel;
+
     private Venue venue;
 
     private JCheckBox outdoorCheck = new JCheckBox("Outdoor");
 
-    public VenueEditorFrame(Venue venue) {
+    VenueEditorFrame(@NotNull NavigationPanel navigationPanel, @NotNull Venue venue) {
 
         super(venue);
 
+        this.navigationPanel = navigationPanel;
         this.venue = venue;
     }
 
@@ -25,7 +29,14 @@ class VenueEditorFrame extends EntityEditorFrame {
 
         super.setupComponents();
 
-        add(outdoorCheck);
+        JPanel panel;
+
+        panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(outdoorCheck);
+        add(panel);
+
+        pack();
     }
 
     @Override
@@ -46,6 +57,8 @@ class VenueEditorFrame extends EntityEditorFrame {
 
         venue.setOutdoor(outdoorCheck.isSelected());
         updateOutdoorCheck();
+
+        navigationPanel.handleAppliedVenueEditor();
 
         return super.handleApply();
     }
