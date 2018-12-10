@@ -1389,6 +1389,16 @@
       "Type": "LOCKABLE_DOOR",
       "Id": "ENTRANCE_DOOR",
       "VenueId": "HALLWAY"
+    },
+    {
+      "Type": "WINDOW_DETECTOR",
+      "Id": "LIVING_ROOM_WINDOW_1",
+      "VenueId": "LIVING_ROOM"
+    },
+    {
+      "Type": "WINDOW_DETECTOR",
+      "Id": "LIVING_ROOM_WINDOW_2",
+      "VenueId": "LIVING_ROOM"
     }
   ],
   "Triggers": [
